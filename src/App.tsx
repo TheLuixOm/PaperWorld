@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
 
-const puntoCorteMovil = 800
+const puntoCorteMovil = 900 
 
 const obtenerEsMovil = () => {
   if (typeof window === 'undefined') {
