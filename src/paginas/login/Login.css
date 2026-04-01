@@ -23,6 +23,14 @@
 	background: #f0f4f9;
 }
 
+
+.icono_marca{
+	width: 85px;
+	height: 85px;
+	object-fit: cover;
+	display: inline-block;
+}
+
 .login-esc-visual-image {
 	width: 100%;
 	height: 100%;

@@ -1,5 +1,6 @@
 import './Login.css';
 import loginImage from '../../images/login.jpg';
+import Clip_negro from '../../images/Clip_negro.svg';
 
 function LoginEsc() {
 	return (
@@ -14,6 +15,10 @@ function LoginEsc() {
 				</div>
 
 				<div className="login-esc-content">
+					<img
+						className='icono_marca' 
+						src={Clip_negro} 
+						alt="Icono_Marca" />
 					<header className="login-esc-header">
 						<h1 className="login-esc-marca">Paper world</h1>
 					</header>
