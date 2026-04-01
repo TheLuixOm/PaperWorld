@@ -1,7 +1,33 @@
-import LoginEsc from './paginas/login/LoginEsc'
+import { useEffect, useState } from 'react'
+import InicioSesionEsc from './paginas/login/LoginEsc'
+import InicioSesionMov from './paginas/login/LoginMov'
 
-function App() {
-  return <LoginEsc />
+const puntoCorteMovil = 800
+
+const obtenerEsMovil = () => {
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  return window.innerWidth <= puntoCorteMovil
 }
 
-export default App
+function Aplicacion() {
+  const [esMovil, setEsMovil] = useState(obtenerEsMovil)
+
+  useEffect(() => {
+    const alRedimensionar = () => {
+      setEsMovil(obtenerEsMovil())
+    }
+
+    window.addEventListener('resize', alRedimensionar)
+
+    return () => {
+      window.removeEventListener('resize', alRedimensionar)
+    }
+  }, [])
+
+  return esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
+}
+
+export default Aplicacion
