@@ -1,7 +1,11 @@
 import './LoginMov.css';
 import loginImage from '../../images/login.jpg';
 
-function LoginMov() {
+type LoginMovProps = {
+  onIrRegistro?: () => void;
+};
+
+function LoginMov({ onIrRegistro }: LoginMovProps) {
   return (
     <main className="login-mov-page">
       <section className="login-mov-hero" style={{ backgroundImage: `url(${loginImage})` }}>
@@ -40,7 +44,11 @@ function LoginMov() {
             <button type="submit" className="login-mov-button login-mov-button-primary">
               Login
             </button>
-            <button type="button" className="login-mov-button login-mov-button-secondary">
+            <button
+              type="button"
+              className="login-mov-button login-mov-button-secondary"
+              onClick={onIrRegistro}
+            >
               Registrate
             </button>
           </div>

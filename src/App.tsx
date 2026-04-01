@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
+import RegistroMov from './paginas/register/RegisterMov'
 
 const puntoCorteMovil = 900 
 
@@ -14,6 +15,7 @@ const obtenerEsMovil = () => {
 
 function Aplicacion() {
   const [esMovil, setEsMovil] = useState(obtenerEsMovil)
+  const [vistaMovil, setVistaMovil] = useState<'login' | 'registro'>('login')
 
   useEffect(() => {
     const alRedimensionar = () => {
@@ -27,7 +29,15 @@ function Aplicacion() {
     }
   }, [])
 
-  return esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
+  if (!esMovil) {
+    return <InicioSesionEsc />
+  }
+
+  return vistaMovil === 'login' ? (
+    <InicioSesionMov onIrRegistro={() => setVistaMovil('registro')} />
+  ) : (
+    <RegistroMov onIrLogin={() => setVistaMovil('login')} />
+  )
 }
 
 export default Aplicacion
