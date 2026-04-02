@@ -1,19 +1,20 @@
 .inventarioVista {
-  padding: 32px 36px 24px;
+  width: 100%;
+  padding: 40px 44px 30px;
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 100%;
-  gap: 28px;
+  gap: 34px;
   overflow: hidden;
 }
 
 .inventarioEncabezado {
   display: grid;
-  grid-template-columns: auto 320px 262px minmax(0, 1fr) auto;
+  grid-template-columns: auto 360px 290px minmax(0, 1fr) auto;
   align-items: center;
   justify-content: start;
-  gap: 18px;
+  gap: 22px;
 }
 
 .inventarioEncabezado > * {
@@ -26,7 +27,7 @@
 
 .inventarioTitulo {
   margin: 0;
-  font-size: 30px;
+  font-size: 38px;
   font-weight: 800;
   letter-spacing: 0.02em;
   color: #111827;
@@ -36,11 +37,11 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 38px;
-  width: 320px;
-  max-width: 320px;
-  padding: 0 14px;
-  border-radius: 12px;
+  height: 46px;
+  width: 360px;
+  max-width: 360px;
+  padding: 0 16px;
+  border-radius: 14px;
   background: #ffffff;
   border: 1px solid #e3e8ef;
   box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
@@ -48,8 +49,8 @@
 
 .inventarioBuscadorIcono {
   color: #000000;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -57,8 +58,8 @@
 }
 
 .inventarioBuscadorIcono svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.2;
@@ -71,7 +72,7 @@
   outline: none;
   width: 100%;
   height: 100%;
-  font-size: 16px;
+  font-size: 17px;
   color: #334155;
   background: transparent;
 }
@@ -85,15 +86,15 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  height: 42px;
-  width: 262px;
-  min-width: 262px;
-  padding: 0 18px;
+  height: 48px;
+  width: 290px;
+  min-width: 290px;
+  padding: 0 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   background: #1990d0;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(25, 144, 208, 0.22);
@@ -101,20 +102,20 @@
 }
 
 .inventarioBotonIcono {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   border: 1.6px solid rgba(255, 255, 255, 0.95);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1;
 }
 
 .inventarioAvatar {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border: 1px solid #d9e2ec;
   border-radius: 50%;
   background: #ffffff;
@@ -250,12 +251,12 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 18px;
+  gap: 24px;
 }
 
 .inventarioSubtitulo {
   margin: 0;
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
   color: #23262f;
 }
@@ -269,12 +270,12 @@
 .inventarioTabla {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 4px;
+  border-spacing: 0 8px;
 }
 
 .inventarioTabla thead th {
-  padding: 16px 18px;
-  font-size: 14px;
+  padding: 18px 20px;
+  font-size: 15px;
   font-weight: 700;
   color: #8590a3;
   text-align: left;
@@ -298,8 +299,8 @@
 }
 
 .inventarioFila td {
-  padding: 18px 18px;
-  font-size: 16px;
+  padding: 22px 20px;
+  font-size: 17px;
   color: #4b5563;
   vertical-align: middle;
   border-top: 1px solid transparent;
@@ -319,14 +320,14 @@
 .inventarioCeldaNombre {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .inventarioAccion {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   border: 1px solid #d9e2ec;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #ffffff;
   color: #607187;
   display: inline-flex;
@@ -338,8 +339,8 @@
 }
 
 .inventarioAccion svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.9;
@@ -347,16 +348,7 @@
   stroke-linejoin: round;
 }
 
-.inventarioAccionEditar:hover {
-  border-color: #1990d0;
-  color: #1990d0;
-  background: #eef7ff;
-}
-
-.inventarioAccionEliminar {
-  color: #607187;
-}
-
+.inventarioAccionEditar:hover,
 .inventarioAccionEliminar:hover {
   border-color: #1990d0;
   color: #1990d0;
@@ -364,10 +356,10 @@
 }
 
 .inventarioImagen {
-  width: 72px;
-  height: 72px;
+  width: 84px;
+  height: 84px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
   background: #f8fafc;
   display: block;
@@ -377,21 +369,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   margin-top: auto;
   padding-top: 2px;
 }
 
 .inventarioPaginaBoton {
-  min-width: 34px;
-  height: 30px;
-  padding: 0 10px;
+  min-width: 40px;
+  height: 36px;
+  padding: 0 12px;
   border: 1px solid #dfe6ef;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #ffffff;
   color: #8aa1b7;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -413,7 +405,7 @@
   }
 
   .inventarioBuscador {
-    width: min(420px, 100%);
+    width: min(460px, 100%);
     max-width: 100%;
   }
 
@@ -425,7 +417,8 @@
 
 @media (max-width: 820px) {
   .inventarioVista {
-    padding: 24px 16px 20px;
+    padding: 22px 16px 20px;
+    gap: 24px;
   }
 
   .inventarioTablaContenedor {

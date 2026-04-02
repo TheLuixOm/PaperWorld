@@ -5,6 +5,7 @@ import InicioSesionMov from './paginas/login/LoginMov'
 import Empleado from './paginas/empleado/Empleado'
 import Inventario from './paginas/empleado/Inventario'
 import VistaEmpleado from './paginas/empleado/VistaEmpleado'
+import Inicio from './paginas/empleado/Inicio'
 
 const puntoCorteMovil = 900 
 
@@ -38,7 +39,7 @@ function Aplicacion() {
       <Route path="/" element={elementoInicioSesion} />
       <Route path="/login" element={elementoInicioSesion} />
       <Route element={<Empleado />}>
-        <Route path="/dashboard" element={<VistaEmpleado titulo="Inicio" />} />
+        <Route path="/dashboard" element={<Inicio />} />
         <Route path="/inventario" element={<Inventario />} />
         <Route path="/ventas" element={<VistaEmpleado titulo="Ventas" />} />
         <Route path="/proveedores" element={<VistaEmpleado titulo="Proveedores" />} />

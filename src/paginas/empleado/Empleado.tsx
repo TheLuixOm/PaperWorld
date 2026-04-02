@@ -96,7 +96,7 @@ function IconoSeccion({ tipo }: { tipo: TipoIcono }) {
 }
 
 function Empleado() {
-  const [estaColapsado, setEstaColapsado] = useState(true);
+  const [estaColapsado, setEstaColapsado] = useState(false);
 
   const alternarSidebar = () => {
     setEstaColapsado((estadoPrevio) => !estadoPrevio);
