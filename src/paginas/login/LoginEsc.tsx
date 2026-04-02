@@ -1,8 +1,26 @@
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import './Login.css';
 import loginImage from '../../images/login.jpg';
 import Clip_negro from '../../images/Clip_negro.svg';
 
 function LoginEsc() {
+	const navigate = useNavigate();
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+
+	const iniciarSesion = (event: React.FormEvent) => {
+		event.preventDefault();
+		const usuario = email.trim();
+
+		if (!usuario) {
+			return;
+		}
+
+		localStorage.setItem('paperworldUsuario', usuario);
+		navigate('/inventario');
+	};
+
 	return (
 		<main className="login-esc-page">
 			<section className="login-esc-layout" aria-label="Login escritorio">
@@ -23,7 +41,7 @@ function LoginEsc() {
 						<h1 className="login-esc-marca">Paper world</h1>
 					</header>
 
-					<form className="login-esc-card" onSubmit={(event) => event.preventDefault()}>
+					<form className="login-esc-card" onSubmit={iniciarSesion}>
 						<label className="login-esc-label" htmlFor="email">
 							Email
 						</label>
@@ -34,6 +52,8 @@ function LoginEsc() {
 							className="login-esc-input"
 							placeholder="Value"
 							autoComplete="email"
+							value={email}
+							onChange={(event) => setEmail(event.target.value)}
 						/>
 
 						<label className="login-esc-label" htmlFor="password">
@@ -46,13 +66,15 @@ function LoginEsc() {
 							className="login-esc-input"
 							placeholder="Value"
 							autoComplete="current-password"
+							value={password}
+							onChange={(event) => setPassword(event.target.value)}
 						/>
 
 						<div className="login-esc-actions" role="group" aria-label="Acciones de login">
 							<button type="submit" className="login-esc-button login-esc-button-primary">
 								Log in
 							</button>
-							<button type="button" className="login-esc-button login-esc-button-secondary">
+							<button type="submit" className="login-esc-button login-esc-button-secondary">
 								Sign In
 							</button>
 						</div>

@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import './LoginMov.css';
 import loginImage from '../../images/login.jpg';
 
@@ -6,6 +8,31 @@ type LoginMovProps = {
 };
 
 function LoginMov({ onIrRegistro }: LoginMovProps) {
+  const navigate = useNavigate();
+  const [correo, setCorreo] = useState('');
+  const [contrasena, setContrasena] = useState('');
+
+  const iniciarSesion = (event: React.FormEvent) => {
+    event.preventDefault();
+    const usuario = correo.trim();
+
+    if (!usuario) {
+      return;
+    }
+
+    localStorage.setItem('paperworldUsuario', usuario);
+    navigate('/inventario');
+  };
+
+  const irARegistro = () => {
+    if (onIrRegistro) {
+      onIrRegistro();
+      return;
+    }
+
+    navigate('/register');
+  };
+
   return (
     <main className="login-mov-page">
       <section className="login-mov-hero" style={{ backgroundImage: `url(${loginImage})` }}>
@@ -15,7 +42,7 @@ function LoginMov({ onIrRegistro }: LoginMovProps) {
       </section>
 
       <section className="login-mov-content">
-        <form className="login-mov-card" onSubmit={(event) => event.preventDefault()}>
+        <form className="login-mov-card" onSubmit={iniciarSesion}>
           <label className="login-mov-label" htmlFor="correo">
             Correo
           </label>
@@ -26,6 +53,8 @@ function LoginMov({ onIrRegistro }: LoginMovProps) {
             className="login-mov-input"
             placeholder="Value"
             autoComplete="email"
+            value={correo}
+            onChange={(event) => setCorreo(event.target.value)}
           />
 
           <label className="login-mov-label" htmlFor="contrasena">
@@ -38,6 +67,8 @@ function LoginMov({ onIrRegistro }: LoginMovProps) {
             className="login-mov-input"
             placeholder="Value"
             autoComplete="current-password"
+            value={contrasena}
+            onChange={(event) => setContrasena(event.target.value)}
           />
 
           <div className="login-mov-actions" role="group" aria-label="Acciones de login">
@@ -47,7 +78,7 @@ function LoginMov({ onIrRegistro }: LoginMovProps) {
             <button
               type="button"
               className="login-mov-button login-mov-button-secondary"
-              onClick={onIrRegistro}
+              onClick={irARegistro}
             >
               Registrate
             </button>

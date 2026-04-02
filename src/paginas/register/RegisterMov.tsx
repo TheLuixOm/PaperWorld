@@ -1,4 +1,5 @@
 import './RegisterMov.css';
+import { useNavigate } from 'react-router-dom';
 import loginImage from '../../images/login.jpg';
 import clipNegro from '../../images/Clip_negro.svg';
 
@@ -7,6 +8,17 @@ type RegisterMovProps = {
 };
 
 function RegisterMov({ onIrLogin }: RegisterMovProps) {
+  const navegar = useNavigate();
+
+  const irAInicioSesion = () => {
+    if (onIrLogin) {
+      onIrLogin();
+      return;
+    }
+
+    navegar('/login');
+  };
+
   return (
     <main className="registro-mov-pagina">
       <section className="registro-mov-cabecera" style={{ backgroundImage: `url(${loginImage})` }}>
@@ -20,7 +32,7 @@ function RegisterMov({ onIrLogin }: RegisterMovProps) {
           <h2 className="registro-mov-titulo">Crear Cuenta</h2>
           <p className="registro-mov-subtitulo">
             Ya tienes una cuenta?{' '}
-            <button type="button" className="registro-mov-enlace" onClick={onIrLogin}>
+            <button type="button" className="registro-mov-enlace" onClick={irAInicioSesion}>
               Inicia Sesión
             </button>
           </p>

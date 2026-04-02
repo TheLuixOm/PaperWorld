@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
 import RegistroMov from './paginas/register/RegisterMov'
+import Empleado from './paginas/empleado/Empleado'
+import Inventario from './paginas/empleado/Inventario'
+import VistaEmpleado from './paginas/empleado/VistaEmpleado'
+import Inicio from './paginas/empleado/Inicio'
 
 const puntoCorteMovil = 900 
 
@@ -15,7 +20,6 @@ const obtenerEsMovil = () => {
 
 function Aplicacion() {
   const [esMovil, setEsMovil] = useState(obtenerEsMovil)
-  const [vistaMovil, setVistaMovil] = useState<'login' | 'registro'>('login')
 
   useEffect(() => {
     const alRedimensionar = () => {
@@ -29,14 +33,24 @@ function Aplicacion() {
     }
   }, [])
 
-  if (!esMovil) {
-    return <InicioSesionEsc />
-  }
+  const elementoInicioSesion = esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
 
-  return vistaMovil === 'login' ? (
-    <InicioSesionMov onIrRegistro={() => setVistaMovil('registro')} />
-  ) : (
-    <RegistroMov onIrLogin={() => setVistaMovil('login')} />
+  return (
+    <Routes>
+      <Route path="/" element={elementoInicioSesion} />
+      <Route path="/login" element={elementoInicioSesion} />
+      <Route path="/register" element={<RegistroMov />} />
+      <Route element={<Empleado />}>
+        <Route path="/dashboard" element={<Inicio />} />
+        <Route path="/inventario" element={<Inventario />} />
+        <Route path="/ventas" element={<VistaEmpleado titulo="Ventas" />} />
+        <Route path="/proveedores" element={<VistaEmpleado titulo="Proveedores" />} />
+        <Route path="/reportes" element={<VistaEmpleado titulo="Reportes" />} />
+        <Route path="/ayuda" element={<VistaEmpleado titulo="Ayuda" />} />
+        <Route path="/ajustes" element={<VistaEmpleado titulo="Configuracion" />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/inventario" replace />} />
+    </Routes>
   )
 }
 
