@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
-
+import RegistroEsc from './paginas/register/Register'
 const puntoCorteMovil = 900 
 
 const obtenerEsMovil = () => {
@@ -26,7 +26,7 @@ function Aplicacion() {
       window.removeEventListener('resize', alRedimensionar)
     }
   }, [])
-
+return  <RegistroEsc />
   return esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
 }
 
