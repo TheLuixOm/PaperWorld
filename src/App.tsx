@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
+import Empleado from './paginas/empleado/Empleado'
+import Inventario from './paginas/empleado/Inventario'
+import VistaEmpleado from './paginas/empleado/VistaEmpleado'
 
 const puntoCorteMovil = 900 
 
@@ -27,7 +31,24 @@ function Aplicacion() {
     }
   }, [])
 
-  return esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
+  const elementoInicioSesion = esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
+
+  return (
+    <Routes>
+      <Route path="/" element={elementoInicioSesion} />
+      <Route path="/login" element={elementoInicioSesion} />
+      <Route element={<Empleado />}>
+        <Route path="/dashboard" element={<VistaEmpleado titulo="Inicio" />} />
+        <Route path="/inventario" element={<Inventario />} />
+        <Route path="/ventas" element={<VistaEmpleado titulo="Ventas" />} />
+        <Route path="/proveedores" element={<VistaEmpleado titulo="Proveedores" />} />
+        <Route path="/reportes" element={<VistaEmpleado titulo="Reportes" />} />
+        <Route path="/ayuda" element={<VistaEmpleado titulo="Ayuda" />} />
+        <Route path="/ajustes" element={<VistaEmpleado titulo="Configuracion" />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/inventario" replace />} />
+    </Routes>
+  )
 }
 
 export default Aplicacion
