@@ -122,8 +122,81 @@
 }
 
 .register_input:focus-visible {
-    outline: 2px solid #2196f3;
+    outline: 2px solid #067bb6;
     outline-offset: 0;
+}
+
+.fecha {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.fecha_select {
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid #d8d8d8;
+    padding: 0 12px;
+    font-size: 18px;
+    color: #b3b3b3;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.fecha_select:focus-visible {
+    outline: 2px solid #067bb6;
+    outline-offset: 0;
+    color: #2c2c2c;
+}
+
+
+
+.checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border-radius: 20%;
+    border: 1px solid #c8c8c8;
+    background-color: #ffffff;
+    display: inline-grid;
+    place-content: center;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.checkbox::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    transform: scale(0);
+    transition: transform 0.15s ease-in-out;
+    clip-path: polygon(14% 44%, 0 59%, 41% 100%, 100% 22%, 84% 8%, 41% 69%);
+    box-shadow: inset 1em 1em #ffffff;
+}
+
+.checkbox:checked {
+    background-color: #067bb6;
+    border-color: #067bb6;
+}
+
+.checkbox:checked::before {
+    transform: scale(1);
+}
+
+.checkbox:focus-visible {
+    outline: 2px solid #067bb6;
+    outline-offset: 2px;
+}
+
+.fecha_select_dia,
+.fecha_select_mes {
+    width: 80px;
+}
+
+.fecha_select_anio {
+    width: 120px;
 }
 
 .register_actions {

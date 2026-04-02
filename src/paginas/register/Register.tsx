@@ -3,6 +3,11 @@ import loginImage from '../../images/login.jpg';
 import Clip_negro from '../../images/Clip_negro.svg';
 
 function RegisterEsc() {
+    const dias = Array.from({ length: 31 }, (_, indice) => String(indice + 1).padStart(2, '0'));
+    const meses = Array.from({ length: 12 }, (_, indice) => String(indice + 1).padStart(2, '0'));
+    const year_actual = new Date().getFullYear();
+    const years = Array.from({ length: 100 }, (_, indice) => String(year_actual - indice));
+
  	return (
 		<main className="register_page">
             <section className="register_layout" aria-label="Registro escritorio">
@@ -72,8 +77,33 @@ function RegisterEsc() {
                             autoComplete="tel"
                         />
 
+						<div className='fecha' aria-label="Fecha de nacimiento">
+							<select className="fecha_select fecha_select_dia" name="dia" defaultValue="" aria-label="Día">
+								<option value="" disabled>DD</option>
+								{dias.map((dia) => (
+									<option key={dia} value={dia}>{dia}</option>
+								))}
+							</select>
 
-                        
+							<select className="fecha_select fecha_select_mes" name="mes" defaultValue="" aria-label="Mes">
+								<option value="" disabled>MM</option>
+								{meses.map((mes) => (
+									<option key={mes} value={mes}>{mes}</option>
+								))}
+							</select>
+
+							<select className="fecha_select fecha_select_anio" name="anio" defaultValue="" aria-label="Año">
+								<option value="" disabled>YYYY</option>
+								{years.map((year) => (
+									<option key={year} value={year}>{year}</option>
+								))}
+							</select>
+						</div>
+
+                        <label>
+                            <input className='checkbox' type="checkbox" name="terminos" id="terminos" required />
+                            Acepto los términos y condiciones
+                        </label>
 
                         <div className="register_actions" role="group" aria-label="Acciones de registro">
                             <button type="submit" className="register_button register_button_primary">
