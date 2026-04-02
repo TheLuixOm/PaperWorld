@@ -10,7 +10,7 @@ function VistaEmpleado({ titulo }: PropiedadesVistaEmpleado) {
       </header>
 
       <section className="inventarioPanel">
-        <h3 className="inventarioSubtitulo">Vista en construccion</h3>
+        <h3 className="inventarioSubtitulo">Vista en progreso</h3>
       </section>
     </section>
   );
