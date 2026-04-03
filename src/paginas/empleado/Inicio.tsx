@@ -76,22 +76,6 @@ function Inicio() {
 
       <section className="inicioGraficas" aria-label="Resumen grafico de inventario">
         <article className="inicioGraficaBloque">
-          <div className="inicioBarras">
-            {ventasUltimosDias.map((valor, indice) => (
-              <div key={`barra-${indice}`} className="inicioBarraGrupo">
-                <span
-                  className="inicioBarra"
-                  style={{ height: `${56 + (valor / ventaMaxima) * 160}px` }}
-                  aria-hidden="true"
-                />
-                <span className="inicioBarraEtiqueta">{etiquetasDias[indice]}</span>
-              </div>
-            ))}
-          </div>
-          <p className="inicioGraficaTitulo">Ventas los ultimos dias</p>
-        </article>
-
-        <article className="inicioGraficaBloque">
           <p className="inicioPieTitulo">Inventario de productos</p>
           <div
             className="inicioPie"
@@ -113,7 +97,25 @@ function Inicio() {
             </p>
           </div>
         </article>
+
+        <article className="inicioGraficaBloque">
+          <div className="inicioBarras">
+            {ventasUltimosDias.map((valor, indice) => (
+              <div key={`barra-${indice}`} className="inicioBarraGrupo">
+                <span
+                  className="inicioBarra"
+                  style={{ height: `${38 + (valor / ventaMaxima) * 112}px` }}
+                  aria-hidden="true"
+                />
+                <span className="inicioBarraEtiqueta">{etiquetasDias[indice]}</span>
+              </div>
+            ))}
+          </div>
+          <p className="inicioGraficaTitulo">Ventas los ultimos dias</p>
+        </article>
       </section>
+
+      <div className="inicioFranjaFooter" aria-hidden="true" />
     </section>
   );
 }

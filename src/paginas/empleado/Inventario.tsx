@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './Inventario.css';
 import { productosIniciales } from './datosInventario';
 import UsuarioMenu from './UsuarioMenu';
@@ -7,6 +7,9 @@ function Inventario() {
     const [textoBusqueda, setTextoBusqueda] = useState('');
     const [productos, setProductos] = useState(productosIniciales);
     const [paginaActual, setPaginaActual] = useState(1);
+    const [productoExpandidoId, setProductoExpandidoId] = useState<string | null>(null);
+    const [busquedaMovilActiva, setBusquedaMovilActiva] = useState(false);
+    const inputBusquedaRef = useRef<HTMLInputElement | null>(null);
     const productosPorPagina = 8;
 
     const eliminarProducto = (id: string) => {
@@ -48,24 +51,58 @@ function Inventario() {
         return Array.from({ length: totalPaginas }, (_, indice) => indice + 1);
     }, [totalPaginas]);
 
+    const alternarExpandido = (id: string) => {
+        setProductoExpandidoId((idActual) => (idActual === id ? null : id));
+    };
+
+    const activarBusquedaMovil = () => {
+        setBusquedaMovilActiva(true);
+
+        requestAnimationFrame(() => {
+            inputBusquedaRef.current?.focus();
+        });
+    };
+
+    const cerrarBusquedaMovilSiVacia = () => {
+        if (!textoBusqueda.trim()) {
+            setBusquedaMovilActiva(false);
+        }
+    };
+
     return (
         <section className="inventarioVista" id="inventario">
                 <header className="inventarioEncabezado">
                     <h2 className="inventarioTitulo">INVENTARIO</h2>
 
-                    <label className="inventarioBuscador">
-                        <span className="inventarioBuscadorIcono" aria-hidden="true">
+                    <label
+                        className={`inventarioBuscador ${busquedaMovilActiva ? 'inventarioBuscadorMovilActivo' : ''}`}
+                    >
+                        <button
+                            type="button"
+                            className="inventarioBuscadorBoton"
+                            aria-label="Abrir busqueda"
+                            onClick={activarBusquedaMovil}
+                        >
+                            <span className="inventarioBuscadorIcono" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false">
                                 <circle cx="11" cy="11" r="6" />
                                 <line x1="15.5" y1="15.5" x2="21" y2="21" />
                             </svg>
-                        </span>
+                            </span>
+                        </button>
                         <input
+                            ref={inputBusquedaRef}
                             type="search"
                             placeholder="Search"
                             className="inventarioInput"
                             aria-label="Buscar producto"
                             value={textoBusqueda}
+                            onBlur={cerrarBusquedaMovilSiVacia}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Escape') {
+                                    cerrarBusquedaMovilSiVacia();
+                                }
+                            }}
                             onChange={(event) => {
                                 setTextoBusqueda(event.target.value);
                                 setPaginaActual(1);
@@ -138,6 +175,65 @@ function Inventario() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+
+                    <div className="inventarioListaMovil" aria-label="Lista de productos en movil">
+                        <div className="inventarioListaMovilEncabezado" aria-hidden="true">
+                            <span className="inventarioListaMovilCelda inventarioListaMovilCeldaAccion" />
+                            <span className="inventarioListaMovilCelda inventarioListaMovilCeldaNombre">nombre</span>
+                            <span className="inventarioListaMovilCelda inventarioListaMovilCeldaMenu" />
+                        </div>
+
+                        {productosVisibles.map((producto) => {
+                            const estaExpandido = productoExpandidoId === producto.id;
+
+                            return (
+                                <article key={`movil-${producto.id}`} className="inventarioMovilItem">
+                                    <div className="inventarioMovilFilaPrincipal">
+                                        <button
+                                            className="inventarioMovilAlternar"
+                                            type="button"
+                                            aria-label={`${estaExpandido ? 'Ocultar' : 'Mostrar'} detalle de ${producto.nombre}`}
+                                            aria-expanded={estaExpandido}
+                                            onClick={() => alternarExpandido(producto.id)}
+                                        >
+                                            <svg viewBox="0 0 24 24" focusable="false">
+                                                <path d="m9 6 6 6-6 6" />
+                                            </svg>
+                                        </button>
+
+                                        <p className="inventarioMovilNombre">{producto.nombre}</p>
+
+                                        <button
+                                            className="inventarioMovilMenu"
+                                            type="button"
+                                            aria-label={`Opciones para ${producto.nombre}`}
+                                        >
+                                            <span />
+                                            <span />
+                                            <span />
+                                        </button>
+                                    </div>
+
+                                    {estaExpandido && (
+                                        <div className="inventarioMovilDetalle">
+                                            <p>
+                                                <span>Codigo:</span> {producto.id}
+                                            </p>
+                                            <p>
+                                                <span>categoria</span> {producto.categoria}
+                                            </p>
+                                            <p>
+                                                <span>Precio</span> {producto.precio}
+                                            </p>
+                                            <p>
+                                                <span>cantidad</span> {producto.cantidad}
+                                            </p>
+                                        </div>
+                                    )}
+                                </article>
+                            );
+                        })}
                     </div>
 
                     <div className="inventarioPaginacion" aria-label="Paginacion">

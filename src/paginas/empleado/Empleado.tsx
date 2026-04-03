@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import clipAzul from '../../images/Clip_azul.svg';
 import './Empleado.css';
 
@@ -97,17 +97,75 @@ function IconoSeccion({ tipo }: { tipo: TipoIcono }) {
 
 function Empleado() {
   const [estaColapsado, setEstaColapsado] = useState(false);
+  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
+
+  const esVistaMovil = () => {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    return window.matchMedia('(max-width: 820px)').matches;
+  };
 
   const alternarSidebar = () => {
+    if (esVistaMovil()) {
+      setMenuMovilAbierto((estadoPrevio) => !estadoPrevio);
+      return;
+    }
+
     setEstaColapsado((estadoPrevio) => !estadoPrevio);
   };
 
   const abrirSidebar = () => {
+    if (esVistaMovil()) {
+      setMenuMovilAbierto(false);
+      return;
+    }
+
     setEstaColapsado(false);
   };
 
+  useEffect(() => {
+    const manejarRedimension = () => {
+      if (!esVistaMovil()) {
+        setMenuMovilAbierto(false);
+      }
+    };
+
+    window.addEventListener('resize', manejarRedimension);
+
+    return () => {
+      window.removeEventListener('resize', manejarRedimension);
+    };
+  }, []);
+
   return (
-    <main className={`empleadoLayout ${estaColapsado ? 'empleadoLayoutColapsado' : ''}`}>
+    <main
+      className={`empleadoLayout ${estaColapsado ? 'empleadoLayoutColapsado' : ''} ${menuMovilAbierto ? 'empleadoLayoutMenuMovilAbierto' : ''}`}
+    >
+      <header className="empleadoBarraMovil">
+        <div className="empleadoMarcaMovil">
+          <button
+            type="button"
+            className="empleadoBotonMenuMovil"
+            onClick={alternarSidebar}
+            aria-label={menuMovilAbierto ? 'Cerrar menu lateral' : 'Abrir menu lateral'}
+            aria-expanded={menuMovilAbierto}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+
+          <div className="empleadoCentroMovil">
+            <h1 className="empleadoLogoMovil">Paper world</h1>
+            <img className="empleadoIconoClipMovil" src={clipAzul} alt="Clip azul" />
+          </div>
+
+          <span className="empleadoEspaciadorMovil" aria-hidden="true" />
+        </div>
+      </header>
+
       <aside className="empleadoSidebar" aria-label="Navegacion del empleado">
         <div className="empleadoMarca">
           <h1 className="empleadoLogo">Paper world</h1>
@@ -160,6 +218,15 @@ function Empleado() {
       <section className="empleadoContenido">
         <Outlet />
       </section>
+
+      {menuMovilAbierto && (
+        <button
+          type="button"
+          className="empleadoOverlayMovil"
+          aria-label="Cerrar menu lateral"
+          onClick={() => setMenuMovilAbierto(false)}
+        />
+      )}
     </main>
   );
 }

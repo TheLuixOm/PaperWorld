@@ -1,16 +1,26 @@
 .empleadoLayout {
-  --anchoSidebar: 300px;
+  --anchoSidebar: clamp(220px, 22vw, 300px);
   min-height: 100svh;
+  height: 100svh;
   display: grid;
   grid-template-columns: var(--anchoSidebar) minmax(0, 1fr);
   background: #f6f7fb;
   color: #1f2937;
   font-family: 'Inter', sans-serif;
   transition: grid-template-columns 0.25s ease;
+  overflow: hidden;
+}
+
+.empleadoBarraMovil {
+  display: none;
+}
+
+.empleadoOverlayMovil {
+  display: none;
 }
 
 .empleadoLayoutColapsado {
-  --anchoSidebar: 102px;
+  --anchoSidebar: 96px;
 }
 
 .empleadoSidebar {
@@ -131,7 +141,9 @@
 
 .empleadoContenido {
   min-width: 0;
+  min-height: 0;
   display: flex;
+  overflow: hidden;
 }
 
 .empleadoLayoutColapsado .empleadoLogo,
@@ -150,13 +162,40 @@
   padding: 10px;
 }
 
+@media (max-width: 1280px) {
+  .empleadoSidebar {
+    padding: 22px 14px 20px;
+    gap: 16px;
+  }
+
+  .empleadoLogo {
+    font-size: 44px;
+  }
+
+  .empleadoMenuItem {
+    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .empleadoMenuIcono {
+    width: 20px;
+    height: 20px;
+  }
+
+  .empleadoMenuIcono svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 @media (max-width: 1100px) {
   .empleadoLayout {
-    --anchoSidebar: 250px;
+    --anchoSidebar: 232px;
   }
 
   .empleadoLayoutColapsado {
-    --anchoSidebar: 94px;
+    --anchoSidebar: 84px;
   }
 }
 
@@ -164,15 +203,140 @@
   .empleadoLayout {
     --anchoSidebar: 1fr;
     grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    position: relative;
+  }
+
+  .empleadoBarraMovil {
+    display: flex;
+    align-items: center;
+    min-height: 76px;
+    padding: 8px 12px;
+    background: #f2f4fa;
+    border-bottom: 1px solid rgba(34, 88, 155, 0.08);
+    z-index: 40;
+  }
+
+  .empleadoMarcaMovil {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    column-gap: 8px;
+  }
+
+  .empleadoEspaciadorMovil {
+    width: 42px;
+    height: 42px;
+    display: block;
+  }
+
+  .empleadoCentroMovil {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .empleadoBotonMenuMovil {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #d6dee9;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #6b7280;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    cursor: pointer;
+    justify-self: start;
+  }
+
+  .empleadoBotonMenuMovil span {
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: #6b7280;
+    display: block;
+  }
+
+  .empleadoIconoClipMovil {
+    width: 34px;
+    height: 34px;
+    margin-left: 12px;
+    object-fit: contain;
+    flex: 0 0 auto;
+    justify-self: center;
+  }
+
+  .empleadoLogoMovil {
+    margin: 0;
+    font-family: 'Hurricane', cursive;
+    font-size: 48px;
+    font-weight: 400;
+    color: #454a57;
+    line-height: 1;
+    white-space: nowrap;
+    text-align: center;
   }
 
   .empleadoSidebar {
-    border-right: none;
-    border-bottom: 1px solid rgba(34, 88, 155, 0.08);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(320px, 84vw);
+    border-right: 1px solid rgba(34, 88, 155, 0.08);
+    border-bottom: none;
+    padding: 20px 14px 18px;
+    gap: 12px;
+    z-index: 70;
+    transform: translateX(-104%);
+    transition: transform 0.24s ease;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
+  }
+
+  .empleadoLayoutMenuMovilAbierto .empleadoSidebar {
+    transform: translateX(0);
+  }
+
+  .empleadoLogo {
+    font-size: 38px;
+  }
+
+  .empleadoMenu,
+  .empleadoSoporte {
+    gap: 8px;
+  }
+
+  .empleadoMenuItem {
+    min-height: 40px;
+    font-size: 14px;
+    padding: 9px 10px;
+  }
+
+  .empleadoContenido {
+    overflow: auto;
+  }
+
+  .empleadoOverlayMovil {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: none;
+    background: rgba(15, 23, 42, 0.28);
+    z-index: 60;
+    padding: 0;
+    cursor: pointer;
   }
 
   .empleadoLayoutColapsado .empleadoSidebar {
-    max-height: 92px;
-    padding-bottom: 14px;
+    max-height: none;
+    padding-bottom: 18px;
   }
 }

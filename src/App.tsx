@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
+import RegistroEsc from './paginas/register/Register'
 import RegistroMov from './paginas/register/RegisterMov'
 import Empleado from './paginas/empleado/Empleado'
 import Inventario from './paginas/empleado/Inventario'
@@ -41,12 +42,15 @@ function Aplicacion() {
   const elementoInicioSesion = esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
   const elementoInicioCliente = esMovil ? <InicioClienteMov /> : <InicioCliente />
   const elementoCatalogoCliente = esMovil ? <CatalogoMov /> : <CatalogoCliente />
+  const elementoRegistro = esMovil ? <RegistroMov /> : <RegistroEsc />
 
   return (
     <Routes>
       <Route path="/" element={elementoInicioSesion} />
       <Route path="/login" element={elementoInicioSesion} />
-      <Route path="/register" element={<RegistroMov />} />
+
+      <Route path="/registro" element={elementoRegistro} />
+      <Route path="/register" element={elementoRegistro} />
 
       <Route path="/cliente" element={<Navigate to="/cliente/inicio" replace />} />
       <Route path="/cliente/inicio" element={elementoInicioCliente} />
@@ -54,7 +58,6 @@ function Aplicacion() {
       <Route path="/inicioCliente" element={elementoInicioCliente} />
       <Route path="/cliente/catalogo" element={elementoCatalogoCliente} />
       <Route path="/cliente/carrito" element={<CarritoCliente />} />
-
       <Route element={<Empleado />}>
         <Route path="/dashboard" element={<InicioEmpleado />} />
         <Route path="/inventario" element={<Inventario />} />
