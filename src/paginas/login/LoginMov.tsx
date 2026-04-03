@@ -3,7 +3,11 @@ import { useState } from 'react';
 import './LoginMov.css';
 import loginImage from '../../images/login.jpg';
 
-function LoginMov() {
+type LoginMovProps = {
+  onIrRegistro?: () => void;
+};
+
+function LoginMov({ onIrRegistro }: LoginMovProps) {
   const navigate = useNavigate();
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
@@ -18,6 +22,15 @@ function LoginMov() {
 
     localStorage.setItem('paperworldUsuario', usuario);
     navigate('/inventario');
+  };
+
+  const irARegistro = () => {
+    if (onIrRegistro) {
+      onIrRegistro();
+      return;
+    }
+
+    navigate('/register');
   };
 
   return (
@@ -62,7 +75,11 @@ function LoginMov() {
             <button type="submit" className="login-mov-button login-mov-button-primary">
               Login
             </button>
-            <button type="submit" className="login-mov-button login-mov-button-secondary">
+            <button
+              type="button"
+              className="login-mov-button login-mov-button-secondary"
+              onClick={irARegistro}
+            >
               Registrate
             </button>
           </div>

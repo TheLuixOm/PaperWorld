@@ -3,10 +3,14 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
 import RegistroEsc from './paginas/register/Register'
+import RegistroMov from './paginas/register/RegisterMov'
 import Empleado from './paginas/empleado/Empleado'
 import Inventario from './paginas/empleado/Inventario'
 import VistaEmpleado from './paginas/empleado/VistaEmpleado'
-import Inicio from './paginas/empleado/Inicio'
+import InicioEmpleado from './paginas/empleado/Inicio'
+import InicioCliente from './paginas/cliente/inicio/InicioCliente'
+import CatalogoCliente from './paginas/cliente/catalogo/Catalogo'
+import CarritoCliente from './paginas/cliente/carrito/Carrito'
 const puntoCorteMovil = 900 
 
 const obtenerEsMovil = () => {
@@ -33,14 +37,23 @@ function Aplicacion() {
   }, [])
 
   const elementoInicioSesion = esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
+    const elementoRegistro = esMovil ? <RegistroMov /> : <RegistroEsc />
 
   return (
     <Routes>
       <Route path="/" element={elementoInicioSesion} />
       <Route path="/login" element={elementoInicioSesion} />
-      <Route path="/registro" element={<RegistroEsc />} />
+    <Route path="/registro" element={elementoRegistro} />
+    <Route path="/register" element={elementoRegistro} />
+
+      <Route path="/cliente" element={<Navigate to="/cliente/inicio" replace />} />
+      <Route path="/cliente/inicio" element={<InicioCliente />} />
+      <Route path="/InicioCliente" element={<InicioCliente />} />
+      <Route path="/inicioCliente" element={<InicioCliente />} />
+      <Route path="/cliente/catalogo" element={<CatalogoCliente />} />
+      <Route path="/cliente/carrito" element={<CarritoCliente />} />
       <Route element={<Empleado />}>
-        <Route path="/dashboard" element={<Inicio />} />
+        <Route path="/dashboard" element={<InicioEmpleado />} />
         <Route path="/inventario" element={<Inventario />} />
         <Route path="/ventas" element={<VistaEmpleado titulo="Ventas" />} />
         <Route path="/proveedores" element={<VistaEmpleado titulo="Proveedores" />} />
