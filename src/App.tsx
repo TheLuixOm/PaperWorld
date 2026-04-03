@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
 import RegistroEsc from './paginas/register/Register'
+import Empleado from './paginas/empleado/Empleado'
+import Inventario from './paginas/empleado/Inventario'
+import VistaEmpleado from './paginas/empleado/VistaEmpleado'
+import Inicio from './paginas/empleado/Inicio'
 const puntoCorteMovil = 900 
 
 const obtenerEsMovil = () => {
@@ -26,8 +31,26 @@ function Aplicacion() {
       window.removeEventListener('resize', alRedimensionar)
     }
   }, [])
-return  <RegistroEsc />
-  return esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
+
+  const elementoInicioSesion = esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
+
+  return (
+    <Routes>
+      <Route path="/" element={elementoInicioSesion} />
+      <Route path="/login" element={elementoInicioSesion} />
+      <Route path="/registro" element={<RegistroEsc />} />
+      <Route element={<Empleado />}>
+        <Route path="/dashboard" element={<Inicio />} />
+        <Route path="/inventario" element={<Inventario />} />
+        <Route path="/ventas" element={<VistaEmpleado titulo="Ventas" />} />
+        <Route path="/proveedores" element={<VistaEmpleado titulo="Proveedores" />} />
+        <Route path="/reportes" element={<VistaEmpleado titulo="Reportes" />} />
+        <Route path="/ayuda" element={<VistaEmpleado titulo="Ayuda" />} />
+        <Route path="/ajustes" element={<VistaEmpleado titulo="Configuracion" />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/inventario" replace />} />
+    </Routes>
+  )
 }
 
 export default Aplicacion
