@@ -238,6 +238,27 @@ function InicioCliente() {
       </header>
 
       <main className="inicioClienteContenido">
+        <section className="inicioClienteHero" aria-label="Banner principal">
+          <div className="inicioClienteHeroMarco">
+            <div className="inicioClienteHeroTexto">
+              <p className="inicioClienteHeroKicker">TODO lo que necesitas</p>
+              <p className="inicioClienteHeroSubkicker">— en un solo lugar —</p>
+              <h2 className="inicioClienteHeroTitulo" aria-label="PaperWorld">
+                Paper<span>World</span>
+              </h2>
+            </div>
+
+            <div className="inicioClienteHeroCategorias" aria-label="Categorias destacadas">
+              <div className="inicioClienteHeroCategoria">Utiles Escolares</div>
+              <div className="inicioClienteHeroCategoria">Oficina</div>
+              <div className="inicioClienteHeroCategoria">Papeleria</div>
+              <div className="inicioClienteHeroCategoria">Regalos</div>
+            </div>
+
+            <p className="inicioClienteHeroPie">Variedad y calidad en todas nuestras categorias</p>
+          </div>
+        </section>
+
         <section className="inicioClienteSeccion" aria-label="Mas vendidos">
           <header className="inicioClienteSeccionEncabezado">
             <span className="inicioClienteEtiqueta">Este mes</span>

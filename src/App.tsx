@@ -8,7 +8,9 @@ import Inventario from './paginas/empleado/Inventario'
 import VistaEmpleado from './paginas/empleado/VistaEmpleado'
 import InicioEmpleado from './paginas/empleado/Inicio'
 import InicioCliente from './paginas/cliente/inicio/InicioCliente'
+import InicioClienteMov from './paginas/cliente/inicio/InicioClienteMov'
 import CatalogoCliente from './paginas/cliente/catalogo/Catalogo'
+import CatalogoMov from './paginas/cliente/catalogo/CatalogoMov'
 import CarritoCliente from './paginas/cliente/carrito/Carrito'
 
 const puntoCorteMovil = 900 
@@ -37,6 +39,8 @@ function Aplicacion() {
   }, [])
 
   const elementoInicioSesion = esMovil ? <InicioSesionMov /> : <InicioSesionEsc />
+  const elementoInicioCliente = esMovil ? <InicioClienteMov /> : <InicioCliente />
+  const elementoCatalogoCliente = esMovil ? <CatalogoMov /> : <CatalogoCliente />
 
   return (
     <Routes>
@@ -45,10 +49,10 @@ function Aplicacion() {
       <Route path="/register" element={<RegistroMov />} />
 
       <Route path="/cliente" element={<Navigate to="/cliente/inicio" replace />} />
-      <Route path="/cliente/inicio" element={<InicioCliente />} />
-      <Route path="/InicioCliente" element={<InicioCliente />} />
-      <Route path="/inicioCliente" element={<InicioCliente />} />
-      <Route path="/cliente/catalogo" element={<CatalogoCliente />} />
+      <Route path="/cliente/inicio" element={elementoInicioCliente} />
+      <Route path="/InicioCliente" element={elementoInicioCliente} />
+      <Route path="/inicioCliente" element={elementoInicioCliente} />
+      <Route path="/cliente/catalogo" element={elementoCatalogoCliente} />
       <Route path="/cliente/carrito" element={<CarritoCliente />} />
 
       <Route element={<Empleado />}>
