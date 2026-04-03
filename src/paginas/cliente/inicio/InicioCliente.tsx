@@ -1,4 +1,4 @@
-import { useRef, type PointerEvent as ReactPointerEvent } from 'react';
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import UsuarioMenu from '../../empleado/UsuarioMenu';
 import clipAzul from '../../../images/Clip_azul.svg';
@@ -99,6 +99,7 @@ function IconoFlecha({ direccion }: { direccion: 'izquierda' | 'derecha' }) {
 }
 
 function InicioCliente() {
+  const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
   const carruselRef = useRef<HTMLDivElement | null>(null);
   const arrastreRef = useRef<{ activo: boolean; x: number; scrollLeft: number }>(
     { activo: false, x: 0, scrollLeft: 0 },
@@ -304,8 +305,14 @@ function InicioCliente() {
                     <div className="inicioClienteProductoAcciones" aria-label="Acciones">
                       <button
                         type="button"
-                        className="inicioClienteProductoAccion"
+                        className={`inicioClienteProductoAccion ${
+                          favoritos[producto.id] ? 'inicioClienteProductoAccionActiva' : ''
+                        }`}
                         aria-label="Agregar a favoritos"
+                        aria-pressed={!!favoritos[producto.id]}
+                        onClick={() =>
+                          setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }))
+                        }
                       >
                         <IconoCorazon />
                       </button>

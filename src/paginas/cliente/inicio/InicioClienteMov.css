@@ -81,7 +81,7 @@
   right: auto;
 }
 
-.inicioClienteMovNoti {
+.inicioClienteMovCarrito {
   width: 34px;
   height: 34px;
   border-radius: 10px;
@@ -91,9 +91,10 @@
   display: grid;
   place-items: center;
   position: relative;
+  text-decoration: none;
 }
 
-.inicioClienteMovNoti svg {
+.inicioClienteMovCarrito svg {
   width: 18px;
   height: 18px;
   fill: none;
@@ -103,7 +104,7 @@
   stroke-linejoin: round;
 }
 
-.inicioClienteMovNotiBadge {
+.inicioClienteMovCarritoBadge {
   position: absolute;
   top: 4px;
   right: 4px;
@@ -420,6 +421,16 @@
   color: #475569;
   display: grid;
   place-items: center;
+}
+
+.inicioClienteMovAccionActiva {
+  color: #067bb6;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.inicioClienteMovAccionActiva svg {
+  fill: currentColor;
+  stroke: currentColor;
 }
 
 .inicioClienteMovAccion svg {

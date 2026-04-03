@@ -101,6 +101,16 @@
   place-items: center;
 }
 
+.catalogoMovFavActiva {
+  color: #067bb6;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.catalogoMovFavActiva svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
 .catalogoMovFav svg {
   width: 14px;
   height: 14px;

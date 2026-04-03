@@ -80,15 +80,6 @@ function IconoInicio() {
   );
 }
 
-function IconoBolsa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M7 9V7a5 5 0 0 1 10 0v2" />
-      <path d="M6 9h12l-1 12H7L6 9z" />
-    </svg>
-  );
-}
-
 function IconoChevronDerecha() {
   return (
     <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
@@ -257,7 +248,7 @@ function CatalogoCliente() {
                     </div>
 
                     <button type="button" className="catalogoClienteProductoCarrito" aria-label="Agregar al carrito">
-                      <IconoBolsa />
+                      <IconoCarrito />
                     </button>
                   </div>
 

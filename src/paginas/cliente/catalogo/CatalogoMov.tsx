@@ -71,15 +71,6 @@ function IconoHamburguesa() {
   );
 }
 
-function IconoCampana() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M12 22a2.3 2.3 0 0 0 2.2-1.6" />
-      <path d="M6 9a6 6 0 0 1 12 0c0 7 3 7 3 7H3s3 0 3-7" />
-    </svg>
-  );
-}
-
 function IconoLupa() {
   return (
     <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
@@ -149,17 +140,9 @@ function IconoCorazon() {
   );
 }
 
-function IconoBolsa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M7 9V7a5 5 0 0 1 10 0v2" />
-      <path d="M6 9h12l-1 12H7L6 9z" />
-    </svg>
-  );
-}
-
 function CatalogoMov() {
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
   const footerRef = useRef<HTMLElement | null>(null);
   const [offsetFab, setOffsetFab] = useState(16);
 
@@ -230,12 +213,12 @@ function CatalogoMov() {
           <div className="inicioClienteMovAcciones">
             <UsuarioMenu className="clienteUsuarioMenuMov" ariaLabel="Menu de usuario" />
 
-            <button type="button" className="inicioClienteMovNoti" aria-label="Notificaciones">
-              <IconoCampana />
-              <span className="inicioClienteMovNotiBadge" aria-label="Notificaciones">
+            <Link to="/cliente/carrito" className="inicioClienteMovCarrito" aria-label="Carrito">
+              <IconoCarrito />
+              <span className="inicioClienteMovCarritoBadge" aria-label="Productos en carrito">
                 0
               </span>
-            </button>
+            </Link>
 
             <p className="inicioClienteMovTotal" aria-label="Total del carrito">
               AED 0.00
@@ -332,7 +315,13 @@ function CatalogoMov() {
                   </span>
                 )}
 
-                <button type="button" className="catalogoMovFav" aria-label="Favorito">
+                <button
+                  type="button"
+                  className={`catalogoMovFav ${favoritos[producto.id] ? 'catalogoMovFavActiva' : ''}`}
+                  aria-label="Favorito"
+                  aria-pressed={!!favoritos[producto.id]}
+                  onClick={() => setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }))}
+                >
                   <IconoCorazon />
                 </button>
 
@@ -341,7 +330,7 @@ function CatalogoMov() {
                 </div>
 
                 <button type="button" className="catalogoMovMiniCarrito" aria-label="Agregar al carrito">
-                  <IconoBolsa />
+                  <IconoCarrito />
                 </button>
               </div>
 

@@ -13,6 +13,7 @@ import InicioClienteMov from './paginas/cliente/inicio/InicioClienteMov'
 import CatalogoCliente from './paginas/cliente/catalogo/Catalogo'
 import CatalogoMov from './paginas/cliente/catalogo/CatalogoMov'
 import CarritoCliente from './paginas/cliente/carrito/Carrito'
+import CarritoMov from './paginas/cliente/carrito/CarritoMov.tsx'
 
 const puntoCorteMovil = 900 
 
@@ -43,6 +44,7 @@ function Aplicacion() {
   const elementoInicioCliente = esMovil ? <InicioClienteMov /> : <InicioCliente />
   const elementoCatalogoCliente = esMovil ? <CatalogoMov /> : <CatalogoCliente />
   const elementoRegistro = esMovil ? <RegistroMov /> : <RegistroEsc />
+  const elementoCarritoCliente = esMovil ? <CarritoMov /> : <CarritoCliente />
 
   return (
     <Routes>
@@ -57,7 +59,7 @@ function Aplicacion() {
       <Route path="/InicioCliente" element={elementoInicioCliente} />
       <Route path="/inicioCliente" element={elementoInicioCliente} />
       <Route path="/cliente/catalogo" element={elementoCatalogoCliente} />
-      <Route path="/cliente/carrito" element={<CarritoCliente />} />
+      <Route path="/cliente/carrito" element={elementoCarritoCliente} />
       <Route element={<Empleado />}>
         <Route path="/dashboard" element={<InicioEmpleado />} />
         <Route path="/inventario" element={<Inventario />} />

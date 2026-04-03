@@ -460,6 +460,16 @@
   background: #ffffff;
 }
 
+.inicioClienteProductoAccionActiva {
+  color: #067bb6;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.inicioClienteProductoAccionActiva svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
 .inicioClienteProductoAccion svg {
   width: 16px;
   height: 16px;
