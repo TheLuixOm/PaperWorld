@@ -45,7 +45,6 @@ function Aplicacion() {
       <Route path="/login" element={elementoInicioSesion} />
     <Route path="/registro" element={elementoRegistro} />
     <Route path="/register" element={elementoRegistro} />
-
       <Route path="/cliente" element={<Navigate to="/cliente/inicio" replace />} />
       <Route path="/cliente/inicio" element={<InicioCliente />} />
       <Route path="/InicioCliente" element={<InicioCliente />} />

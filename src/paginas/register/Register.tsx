@@ -1,12 +1,23 @@
+import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import loginImage from '../../images/login.jpg';
 import Clip_negro from '../../images/Clip_negro.svg';
 
 function RegisterEsc() {
+    const navigate = useNavigate();
     const dias = Array.from({ length: 31 }, (_, indice) => String(indice + 1).padStart(2, '0'));
     const meses = Array.from({ length: 12 }, (_, indice) => String(indice + 1).padStart(2, '0'));
     const year_actual = new Date().getFullYear();
     const years = Array.from({ length: 100 }, (_, indice) => String(year_actual - indice));
+
+    const volverALogin = () => {
+        navigate('/login');
+    };
+
+    const registrarYVolverALogin = (event: React.FormEvent) => {
+        event.preventDefault();
+        navigate('/login');
+    };
 
  	return (
 		<main className="register_page">
@@ -21,7 +32,7 @@ function RegisterEsc() {
                         <h2 className='register_submarca'>Regístrar una cuenta</h2>
                         <h3 className='register_descripcion'>Tienes una cuenta? <a href="/login">Inicia sesión</a></h3>
                     </header>
-                    <form className="register_card" onSubmit={(event) => event.preventDefault()}>
+                    <form className="register_card" onSubmit={registrarYVolverALogin}>
                         <div className='misma_linea'>
                                 <input
                                     id="nombre"
@@ -109,7 +120,7 @@ function RegisterEsc() {
                             <button type="submit" className="register_button register_button_primary">
                                 Registrarse
                             </button>
-                            <button type="button" className="register_button register_button_secondary">
+                            <button type="button" className="register_button register_button_secondary" onClick={volverALogin}>
                                 Volver
                             </button>
                         </div>

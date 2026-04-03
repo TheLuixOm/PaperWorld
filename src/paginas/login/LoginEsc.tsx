@@ -16,9 +16,12 @@ function LoginEsc() {
 		if (!usuario) {
 			return;
 		}
-
 		localStorage.setItem('paperworldUsuario', usuario);
-		navigate('/inventario');
+		navigate('/dashboard');
+	};
+
+	const irARegistro = () => {
+		navigate('/register');
 	};
 
 	return (
@@ -74,7 +77,7 @@ function LoginEsc() {
 							<button type="submit" className="login-esc-button login-esc-button-primary">
 								Log in
 							</button>
-							<button type="submit" className="login-esc-button login-esc-button-secondary">
+							<button type="button" className="login-esc-button login-esc-button-secondary" onClick={irARegistro}>
 								Sign In
 							</button>
 						</div>
