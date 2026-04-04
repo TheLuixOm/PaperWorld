@@ -7,15 +7,20 @@ type UsuarioMenuProps = {
   ariaLabel?: string;
 };
 
+function obtenerNombreMostrado() {
+  const nombreUsuarioGuardado = localStorage.getItem('paperworldUsuario')?.trim() || 'Usuario';
+
+  return nombreUsuarioGuardado.includes('@')
+    ? nombreUsuarioGuardado.split('@')[0]
+    : nombreUsuarioGuardado;
+}
+
 function UsuarioMenu({ className = '', ariaLabel = 'Perfil del usuario' }: UsuarioMenuProps) {
   const [mostrarPerfil, setMostrarPerfil] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
-  const nombreUsuarioGuardado = localStorage.getItem('paperworldUsuario')?.trim() || 'Usuario';
-  const nombreMostrado = nombreUsuarioGuardado.includes('@')
-    ? nombreUsuarioGuardado.split('@')[0]
-    : nombreUsuarioGuardado;
+  const nombreMostrado = obtenerNombreMostrado();
   const inicial = nombreMostrado.slice(0, 1).toUpperCase();
 
   const cerrarSesion = () => {
