@@ -164,7 +164,6 @@
   line-height: 1;
 }
 
-<<<<<<< HEAD
 .inventarioAvatar {
   width: 44px;
   height: 44px;
@@ -297,8 +296,6 @@
   color: #067bb6;
 }
 
-=======
->>>>>>> moises
 .inventarioPanel {
   flex: 1;
   min-height: 0;
@@ -1010,7 +1007,6 @@
     font-weight: 700;
   }
 
-<<<<<<< HEAD
   .inventarioListaMovilCeldaCheckbox input,
   .inventarioMovilCheck input,
   .inventarioListaMovilCeldaCheckbox input[type='checkbox'],
@@ -1031,8 +1027,6 @@
     border-color: #067bb6;
   }
 
-=======
->>>>>>> moises
   .inventarioMovilItem {
     border-bottom: 1px solid #d5dce8;
     background: #ffffff;
