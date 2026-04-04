@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import UsuarioMenu from '../../empleado/UsuarioMenu';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
+import ProductoExpandidoMov, { type ProductoExpandidoMovData } from '../componentes/ProductoExpandidoMov';
 import clipAzul from '../../../images/Clip_azul.svg';
 import reactLogo from '../../../assets/react.svg';
 import '../inicio/InicioClienteMov.css';
@@ -143,6 +144,7 @@ function IconoCorazon() {
 function CatalogoMov() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
+  const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoMovData | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
   const [offsetFab, setOffsetFab] = useState(16);
 
@@ -189,8 +191,23 @@ function CatalogoMov() {
     };
   }, []);
 
+  const abrirProducto = (producto: ProductoMovil) => {
+    setProductoExpandido({
+      id: producto.id,
+      nombre: producto.nombre,
+      descripcion: producto.descripcion,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
+  };
+
   return (
     <div className="inicioClienteMov catalogoMov" id="catalogo-cliente-mov">
+      <ProductoExpandidoMov
+        abierto={!!productoExpandido}
+        producto={productoExpandido}
+        alCerrar={() => setProductoExpandido(null)}
+      />
       <MenuLateralMovil abierto={menuAbierto} alCerrar={() => setMenuAbierto(false)} />
 
       <header className="inicioClienteMovHeader">
@@ -303,7 +320,12 @@ function CatalogoMov() {
 
         <section className="catalogoMovGrid" aria-label="Productos" role="list">
           {productos.map((producto) => (
-            <article key={producto.id} className="catalogoMovCard" role="listitem">
+            <article
+              key={producto.id}
+              className="catalogoMovCard"
+              role="listitem"
+              onClick={() => abrirProducto(producto)}
+            >
               <div className="catalogoMovCardMarco">
                 {producto.tag && (
                   <span
@@ -320,7 +342,10 @@ function CatalogoMov() {
                   className={`catalogoMovFav ${favoritos[producto.id] ? 'catalogoMovFavActiva' : ''}`}
                   aria-label="Favorito"
                   aria-pressed={!!favoritos[producto.id]}
-                  onClick={() => setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }))}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }));
+                  }}
                 >
                   <IconoCorazon />
                 </button>
@@ -329,7 +354,12 @@ function CatalogoMov() {
                   <img src={producto.imagen} alt={producto.nombre} loading="lazy" />
                 </div>
 
-                <button type="button" className="catalogoMovMiniCarrito" aria-label="Agregar al carrito">
+                <button
+                  type="button"
+                  className="catalogoMovMiniCarrito"
+                  aria-label="Agregar al carrito"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <IconoCarrito />
                 </button>
               </div>

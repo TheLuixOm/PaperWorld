@@ -1,6 +1,7 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import UsuarioMenu from '../../empleado/UsuarioMenu';
+import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
 import clipAzul from '../../../images/Clip_azul.svg';
 import reactLogo from '../../../assets/react.svg';
 import './InicioCliente.css';
@@ -100,10 +101,13 @@ function IconoFlecha({ direccion }: { direccion: 'izquierda' | 'derecha' }) {
 
 function InicioCliente() {
   const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
+  const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoPcData | null>(null);
+  const [arrastrando, setArrastrando] = useState(false);
   const carruselRef = useRef<HTMLDivElement | null>(null);
-  const arrastreRef = useRef<{ activo: boolean; x: number; scrollLeft: number }>(
-    { activo: false, x: 0, scrollLeft: 0 },
+  const arrastreRef = useRef<{ activo: boolean; x: number; scrollLeft: number; movio: boolean }>(
+    { activo: false, x: 0, scrollLeft: 0, movio: false },
   );
+  const pointerCapturadoRef = useRef(false);
 
   const obtenerPasoScroll = () => {
     const contenedor = carruselRef.current;
@@ -140,8 +144,8 @@ function InicioCliente() {
       return;
     }
 
-    arrastreRef.current = { activo: true, x: event.clientX, scrollLeft: contenedor.scrollLeft };
-    contenedor.setPointerCapture(event.pointerId);
+    arrastreRef.current = { activo: true, x: event.clientX, scrollLeft: contenedor.scrollLeft, movio: false };
+    pointerCapturadoRef.current = false;
   };
 
   const alArrastrar = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -151,6 +155,20 @@ function InicioCliente() {
     }
 
     const delta = event.clientX - arrastreRef.current.x;
+    if (!arrastreRef.current.movio && Math.abs(delta) > 6) {
+      arrastreRef.current.movio = true;
+
+      setArrastrando(true);
+
+      if (!pointerCapturadoRef.current) {
+        try {
+          contenedor.setPointerCapture(event.pointerId);
+          pointerCapturadoRef.current = true;
+        } catch {
+          // noop
+        }
+      }
+    }
     contenedor.scrollLeft = arrastreRef.current.scrollLeft - delta;
   };
 
@@ -161,15 +179,45 @@ function InicioCliente() {
     }
 
     arrastreRef.current.activo = false;
-    try {
-      contenedor.releasePointerCapture(event.pointerId);
-    } catch {
-      // noop
+    setArrastrando(false);
+
+    if (pointerCapturadoRef.current) {
+      try {
+        contenedor.releasePointerCapture(event.pointerId);
+      } catch {
+        // noop
+      }
+      pointerCapturadoRef.current = false;
     }
+
+    if (arrastreRef.current.movio) {
+      window.setTimeout(() => {
+        arrastreRef.current.movio = false;
+      }, 0);
+    }
+  };
+
+  const abrirProducto = (producto: ProductoMasVendido, opciones?: { forzar?: boolean }) => {
+    if (!opciones?.forzar && arrastreRef.current.movio) {
+      arrastreRef.current.movio = false;
+      return;
+    }
+
+    setProductoExpandido({
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
   };
 
   return (
     <div className="inicioCliente" id="inicio-cliente">
+      <ProductoExpandidoPc
+        abierto={!!productoExpandido}
+        producto={productoExpandido}
+        alCerrar={() => setProductoExpandido(null)}
+      />
       <header className="inicioClienteEncabezado">
         <div className="inicioClienteBarraSuperior">
           <div className="inicioClienteBarraInterior">
@@ -287,7 +335,7 @@ function InicioCliente() {
             </div>
 
             <div
-              className="inicioClienteCarrusel"
+              className={`inicioClienteCarrusel ${arrastrando ? 'inicioClienteCarruselArrastrando' : ''}`}
               role="list"
               ref={carruselRef}
               onPointerDown={alIniciarArrastre}
@@ -297,7 +345,7 @@ function InicioCliente() {
             >
               {productosMasVendidos.map((producto) => (
                 <article key={producto.id} className="inicioClienteProducto" role="listitem">
-                  <div className="inicioClienteProductoMarco">
+                  <div className="inicioClienteProductoMarco" onClick={() => abrirProducto(producto)}>
                     {typeof producto.descuento === 'number' && (
                       <span className="inicioClienteProductoDescuento">-{producto.descuento}%</span>
                     )}
@@ -310,9 +358,10 @@ function InicioCliente() {
                         }`}
                         aria-label="Agregar a favoritos"
                         aria-pressed={!!favoritos[producto.id]}
-                        onClick={() =>
-                          setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }))
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }));
+                        }}
                       >
                         <IconoCorazon />
                       </button>
@@ -320,6 +369,10 @@ function InicioCliente() {
                         type="button"
                         className="inicioClienteProductoAccion"
                         aria-label="Ver"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          abrirProducto(producto, { forzar: true });
+                        }}
                       >
                         <IconoOjo />
                       </button>
@@ -328,10 +381,6 @@ function InicioCliente() {
                     <div className="inicioClienteProductoImagen">
                       <img src={producto.imagen} alt={producto.nombre} loading="lazy" />
                     </div>
-
-                    <button type="button" className="inicioClienteProductoAgregar">
-                      Add To Cart
-                    </button>
                   </div>
 
                   <div className="inicioClienteProductoInfo">
@@ -351,6 +400,8 @@ function InicioCliente() {
           </div>
         </section>
       </main>
+
+      <footer className="inicioClienteFooter" aria-label="Footer" />
     </div>
   );
 }

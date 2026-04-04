@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UsuarioMenu.css';
+
+const ANIMACION_MS = 200;
 
 type UsuarioMenuProps = {
   className?: string;
@@ -17,28 +19,73 @@ function obtenerNombreMostrado() {
 
 function UsuarioMenu({ className = '', ariaLabel = 'Perfil del usuario' }: UsuarioMenuProps) {
   const [mostrarPerfil, setMostrarPerfil] = useState(false);
+  const [panelMontado, setPanelMontado] = useState(false);
+  const [estadoPanel, setEstadoPanel] = useState<'opening' | 'open' | 'closing'>('opening');
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const cerrarTimeoutRef = useRef<number | null>(null);
   const navigate = useNavigate();
 
   const nombreMostrado = obtenerNombreMostrado();
   const inicial = nombreMostrado.slice(0, 1).toUpperCase();
 
+  const abrirPanel = useCallback(() => {
+    if (cerrarTimeoutRef.current != null) {
+      window.clearTimeout(cerrarTimeoutRef.current);
+      cerrarTimeoutRef.current = null;
+    }
+
+    setPanelMontado(true);
+    setMostrarPerfil(true);
+    setEstadoPanel('opening');
+
+    window.requestAnimationFrame(() => {
+      setEstadoPanel('open');
+    });
+  }, []);
+
+  const cerrarPanel = useCallback(() => {
+    setEstadoPanel('closing');
+
+    if (cerrarTimeoutRef.current != null) {
+      window.clearTimeout(cerrarTimeoutRef.current);
+    }
+
+    cerrarTimeoutRef.current = window.setTimeout(() => {
+      setMostrarPerfil(false);
+      setPanelMontado(false);
+      cerrarTimeoutRef.current = null;
+    }, ANIMACION_MS);
+  }, []);
+
+  const alternarPanel = useCallback(() => {
+    if (mostrarPerfil) {
+      cerrarPanel();
+      return;
+    }
+
+    abrirPanel();
+  }, [abrirPanel, cerrarPanel, mostrarPerfil]);
+
   const cerrarSesion = () => {
     localStorage.removeItem('paperworldUsuario');
-    setMostrarPerfil(false);
+    cerrarPanel();
     navigate('/login');
   };
 
   useEffect(() => {
     const cerrarAlHacerClickFuera = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMostrarPerfil(false);
+        if (mostrarPerfil) {
+          cerrarPanel();
+        }
       }
     };
 
     const cerrarConEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setMostrarPerfil(false);
+        if (mostrarPerfil) {
+          cerrarPanel();
+        }
       }
     };
 
@@ -48,8 +95,13 @@ function UsuarioMenu({ className = '', ariaLabel = 'Perfil del usuario' }: Usuar
     return () => {
       document.removeEventListener('mousedown', cerrarAlHacerClickFuera);
       document.removeEventListener('keydown', cerrarConEscape);
+
+      if (cerrarTimeoutRef.current != null) {
+        window.clearTimeout(cerrarTimeoutRef.current);
+        cerrarTimeoutRef.current = null;
+      }
     };
-  }, []);
+  }, [cerrarPanel, mostrarPerfil]);
 
   return (
     <div className={`usuarioMenu ${className}`.trim()} ref={menuRef}>
@@ -58,13 +110,18 @@ function UsuarioMenu({ className = '', ariaLabel = 'Perfil del usuario' }: Usuar
         type="button"
         aria-label={ariaLabel}
         aria-expanded={mostrarPerfil}
-        onClick={() => setMostrarPerfil((estadoAnterior) => !estadoAnterior)}
+        onClick={alternarPanel}
       >
         <span className="usuarioMenuInicial">{inicial}</span>
       </button>
 
-      {mostrarPerfil && (
-        <div className="usuarioMenuPanel" role="dialog" aria-label="Menu de usuario">
+      {panelMontado && (
+        <div
+          className="usuarioMenuPanel"
+          data-state={estadoPanel}
+          role="dialog"
+          aria-label="Menu de usuario"
+        >
           <div className="usuarioMenuCabecera">
             <div className="usuarioMenuIdentidad">
               <div className="usuarioMenuAvatarGrande" aria-hidden="true">

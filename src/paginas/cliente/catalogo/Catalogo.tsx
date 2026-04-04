@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import UsuarioMenu from '../../empleado/UsuarioMenu';
+import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
 import clipAzul from '../../../images/Clip_azul.svg';
 import reactLogo from '../../../assets/react.svg';
 import '../inicio/InicioCliente.css';
@@ -89,8 +91,24 @@ function IconoChevronDerecha() {
 }
 
 function CatalogoCliente() {
+  const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoPcData | null>(null);
+
+  const abrirProducto = (producto: ProductoCatalogo) => {
+    setProductoExpandido({
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
+  };
+
   return (
     <div className="inicioCliente catalogoCliente" id="catalogo-cliente">
+      <ProductoExpandidoPc
+        abierto={!!productoExpandido}
+        producto={productoExpandido}
+        alCerrar={() => setProductoExpandido(null)}
+      />
       <header className="inicioClienteEncabezado">
         <div className="inicioClienteBarraSuperior">
           <div className="inicioClienteBarraInterior">
@@ -234,7 +252,7 @@ function CatalogoCliente() {
             <div className="catalogoClienteGrid" role="list">
               {productosCatalogo.map((producto) => (
                 <article key={producto.id} className="catalogoClienteProducto" role="listitem">
-                  <div className="catalogoClienteProductoMarco">
+                  <div className="catalogoClienteProductoMarco" onClick={() => abrirProducto(producto)}>
                     {producto.etiqueta && (
                       <span
                         className={`catalogoClienteProductoTag ${producto.etiqueta === 'New' ? 'catalogoClienteProductoTagNew' : 'catalogoClienteProductoTagSale'}`}
@@ -247,7 +265,12 @@ function CatalogoCliente() {
                       <img src={producto.imagen} alt={producto.nombre} loading="lazy" />
                     </div>
 
-                    <button type="button" className="catalogoClienteProductoCarrito" aria-label="Agregar al carrito">
+                    <button
+                      type="button"
+                      className="catalogoClienteProductoCarrito"
+                      aria-label="Agregar al carrito"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <IconoCarrito />
                     </button>
                   </div>

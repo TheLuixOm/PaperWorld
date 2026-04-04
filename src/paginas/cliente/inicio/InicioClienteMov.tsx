@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointer
 import { Link, NavLink } from 'react-router-dom';
 import UsuarioMenu from '../../empleado/UsuarioMenu';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
+import ProductoExpandidoMov, { type ProductoExpandidoMovData } from '../componentes/ProductoExpandidoMov';
 import clipAzul from '../../../images/Clip_azul.svg';
 import reactLogo from '../../../assets/react.svg';
 import './InicioClienteMov.css';
@@ -93,6 +94,7 @@ function IconoOjo() {
 function InicioClienteMov() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
+  const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoMovData | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
   const [offsetFab, setOffsetFab] = useState(16);
 
@@ -142,8 +144,8 @@ function InicioClienteMov() {
   }, []);
 
   const carruselRef = useRef<HTMLDivElement | null>(null);
-  const arrastreRef = useRef<{ activo: boolean; x: number; scrollLeft: number }>(
-    { activo: false, x: 0, scrollLeft: 0 },
+  const arrastreRef = useRef<{ activo: boolean; x: number; scrollLeft: number; movio: boolean }>(
+    { activo: false, x: 0, scrollLeft: 0, movio: false },
   );
 
   const alIniciarArrastre = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -152,7 +154,7 @@ function InicioClienteMov() {
       return;
     }
 
-    arrastreRef.current = { activo: true, x: event.clientX, scrollLeft: contenedor.scrollLeft };
+    arrastreRef.current = { activo: true, x: event.clientX, scrollLeft: contenedor.scrollLeft, movio: false };
     contenedor.setPointerCapture(event.pointerId);
   };
 
@@ -163,6 +165,9 @@ function InicioClienteMov() {
     }
 
     const delta = event.clientX - arrastreRef.current.x;
+    if (Math.abs(delta) > 6) {
+      arrastreRef.current.movio = true;
+    }
     contenedor.scrollLeft = arrastreRef.current.scrollLeft - delta;
   };
 
@@ -180,6 +185,20 @@ function InicioClienteMov() {
     }
   };
 
+  const abrirProducto = (producto: ProductoMasVendido) => {
+    if (arrastreRef.current.movio) {
+      arrastreRef.current.movio = false;
+      return;
+    }
+
+    setProductoExpandido({
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
+  };
+
   const desplazarCarrusel = (direccion: 'izquierda' | 'derecha') => {
     const contenedor = carruselRef.current;
     if (!contenedor) {
@@ -193,6 +212,11 @@ function InicioClienteMov() {
 
   return (
     <div className="inicioClienteMov" id="inicio-cliente-mov">
+      <ProductoExpandidoMov
+        abierto={!!productoExpandido}
+        producto={productoExpandido}
+        alCerrar={() => setProductoExpandido(null)}
+      />
       <MenuLateralMovil abierto={menuAbierto} alCerrar={() => setMenuAbierto(false)} />
       <header className="inicioClienteMovHeader">
         <div className="inicioClienteMovTop">
@@ -323,8 +347,23 @@ function InicioClienteMov() {
               onPointerCancel={alFinalizarArrastre}
             >
               {productosMasVendidos.map((producto) => (
-                <article key={producto.id} className="inicioClienteMovProducto" role="listitem">
-                  <div className="inicioClienteMovProductoMarco">
+                <article
+                  key={producto.id}
+                  className="inicioClienteMovProducto"
+                  role="listitem"
+                  onClick={() => abrirProducto(producto)}
+                >
+                  <div
+                    className="inicioClienteMovProductoMarco"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        abrirProducto(producto);
+                      }
+                    }}
+                  >
                     {typeof producto.descuento === 'number' && (
                       <span className="inicioClienteMovProductoDescuento">-{producto.descuento}%</span>
                     )}
@@ -335,13 +374,22 @@ function InicioClienteMov() {
                         className={`inicioClienteMovAccion ${favoritos[producto.id] ? 'inicioClienteMovAccionActiva' : ''}`}
                         aria-label="Favorito"
                         aria-pressed={!!favoritos[producto.id]}
-                        onClick={() =>
-                          setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }))
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }));
+                        }}
                       >
                         <IconoCorazon />
                       </button>
-                      <button type="button" className="inicioClienteMovAccion" aria-label="Ver">
+                      <button
+                        type="button"
+                        className="inicioClienteMovAccion"
+                        aria-label="Ver"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          abrirProducto(producto);
+                        }}
+                      >
                         <IconoOjo />
                       </button>
                     </div>
