@@ -139,8 +139,8 @@
 }
 
 .catalogoClienteCheck:has(input:checked) .catalogoClienteCheckCaja {
-  background: #067bb6;
-  border-color: #067bb6;
+  background: #067BB6;
+  border-color: #067BB6;
 }
 
 .catalogoClienteResultados {
@@ -203,7 +203,7 @@
   border-radius: 7px;
   border: none;
   background: rgba(6, 123, 182, 0.12);
-  color: #067bb6;
+  color: #067BB6;
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -320,5 +320,5 @@
 
 .catalogoClienteFooter {
   height: 76px;
-  background: #067bb6;
+  background: #067BB6;
 }
