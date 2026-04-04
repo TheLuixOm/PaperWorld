@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import './Inventario.css';
-import { productosIniciales } from './datosInventario';
+import { productosIniciales, type Producto } from './datosInventario';
 import UsuarioMenu from './UsuarioMenu';
+import AgregarProducto, { type DatosAgregarProducto } from './AgregarProducto';
+import ModificarProducto from './ModificarProducto';
+import { type DatosModificarProducto } from './ModificarProducto';
 
 function Inventario() {
     const [textoBusqueda, setTextoBusqueda] = useState('');
     const [productos, setProductos] = useState(productosIniciales);
+    const [vistaActual, setVistaActual] = useState<'lista' | 'agregar' | 'modificar'>('lista');
+    const [productoEnEdicion, setProductoEnEdicion] = useState<Producto | null>(null);
     const [paginaActual, setPaginaActual] = useState(1);
     const [productoExpandidoId, setProductoExpandidoId] = useState<string | null>(null);
     const [busquedaMovilActiva, setBusquedaMovilActiva] = useState(false);
@@ -69,55 +74,171 @@ function Inventario() {
         }
     };
 
+    const abrirVistaAgregarProducto = () => {
+        setProductoEnEdicion(null);
+        setVistaActual('agregar');
+    };
+
+    const abrirVistaEditarProducto = (producto: Producto) => {
+        setProductoEnEdicion(producto);
+        setVistaActual('modificar');
+    };
+
+    const cerrarVistaFormulario = () => {
+        setProductoEnEdicion(null);
+        setVistaActual('lista');
+    };
+
+    const generarIdProducto = (referencia: string) => {
+        const referenciaLimpia = referencia.trim();
+
+        if (referenciaLimpia) {
+            return referenciaLimpia;
+        }
+
+        const mayorId = productos.reduce((maximoActual, productoActual) => {
+            const numeroActual = Number(productoActual.id.replace(/[^0-9]/g, ''));
+
+            if (Number.isNaN(numeroActual)) {
+                return maximoActual;
+            }
+
+            return Math.max(maximoActual, numeroActual);
+        }, 0);
+
+        return `#${String(mayorId + 1).padStart(4, '0')}`;
+    };
+
+    const construirProductoActualizado = (
+        productoBase: Producto,
+        datosFormulario: DatosModificarProducto
+    ): Producto => {
+        const cantidad = Number.parseInt(datosFormulario.cantidad, 10);
+        const precioConPrefijo = datosFormulario.precio.trim();
+
+        return {
+            id: datosFormulario.referencia.trim() || productoBase.id,
+            nombre: datosFormulario.nombre.trim() || 'Producto sin nombre',
+            categoria: datosFormulario.categoria.trim() || 'sin categoria',
+            precio: precioConPrefijo.startsWith('$') ? precioConPrefijo : `$ ${precioConPrefijo || '0'}`,
+            cantidad: Number.isNaN(cantidad) ? 0 : cantidad,
+            vendidos: productoBase.vendidos,
+            imagen:
+                datosFormulario.imagen ||
+                productoBase.imagen ||
+                `https://picsum.photos/seed/${Date.now()}/120/80`,
+        };
+    };
+
+    const guardarCambiosProducto = (datosFormulario: DatosModificarProducto) => {
+        if (!productoEnEdicion) {
+            return;
+        }
+
+        const productoActualizado = construirProductoActualizado(productoEnEdicion, datosFormulario);
+
+        setProductos((productosActuales) =>
+            productosActuales.map((producto) =>
+                producto.id === productoEnEdicion.id ? productoActualizado : producto
+            )
+        );
+
+        cerrarVistaFormulario();
+    };
+
+    const guardarNuevoProducto = (datosFormulario: DatosAgregarProducto, mantenerAbierto: boolean) => {
+        const cantidad = Number.parseInt(datosFormulario.cantidad, 10);
+        const precioConPrefijo = datosFormulario.precio.trim();
+
+        const nuevoProducto: Producto = {
+            id: generarIdProducto(datosFormulario.referencia),
+            nombre: datosFormulario.nombre.trim() || 'Producto sin nombre',
+            categoria: datosFormulario.categoria.trim() || 'sin categoria',
+            precio: precioConPrefijo.startsWith('$') ? precioConPrefijo : `$ ${precioConPrefijo || '0'}`,
+            cantidad: Number.isNaN(cantidad) ? 0 : cantidad,
+            vendidos: 0,
+            imagen: datosFormulario.imagen || `https://picsum.photos/seed/${Date.now()}/120/80`,
+        };
+
+        setProductos((productosActuales) => [nuevoProducto, ...productosActuales]);
+        setPaginaActual(1);
+
+        if (!mantenerAbierto) {
+            cerrarVistaFormulario();
+        }
+    };
+
+    const claseVista = [
+        'inventarioVista',
+        vistaActual !== 'lista' ? 'inventarioVistaAgregar' : '',
+        vistaActual === 'modificar' ? 'inventarioVistaEditar' : '',
+    ]
+        .filter(Boolean)
+        .join(' ');
+
     return (
-        <section className="inventarioVista" id="inventario">
-                <header className="inventarioEncabezado">
-                    <h2 className="inventarioTitulo">INVENTARIO</h2>
+        <section className={claseVista} id="inventario">
+                {vistaActual === 'agregar' ? (
+                    <AgregarProducto
+                        onGuardar={guardarNuevoProducto}
+                        onCancelar={cerrarVistaFormulario}
+                    />
+                ) : vistaActual === 'modificar' && productoEnEdicion ? (
+                    <ModificarProducto
+                        productoInicial={productoEnEdicion}
+                        onGuardar={guardarCambiosProducto}
+                        onCancelar={cerrarVistaFormulario}
+                    />
+                ) : (
+                    <header className="inventarioEncabezado">
+                        <h2 className="inventarioTitulo">INVENTARIO</h2>
 
-                    <label
-                        className={`inventarioBuscador ${busquedaMovilActiva ? 'inventarioBuscadorMovilActivo' : ''}`}
-                    >
-                        <button
-                            type="button"
-                            className="inventarioBuscadorBoton"
-                            aria-label="Abrir busqueda"
-                            onClick={activarBusquedaMovil}
+                        <label
+                            className={`inventarioBuscador ${busquedaMovilActiva ? 'inventarioBuscadorMovilActivo' : ''}`}
                         >
-                            <span className="inventarioBuscadorIcono" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" focusable="false">
-                                <circle cx="11" cy="11" r="6" />
-                                <line x1="15.5" y1="15.5" x2="21" y2="21" />
-                            </svg>
-                            </span>
+                            <button
+                                type="button"
+                                className="inventarioBuscadorBoton"
+                                aria-label="Abrir busqueda"
+                                onClick={activarBusquedaMovil}
+                            >
+                                <span className="inventarioBuscadorIcono" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" focusable="false">
+                                    <circle cx="11" cy="11" r="6" />
+                                    <line x1="15.5" y1="15.5" x2="21" y2="21" />
+                                </svg>
+                                </span>
+                            </button>
+                            <input
+                                ref={inputBusquedaRef}
+                                type="search"
+                                placeholder="Search"
+                                className="inventarioInput"
+                                aria-label="Buscar producto"
+                                value={textoBusqueda}
+                                onBlur={cerrarBusquedaMovilSiVacia}
+                                onKeyDown={(event) => {
+                                    if (event.key === 'Escape') {
+                                        cerrarBusquedaMovilSiVacia();
+                                    }
+                                }}
+                                onChange={(event) => {
+                                    setTextoBusqueda(event.target.value);
+                                    setPaginaActual(1);
+                                }}
+                            />
+                        </label>
+
+                        <button className="inventarioBotonAgregar" type="button" onClick={abrirVistaAgregarProducto}>
+                            <span className="inventarioBotonIcono" aria-hidden="true">+</span>
+                            Añadir nuevo producto
                         </button>
-                        <input
-                            ref={inputBusquedaRef}
-                            type="search"
-                            placeholder="Search"
-                            className="inventarioInput"
-                            aria-label="Buscar producto"
-                            value={textoBusqueda}
-                            onBlur={cerrarBusquedaMovilSiVacia}
-                            onKeyDown={(event) => {
-                                if (event.key === 'Escape') {
-                                    cerrarBusquedaMovilSiVacia();
-                                }
-                            }}
-                            onChange={(event) => {
-                                setTextoBusqueda(event.target.value);
-                                setPaginaActual(1);
-                            }}
-                        />
-                    </label>
 
-                    <button className="inventarioBotonAgregar" type="button">
-                        <span className="inventarioBotonIcono" aria-hidden="true">+</span>
-                        Añadir nuevo producto
-                    </button>
+                        <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
+                    </header>
+                )}
 
-                    <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
-                </header>
-
+                {vistaActual === 'lista' && (
                 <section className="inventarioPanel">
                     <h3 className="inventarioSubtitulo">Lista de productos:</h3>
 
@@ -139,7 +260,12 @@ function Inventario() {
                                     <tr key={producto.id} className="inventarioFila">
                                         <td>
                                             <div className="inventarioCeldaNombre">
-                                                <button className="inventarioAccion inventarioAccionEditar" type="button" aria-label={`Editar ${producto.nombre}`}>
+                                                <button
+                                                    className="inventarioAccion inventarioAccionEditar"
+                                                    type="button"
+                                                    aria-label={`Editar ${producto.nombre}`}
+                                                    onClick={() => abrirVistaEditarProducto(producto)}
+                                                >
                                                     <svg viewBox="0 0 24 24" focusable="false">
                                                         <path d="M4 20h4l10-10-4-4L4 16z" />
                                                         <path d="m12.8 6.8 4 4" />
@@ -270,6 +396,7 @@ function Inventario() {
                         </button>
                     </div>
                 </section>
+                )}
         </section>
     );
 }

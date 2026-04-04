@@ -8,6 +8,12 @@
   gap: clamp(20px, 2.2vw, 34px);
   overflow: hidden;
   box-sizing: border-box;
+  background: #ffffff;
+}
+
+.inventarioVistaAgregar {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .inventarioEncabezado {
@@ -18,12 +24,21 @@
   gap: 22px;
 }
 
-.inventarioEncabezado > * {
-  justify-self: start;
+.inventarioEncabezadoAgregar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: clamp(10px, 1.8vw, 24px);
+  border-bottom: 1px solid #dbe3ee;
+  padding-bottom: 16px;
 }
 
-.inventarioAvatar {
+.inventarioEncabezadoAgregar .inventarioUsuarioMenu {
   justify-self: end;
+}
+
+.inventarioEncabezado > * {
+  justify-self: start;
 }
 
 .inventarioTitulo {
@@ -32,6 +47,30 @@
   font-weight: 800;
   letter-spacing: 0.02em;
   color: #111827;
+}
+
+.inventarioTituloAgregar {
+  margin: 0;
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 800;
+  color: #067bb6;
+}
+
+.inventarioBotonCancelar {
+  height: 42px;
+  padding: 0 20px;
+  margin-right: clamp(18px, 4vw, 64px);
+  border: 1px solid #e4e9f2;
+  border-radius: 10px;
+  background: #f5f7fc;
+  color: #3f4651;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inventarioBotonCancelar:hover {
+  background: #edf2fa;
 }
 
 .inventarioBuscador {
@@ -104,12 +143,12 @@
   padding: 0 20px;
   border: none;
   border-radius: 10px;
-  background: #1990d0;
+  background: #067bb6;
   color: #ffffff;
   font-size: 17px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(25, 144, 208, 0.22);
+  box-shadow: 0 8px 18px rgba(6, 123, 182, 0.22);
   white-space: nowrap;
 }
 
@@ -179,7 +218,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1990d0, #146ea1);
+  background: linear-gradient(135deg, #067bb6, #067bb6);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -217,7 +256,7 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: #1f78ff;
+  background: #067bb6;
   display: block;
 }
 
@@ -254,7 +293,7 @@
 }
 
 .inventarioPerfilOpcion:hover {
-  color: #1990d0;
+  color: #067bb6;
 }
 
 .inventarioPanel {
@@ -264,6 +303,186 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 16px;
+}
+
+.inventarioPanelAgregar {
+  flex: 1;
+  min-height: 0;
+  padding-top: 14px;
+  padding-bottom: 18px;
+  justify-content: flex-start;
+  overflow-y: auto;
+  align-items: flex-start;
+}
+
+.inventarioFormularioAgregar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(14px, 1.9vw, 22px);
+  width: min(100%, 1320px);
+  min-width: 0;
+  margin-inline: auto;
+  padding: clamp(14px, 2.4vw, 26px);
+  border-radius: 14px;
+  border: 1px solid #dde5f0;
+  background: linear-gradient(180deg, #f7f9fd 0%, #f2f4f9 100%);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+}
+
+.inventarioFormularioInput {
+  width: 100%;
+  height: 58px;
+  border: 1px solid #e0e7f1;
+  border-radius: 8px;
+  padding: 0 18px;
+  font-size: 17px;
+  color: #374151;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.inventarioFormularioInput::placeholder {
+  color: #9aa7ba;
+  font-size: 15px;
+}
+
+.inventarioFormularioInput:focus {
+  outline: none;
+  border-color: #067bb6;
+  box-shadow: 0 0 0 3px rgba(6, 123, 182, 0.12);
+}
+
+.inventarioFilaImagen {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) max-content minmax(260px, 380px);
+  align-items: center;
+  gap: clamp(14px, 2vw, 26px);
+  width: 100%;
+}
+
+.inventarioFormularioInputDescripcion {
+  max-width: 100%;
+}
+
+.inventarioTextoImagen {
+  margin: 0;
+  font-size: clamp(24px, 2.2vw, 34px);
+  color: #222831;
+  font-weight: 400;
+  white-space: normal;
+}
+
+.inventarioCargaImagenContenedor {
+  width: 100%;
+  min-width: 0;
+}
+
+.inventarioBotonSubirImagen {
+  width: 100%;
+  height: 58px;
+  border: 1px solid #e0e7f1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #c4c8cf;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.inventarioBotonSubirImagen svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.inventarioInputArchivo {
+  display: none;
+}
+
+.inventarioAccionesFormulario {
+  margin-top: 10px;
+  padding-top: clamp(10px, 1.8vw, 22px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: clamp(16px, 2.6vw, 34px);
+}
+
+.inventarioBotonGuardar {
+  flex: 1 1 clamp(260px, 30vw, 360px);
+  min-width: 250px;
+  max-width: 360px;
+  height: 52px;
+  border: 0;
+  border-radius: 9px;
+  background: #067bb6;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 8px 15px rgba(6, 123, 182, 0.25);
+}
+
+.inventarioBotonGuardar:hover {
+  background: #067bb6;
+}
+
+@media (max-width: 1400px) {
+  .inventarioFilaImagen {
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
+    align-items: end;
+  }
+
+  .inventarioTextoImagen {
+    grid-column: 1 / -1;
+  }
+
+  .inventarioAccionesFormulario {
+    justify-content: flex-start;
+  }
+
+  .inventarioBotonGuardar {
+    max-width: 320px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .inventarioPanelAgregar {
+    padding-top: 16px;
+    padding-bottom: 24px;
+  }
+
+  .inventarioFormularioAgregar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(20px, 2.4vw, 36px);
+    row-gap: clamp(14px, 1.5vw, 20px);
+    min-height: min(76vh, 780px);
+  }
+
+  .inventarioFormularioAgregar > .inventarioFormularioInput {
+    grid-column: 1 / -1;
+  }
+
+  .inventarioFilaImagen,
+  .inventarioAccionesFormulario {
+    grid-column: 1 / -1;
+  }
+
+  .inventarioTextoImagen {
+    white-space: nowrap;
+  }
+
+  .inventarioBotonGuardar {
+    max-width: 360px;
+  }
 }
 
 .inventarioSubtitulo {
@@ -282,7 +501,7 @@
 .inventarioTabla {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 4px;
+  border-spacing: 0 12px;
 }
 
 .inventarioListaMovil {
@@ -293,10 +512,10 @@
   padding: 14px 16px;
   font-size: 15px;
   font-weight: 700;
-  color: #8590a3;
+  color: #6b7280;
   text-align: left;
   text-transform: lowercase;
-  background: #f3f5fb;
+  background: #f4f5fc;
 }
 
 .inventarioTabla thead th:first-child {
@@ -310,8 +529,7 @@
 }
 
 .inventarioFila {
-  background: #ffffff;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  background: #f4f5fc;
 }
 
 .inventarioFila td {
@@ -342,10 +560,10 @@
 .inventarioAccion {
   width: 36px;
   height: 36px;
-  border: 1px solid #d9e2ec;
+  border: 1px solid #c3cbd8;
   border-radius: 12px;
-  background: #ffffff;
-  color: #607187;
+  background: #f4f5fc;
+  color: #6b7280;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -366,9 +584,9 @@
 
 .inventarioAccionEditar:hover,
 .inventarioAccionEliminar:hover {
-  border-color: #1990d0;
-  color: #1990d0;
-  background: #eef7ff;
+  border-color: #6b7280;
+  color: #6b7280;
+  background: #f4f5fc;
 }
 
 .inventarioImagen {
@@ -409,9 +627,9 @@
 }
 
 .inventarioPaginaActiva {
-  background: #1990d0;
+  background: #067bb6;
   color: #ffffff;
-  border-color: #1990d0;
+  border-color: #067bb6;
 }
 
 @media (max-width: 1100px) {
@@ -434,6 +652,56 @@
 
   .inventarioSubtitulo {
     font-size: 24px;
+  }
+
+  .inventarioEncabezadoAgregar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 10px;
+  }
+
+  .inventarioEncabezadoAgregar .inventarioUsuarioMenu {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .inventarioBotonCancelar {
+    margin-right: clamp(12px, 2.5vw, 32px);
+  }
+
+  .inventarioFilaImagen {
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 260px);
+    align-items: end;
+  }
+
+  .inventarioTextoImagen {
+    grid-column: 1 / -1;
+    order: 2;
+  }
+
+  .inventarioCargaImagenContenedor {
+    order: 3;
+  }
+
+  .inventarioFormularioInputDescripcion {
+    order: 1;
+    grid-column: 1;
+  }
+
+  .inventarioTextoImagen {
+    font-size: 22px;
+  }
+
+  .inventarioBotonGuardar {
+    max-width: none;
+  }
+
+  .inventarioFormularioAgregar {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }
 
@@ -484,9 +752,20 @@
     overflow-x: auto;
   }
 
-  .inventarioPerfilPanel {
-    width: min(284px, calc(100vw - 32px));
-    min-height: 100svh;
+  .inventarioBotonGuardar {
+    min-width: 220px;
+  }
+
+  .inventarioFilaImagen {
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+
+  .inventarioFormularioInputDescripcion,
+  .inventarioTextoImagen,
+  .inventarioCargaImagenContenedor {
+    order: initial;
+    grid-column: auto;
   }
 }
 
@@ -527,6 +806,25 @@
     padding-bottom: 12px;
   }
 
+  .inventarioEncabezadoAgregar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 0 10px 12px;
+    gap: 8px;
+  }
+
+  .inventarioTituloAgregar {
+    font-size: 22px;
+    letter-spacing: 0;
+  }
+
+  .inventarioBotonCancelar {
+    height: 38px;
+    margin-right: 0;
+    font-size: 14px;
+    padding: 0 12px;
+    border-radius: 8px;
+  }
+
   .inventarioTitulo {
     font-size: 22px;
     line-height: 1;
@@ -553,7 +851,7 @@
   .inventarioBuscadorIcono {
     width: 24px;
     height: 24px;
-    color: #0891d2;
+    color: #067bb6;
   }
 
   .inventarioBuscadorIcono svg {
@@ -622,6 +920,49 @@
     justify-content: flex-start;
   }
 
+  .inventarioPanelAgregar {
+    padding: 10px;
+    gap: 12px;
+    overflow: visible;
+  }
+
+  .inventarioFormularioAgregar {
+    gap: 12px;
+  }
+
+  .inventarioFormularioInput,
+  .inventarioBotonSubirImagen {
+    height: 44px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+
+  .inventarioFormularioInput::placeholder {
+    font-size: 13px;
+  }
+
+  .inventarioTextoImagen {
+    font-size: 18px;
+  }
+
+  .inventarioAccionesFormulario {
+    padding-top: 6px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .inventarioBotonGuardar {
+    width: 100%;
+    flex: none;
+    min-width: 0;
+    max-width: none;
+    height: 42px;
+    border-radius: 8px;
+    box-shadow: none;
+    font-size: 14px;
+  }
+
   .inventarioTabla thead th:nth-child(2),
   .inventarioTabla tbody td:nth-child(2),
   .inventarioTabla thead th:nth-child(4),
@@ -657,12 +998,7 @@
     min-height: 40px;
     padding: 0 10px;
     border-bottom: 1px solid #d5dce8;
-    background: #f3f5fa;
-  }
-
-  .inventarioListaMovilCeldaCheckbox,
-  .inventarioMovilCheck {
-    display: none;
+    background: #f4f5fc;
   }
 
   .inventarioListaMovilCeldaNombre {
@@ -687,8 +1023,8 @@
   }
 
   .inventarioMovilCheck input:checked {
-    background: #0284c7;
-    border-color: #0284c7;
+    background: #067bb6;
+    border-color: #067bb6;
   }
 
   .inventarioMovilItem {
@@ -709,7 +1045,7 @@
     height: 28px;
     border: none;
     background: transparent;
-    color: #0284c7;
+    color: #067bb6;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -729,12 +1065,6 @@
 
   .inventarioMovilAlternar[aria-expanded='true'] svg {
     transform: rotate(90deg);
-  }
-
-  .inventarioMovilCheck {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .inventarioMovilNombre {
@@ -767,7 +1097,7 @@
   }
 
   .inventarioMovilDetalle {
-    background: #f3f5fa;
+    background: #f4f5fc;
     border-top: 1px solid #d5dce8;
     padding: 8px 16px 10px;
     display: flex;
@@ -822,4 +1152,181 @@
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
   }
+}
+
+/* Layout fijo para "Anadir nuevo producto" */
+.inventarioVistaAgregar {
+  padding: 22px 26px 30px;
+  gap: 14px;
+}
+
+.inventarioVistaAgregar .inventarioEncabezadoAgregar {
+  width: min(100%, 1280px);
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  column-gap: 24px;
+  padding-bottom: 12px;
+}
+
+.inventarioVistaAgregar .inventarioTituloAgregar {
+  font-size: 44px;
+  line-height: 1.1;
+}
+
+.inventarioVistaAgregar .inventarioBotonCancelar {
+  height: 46px;
+  padding: 0 26px;
+  margin-right: 14px;
+  font-size: 17px;
+}
+
+.inventarioVistaAgregar .inventarioPanelAgregar {
+  padding-top: 8px;
+  padding-bottom: 0;
+  align-items: center;
+  overflow-y: visible;
+}
+
+.inventarioVistaAgregar .inventarioFormularioAgregar {
+  width: min(100%, 1280px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  min-height: auto;
+}
+
+.inventarioVistaAgregar .inventarioFormularioInput {
+  height: 54px;
+  border-radius: 4px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+
+.inventarioVistaAgregar .inventarioFormularioInput::placeholder {
+  font-size: 14px;
+}
+
+.inventarioVistaAgregar .inventarioFilaImagen {
+  grid-template-columns: minmax(260px, 1fr) max-content minmax(260px, 340px);
+  align-items: center;
+  gap: 18px;
+}
+
+.inventarioVistaAgregar .inventarioTextoImagen {
+  font-size: 30px;
+  white-space: nowrap;
+}
+
+.inventarioVistaAgregar .inventarioBotonSubirImagen {
+  height: 54px;
+  font-size: 15px;
+  border-radius: 9px;
+}
+
+.inventarioVistaAgregar .inventarioAccionesFormulario {
+  margin-top: 28px;
+  padding-top: 0;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.inventarioVistaAgregar .inventarioBotonGuardar {
+  flex: 0 0 320px;
+  width: 320px;
+  max-width: 320px;
+  min-width: 320px;
+  height: 54px;
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+.inventarioVistaEditar .inventarioTituloAgregar {
+  color: #1990d0;
+}
+
+.inventarioVistaEditar .inventarioFormularioAgregar {
+  gap: 14px;
+}
+
+@media (max-width: 1200px) {
+  .inventarioVistaAgregar .inventarioTituloAgregar {
+    font-size: 32px;
+  }
+
+  .inventarioVistaAgregar .inventarioTextoImagen {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 900px) {
+  .inventarioVistaAgregar .inventarioEncabezadoAgregar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .inventarioVistaAgregar .inventarioBotonCancelar {
+    margin-right: 0;
+  }
+
+  .inventarioVistaAgregar .inventarioFilaImagen {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .inventarioVistaAgregar .inventarioTextoImagen {
+    font-size: 22px;
+  }
+
+  .inventarioVistaAgregar .inventarioAccionesFormulario {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+/* ===== Scroll Personalizado (Prueba) =====
+   Elimina todo este bloque si no te gusta el resultado.
+*/
+
+/* Firefox */
+.inventarioTablaContenedor,
+.inventarioPanelAgregar,
+.inventarioVistaAgregar {
+  scrollbar-gutter: stable;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #067bb6 #f4f5fc;
+}
+
+/* Chrome, Edge, Safari */
+.inventarioTablaContenedor::-webkit-scrollbar,
+.inventarioPanelAgregar::-webkit-scrollbar,
+.inventarioVistaAgregar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.inventarioTablaContenedor::-webkit-scrollbar-track,
+.inventarioPanelAgregar::-webkit-scrollbar-track,
+.inventarioVistaAgregar::-webkit-scrollbar-track {
+  background: #f4f5fc;
+  border-radius: 999px;
+}
+
+.inventarioTablaContenedor::-webkit-scrollbar-thumb,
+.inventarioPanelAgregar::-webkit-scrollbar-thumb,
+.inventarioVistaAgregar::-webkit-scrollbar-thumb {
+  background: #067bb6;
+  border-radius: 999px;
+  border: 2px solid #f4f5fc;
+}
+
+.inventarioTablaContenedor::-webkit-scrollbar-thumb:hover,
+.inventarioPanelAgregar::-webkit-scrollbar-thumb:hover,
+.inventarioVistaAgregar::-webkit-scrollbar-thumb:hover {
+  background: #056a9c;
 }

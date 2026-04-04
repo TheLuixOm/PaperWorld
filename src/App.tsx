@@ -6,6 +6,8 @@ import RegistroEsc from './paginas/register/Register'
 import RegistroMov from './paginas/register/RegisterMov'
 import Empleado from './paginas/empleado/Empleado'
 import Inventario from './paginas/empleado/Inventario'
+import Proveedores from './paginas/empleado/Proveedores'
+import AgregarProveedores from './paginas/empleado/agregar_proveedores'
 import VistaEmpleado from './paginas/empleado/VistaEmpleado'
 import InicioEmpleado from './paginas/empleado/Inicio'
 import InicioCliente from './paginas/cliente/inicio/InicioCliente'
@@ -64,7 +66,8 @@ function Aplicacion() {
         <Route path="/dashboard" element={<InicioEmpleado />} />
         <Route path="/inventario" element={<Inventario />} />
         <Route path="/ventas" element={<VistaEmpleado titulo="Ventas" />} />
-        <Route path="/proveedores" element={<VistaEmpleado titulo="Proveedores" />} />
+        <Route path="/proveedores" element={<Proveedores />} />
+        <Route path="/proveedores/agregar" element={<AgregarProveedores />} />
         <Route path="/reportes" element={<VistaEmpleado titulo="Reportes" />} />
         <Route path="/ayuda" element={<VistaEmpleado titulo="Ayuda" />} />
         <Route path="/ajustes" element={<VistaEmpleado titulo="Configuracion" />} />
