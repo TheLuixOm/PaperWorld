@@ -1,46 +1,21 @@
-import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './Inventario.css';
 import { productosIniciales, type Producto } from './datosInventario';
 import UsuarioMenu from './UsuarioMenu';
-
-type FormularioProducto = {
-    nombre: string;
-    referencia: string;
-    categoria: string;
-    precio: string;
-    cantidad: string;
-    descripcion: string;
-};
-
-const formularioVacio: FormularioProducto = {
-    nombre: '',
-    referencia: '',
-    categoria: '',
-    precio: '',
-    cantidad: '',
-    descripcion: '',
-};
+import AgregarProducto, { type DatosAgregarProducto } from './AgregarProducto';
+import ModificarProducto from './ModificarProducto';
+import { type DatosModificarProducto } from './ModificarProducto';
 
 function Inventario() {
     const [textoBusqueda, setTextoBusqueda] = useState('');
     const [productos, setProductos] = useState(productosIniciales);
-    const [vistaAgregarProducto, setVistaAgregarProducto] = useState(false);
+    const [vistaActual, setVistaActual] = useState<'lista' | 'agregar' | 'modificar'>('lista');
+    const [productoEnEdicion, setProductoEnEdicion] = useState<Producto | null>(null);
     const [paginaActual, setPaginaActual] = useState(1);
     const [productoExpandidoId, setProductoExpandidoId] = useState<string | null>(null);
     const [busquedaMovilActiva, setBusquedaMovilActiva] = useState(false);
-    const [formularioProducto, setFormularioProducto] = useState<FormularioProducto>(formularioVacio);
-    const [imagenSeleccionada, setImagenSeleccionada] = useState<string>('');
     const inputBusquedaRef = useRef<HTMLInputElement | null>(null);
-    const inputImagenRef = useRef<HTMLInputElement | null>(null);
     const productosPorPagina = 8;
-
-    useEffect(() => {
-        return () => {
-            if (imagenSeleccionada.startsWith('blob:')) {
-                URL.revokeObjectURL(imagenSeleccionada);
-            }
-        };
-    }, [imagenSeleccionada]);
 
     const eliminarProducto = (id: string) => {
         setProductos((productosActuales) => productosActuales.filter((producto) => producto.id !== id));
@@ -99,35 +74,26 @@ function Inventario() {
         }
     };
 
-    const actualizarCampoFormulario = (campo: keyof FormularioProducto, valor: string) => {
-        setFormularioProducto((formularioActual) => ({
-            ...formularioActual,
-            [campo]: valor,
-        }));
-    };
-
-    const limpiarFormulario = () => {
-        setFormularioProducto(formularioVacio);
-        setImagenSeleccionada('');
-
-        if (inputImagenRef.current) {
-            inputImagenRef.current.value = '';
-        }
-    };
-
     const abrirVistaAgregarProducto = () => {
-        limpiarFormulario();
-        setVistaAgregarProducto(true);
+        setProductoEnEdicion(null);
+        setVistaActual('agregar');
     };
 
-    const cancelarAgregarProducto = () => {
-        limpiarFormulario();
-        setVistaAgregarProducto(false);
+    const abrirVistaEditarProducto = (producto: Producto) => {
+        setProductoEnEdicion(producto);
+        setVistaActual('modificar');
     };
 
-    const generarIdProducto = () => {
-        if (formularioProducto.referencia.trim()) {
-            return formularioProducto.referencia.trim();
+    const cerrarVistaFormulario = () => {
+        setProductoEnEdicion(null);
+        setVistaActual('lista');
+    };
+
+    const generarIdProducto = (referencia: string) => {
+        const referenciaLimpia = referencia.trim();
+
+        if (referenciaLimpia) {
+            return referenciaLimpia;
         }
 
         const mayorId = productos.reduce((maximoActual, productoActual) => {
@@ -143,64 +109,86 @@ function Inventario() {
         return `#${String(mayorId + 1).padStart(4, '0')}`;
     };
 
-    const crearProductoDesdeFormulario = (): Producto => {
-        const cantidad = Number.parseInt(formularioProducto.cantidad, 10);
-        const precioConPrefijo = formularioProducto.precio.trim();
+    const construirProductoActualizado = (
+        productoBase: Producto,
+        datosFormulario: DatosModificarProducto
+    ): Producto => {
+        const cantidad = Number.parseInt(datosFormulario.cantidad, 10);
+        const precioConPrefijo = datosFormulario.precio.trim();
 
         return {
-            id: generarIdProducto(),
-            nombre: formularioProducto.nombre.trim() || 'Producto sin nombre',
-            categoria: formularioProducto.categoria.trim() || 'sin categoria',
+            id: datosFormulario.referencia.trim() || productoBase.id,
+            nombre: datosFormulario.nombre.trim() || 'Producto sin nombre',
+            categoria: datosFormulario.categoria.trim() || 'sin categoria',
             precio: precioConPrefijo.startsWith('$') ? precioConPrefijo : `$ ${precioConPrefijo || '0'}`,
             cantidad: Number.isNaN(cantidad) ? 0 : cantidad,
-            vendidos: 0,
-            imagen: imagenSeleccionada || `https://picsum.photos/seed/${Date.now()}/120/80`,
+            vendidos: productoBase.vendidos,
+            imagen:
+                datosFormulario.imagen ||
+                productoBase.imagen ||
+                `https://picsum.photos/seed/${Date.now()}/120/80`,
         };
     };
 
-    const guardarProducto = (mantenerFormularioAbierto: boolean) => {
-        if (!formularioProducto.nombre.trim()) {
+    const guardarCambiosProducto = (datosFormulario: DatosModificarProducto) => {
+        if (!productoEnEdicion) {
             return;
         }
 
-        const nuevoProducto = crearProductoDesdeFormulario();
+        const productoActualizado = construirProductoActualizado(productoEnEdicion, datosFormulario);
+
+        setProductos((productosActuales) =>
+            productosActuales.map((producto) =>
+                producto.id === productoEnEdicion.id ? productoActualizado : producto
+            )
+        );
+
+        cerrarVistaFormulario();
+    };
+
+    const guardarNuevoProducto = (datosFormulario: DatosAgregarProducto, mantenerAbierto: boolean) => {
+        const cantidad = Number.parseInt(datosFormulario.cantidad, 10);
+        const precioConPrefijo = datosFormulario.precio.trim();
+
+        const nuevoProducto: Producto = {
+            id: generarIdProducto(datosFormulario.referencia),
+            nombre: datosFormulario.nombre.trim() || 'Producto sin nombre',
+            categoria: datosFormulario.categoria.trim() || 'sin categoria',
+            precio: precioConPrefijo.startsWith('$') ? precioConPrefijo : `$ ${precioConPrefijo || '0'}`,
+            cantidad: Number.isNaN(cantidad) ? 0 : cantidad,
+            vendidos: 0,
+            imagen: datosFormulario.imagen || `https://picsum.photos/seed/${Date.now()}/120/80`,
+        };
 
         setProductos((productosActuales) => [nuevoProducto, ...productosActuales]);
         setPaginaActual(1);
 
-        if (mantenerFormularioAbierto) {
-            limpiarFormulario();
-            return;
+        if (!mantenerAbierto) {
+            cerrarVistaFormulario();
         }
-
-        cancelarAgregarProducto();
     };
 
-    const manejarSeleccionImagen = (evento: ChangeEvent<HTMLInputElement>) => {
-        const archivo = evento.target.files?.[0];
-
-        if (!archivo) {
-            return;
-        }
-
-        if (imagenSeleccionada.startsWith('blob:')) {
-            URL.revokeObjectURL(imagenSeleccionada);
-        }
-
-        const urlTemporal = URL.createObjectURL(archivo);
-        setImagenSeleccionada(urlTemporal);
-    };
+    const claseVista = [
+        'inventarioVista',
+        vistaActual !== 'lista' ? 'inventarioVistaAgregar' : '',
+        vistaActual === 'modificar' ? 'inventarioVistaEditar' : '',
+    ]
+        .filter(Boolean)
+        .join(' ');
 
     return (
-        <section className={`inventarioVista ${vistaAgregarProducto ? 'inventarioVistaAgregar' : ''}`.trim()} id="inventario">
-                {vistaAgregarProducto ? (
-                    <header className="inventarioEncabezadoAgregar">
-                        <h2 className="inventarioTituloAgregar">Añadir nuevo producto</h2>
-                        <button className="inventarioBotonCancelar" type="button" onClick={cancelarAgregarProducto}>
-                            Cancelar
-                        </button>
-                        <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
-                    </header>
+        <section className={claseVista} id="inventario">
+                {vistaActual === 'agregar' ? (
+                    <AgregarProducto
+                        onGuardar={guardarNuevoProducto}
+                        onCancelar={cerrarVistaFormulario}
+                    />
+                ) : vistaActual === 'modificar' && productoEnEdicion ? (
+                    <ModificarProducto
+                        productoInicial={productoEnEdicion}
+                        onGuardar={guardarCambiosProducto}
+                        onCancelar={cerrarVistaFormulario}
+                    />
                 ) : (
                     <header className="inventarioEncabezado">
                         <h2 className="inventarioTitulo">INVENTARIO</h2>
@@ -250,104 +238,7 @@ function Inventario() {
                     </header>
                 )}
 
-                {vistaAgregarProducto ? (
-                    <section className="inventarioPanel inventarioPanelAgregar">
-                        <form
-                            className="inventarioFormularioAgregar"
-                            onSubmit={(event) => {
-                                event.preventDefault();
-                                guardarProducto(false);
-                            }}
-                        >
-                            <input
-                                className="inventarioFormularioInput"
-                                type="text"
-                                placeholder="Nombre del producto"
-                                value={formularioProducto.nombre}
-                                onChange={(event) => actualizarCampoFormulario('nombre', event.target.value)}
-                                required
-                            />
-                            <input
-                                className="inventarioFormularioInput"
-                                type="text"
-                                placeholder="Referencia/codigo"
-                                value={formularioProducto.referencia}
-                                onChange={(event) => actualizarCampoFormulario('referencia', event.target.value)}
-                            />
-                            <input
-                                className="inventarioFormularioInput"
-                                type="text"
-                                placeholder="categoria"
-                                value={formularioProducto.categoria}
-                                onChange={(event) => actualizarCampoFormulario('categoria', event.target.value)}
-                            />
-                            <input
-                                className="inventarioFormularioInput"
-                                type="text"
-                                placeholder="Precio de venta"
-                                value={formularioProducto.precio}
-                                onChange={(event) => actualizarCampoFormulario('precio', event.target.value)}
-                            />
-                            <input
-                                className="inventarioFormularioInput"
-                                type="number"
-                                min="0"
-                                placeholder="cantidad en stock"
-                                value={formularioProducto.cantidad}
-                                onChange={(event) => actualizarCampoFormulario('cantidad', event.target.value)}
-                            />
-
-                            <div className="inventarioFilaImagen">
-                                <input
-                                    className="inventarioFormularioInput inventarioFormularioInputDescripcion"
-                                    type="text"
-                                    placeholder="descripcion (opcional)"
-                                    value={formularioProducto.descripcion}
-                                    onChange={(event) => actualizarCampoFormulario('descripcion', event.target.value)}
-                                />
-
-                                <p className="inventarioTextoImagen">Imagen del producto:</p>
-
-                                <div className="inventarioCargaImagenContenedor">
-                                    <button
-                                        type="button"
-                                        className="inventarioBotonSubirImagen"
-                                        onClick={() => inputImagenRef.current?.click()}
-                                    >
-                                        Subir imagen
-                                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                                            <path d="M7 17a4 4 0 0 1 0-8 5.5 5.5 0 0 1 10.5-1.7A3.8 3.8 0 0 1 18 17" />
-                                            <path d="M12 11v8" />
-                                            <path d="m8.9 13.8 3.1-3.1 3.1 3.1" />
-                                        </svg>
-                                    </button>
-
-                                    <input
-                                        ref={inputImagenRef}
-                                        type="file"
-                                        accept="image/*"
-                                        className="inventarioInputArchivo"
-                                        onChange={manejarSeleccionImagen}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="inventarioAccionesFormulario">
-                                <button className="inventarioBotonGuardar" type="submit">
-                                    Guardar producto
-                                </button>
-
-                                <button
-                                    className="inventarioBotonGuardar"
-                                    type="button"
-                                    onClick={() => guardarProducto(true)}
-                                >
-                                    Guardar y añadir otro
-                                </button>
-                            </div>
-                        </form>
-                    </section>
-                ) : (
+                {vistaActual === 'lista' && (
                 <section className="inventarioPanel">
                     <h3 className="inventarioSubtitulo">Lista de productos:</h3>
 
@@ -369,7 +260,12 @@ function Inventario() {
                                     <tr key={producto.id} className="inventarioFila">
                                         <td>
                                             <div className="inventarioCeldaNombre">
-                                                <button className="inventarioAccion inventarioAccionEditar" type="button" aria-label={`Editar ${producto.nombre}`}>
+                                                <button
+                                                    className="inventarioAccion inventarioAccionEditar"
+                                                    type="button"
+                                                    aria-label={`Editar ${producto.nombre}`}
+                                                    onClick={() => abrirVistaEditarProducto(producto)}
+                                                >
                                                     <svg viewBox="0 0 24 24" focusable="false">
                                                         <path d="M4 20h4l10-10-4-4L4 16z" />
                                                         <path d="m12.8 6.8 4 4" />

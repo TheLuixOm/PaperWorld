@@ -31,7 +31,10 @@ function Inicio() {
 
   const vendidosTotales = productosIniciales.reduce((suma, producto) => suma + producto.vendidos, 0);
   const stockTotal = productosIniciales.reduce((suma, producto) => suma + producto.cantidad, 0);
-  const porcentajeVendido = Math.round((vendidosTotales / (vendidosTotales + stockTotal)) * 100);
+  const totalInventario = vendidosTotales + stockTotal;
+  const porcentajeVendido = totalInventario > 0
+    ? Math.round((vendidosTotales / totalInventario) * 100)
+    : 0;
 
   return (
     <section className="inicioVista" id="inicio">

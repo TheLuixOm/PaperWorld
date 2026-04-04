@@ -40,10 +40,6 @@
   justify-self: start;
 }
 
-.inventarioAvatar {
-  justify-self: end;
-}
-
 .inventarioTitulo {
   margin: 0;
   font-size: clamp(28px, 3vw, 38px);
@@ -165,138 +161,6 @@
   border: 1.6px solid rgba(255, 255, 255, 0.95);
   font-size: 17px;
   line-height: 1;
-}
-
-.inventarioAvatar {
-  width: 44px;
-  height: 44px;
-  border: 1px solid #d9e2ec;
-  border-radius: 50%;
-  background: #ffffff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #6b7280;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.05);
-}
-
-.inventarioPerfilAccion {
-  position: relative;
-  justify-self: end;
-}
-
-.inventarioPerfilPanel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 284px;
-  min-height: 100svh;
-  padding: 18px 14px 16px;
-  border: 1px solid #e5ebf3;
-  border-radius: 0;
-  background: #f8f8ff;
-  box-shadow: -10px 0 28px rgba(15, 23, 42, 0.12);
-  display: flex;
-  flex-direction: column;
-  z-index: 20;
-}
-
-.inventarioPerfilCabecera {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.inventarioPerfilIdentidad {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.inventarioPerfilAvatarGrande {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1990d0, #146ea1);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 800;
-  flex: 0 0 auto;
-}
-
-.inventarioPerfilNombre {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 800;
-  color: #111827;
-  word-break: break-word;
-}
-
-.inventarioPerfilSubtexto {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.inventarioPerfilMas {
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 3px;
-  width: 14px;
-  height: 18px;
-  padding-top: 1px;
-}
-
-.inventarioPerfilMas span {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #1f78ff;
-  display: block;
-}
-
-.inventarioPerfilTitulo {
-  margin: 16px 0 10px;
-  font-size: 15px;
-  font-weight: 800;
-  color: #2f3440;
-}
-
-.inventarioPerfilOpcion {
-  width: 100%;
-  border: none;
-  background: transparent;
-  color: #7587a0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.inventarioPerfilOpcion svg {
-  width: 15px;
-  height: 15px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  flex: 0 0 auto;
-}
-
-.inventarioPerfilOpcion:hover {
-  color: #1990d0;
 }
 
 .inventarioPanel {
@@ -756,11 +620,6 @@
     overflow-x: auto;
   }
 
-  .inventarioPerfilPanel {
-    width: min(284px, calc(100vw - 32px));
-    min-height: 100svh;
-  }
-
   .inventarioBotonGuardar {
     min-width: 220px;
   }
@@ -1010,35 +869,10 @@
     background: #f3f5fa;
   }
 
-  .inventarioListaMovilCeldaCheckbox,
-  .inventarioMovilCheck {
-    display: none;
-  }
-
   .inventarioListaMovilCeldaNombre {
     font-size: 14px;
     color: #6a7992;
     font-weight: 700;
-  }
-
-  .inventarioListaMovilCeldaCheckbox input,
-  .inventarioMovilCheck input,
-  .inventarioListaMovilCeldaCheckbox input[type='checkbox'],
-  .inventarioMovilCheck input[type='checkbox'] {
-    width: 14px;
-    height: 14px;
-    appearance: none;
-    border: 1px solid #cfd7e2;
-    border-radius: 3px;
-    background: #ffffff;
-    margin: 0;
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .inventarioMovilCheck input:checked {
-    background: #0284c7;
-    border-color: #0284c7;
   }
 
   .inventarioMovilItem {
@@ -1079,12 +913,6 @@
 
   .inventarioMovilAlternar[aria-expanded='true'] svg {
     transform: rotate(90deg);
-  }
-
-  .inventarioMovilCheck {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .inventarioMovilNombre {
@@ -1264,6 +1092,14 @@
   height: 54px;
   border-radius: 8px;
   font-size: 18px;
+}
+
+.inventarioVistaEditar .inventarioTituloAgregar {
+  color: #1990d0;
+}
+
+.inventarioVistaEditar .inventarioFormularioAgregar {
+  gap: 14px;
 }
 
 @media (max-width: 1200px) {
