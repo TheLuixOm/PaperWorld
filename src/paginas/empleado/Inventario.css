@@ -516,10 +516,10 @@
   padding: 14px 16px;
   font-size: 15px;
   font-weight: 700;
-  color: #8590a3;
+  color: #6b7280;
   text-align: left;
   text-transform: lowercase;
-  background: #ffffff;
+  background: #f4f5fc;
 }
 
 .inventarioTabla thead th:first-child {
@@ -564,10 +564,10 @@
 .inventarioAccion {
   width: 36px;
   height: 36px;
-  border: 1px solid #d9e2ec;
+  border: 1px solid #c3cbd8;
   border-radius: 12px;
-  background: #ffffff;
-  color: #607187;
+  background: #f4f5fc;
+  color: #6b7280;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -588,9 +588,9 @@
 
 .inventarioAccionEditar:hover,
 .inventarioAccionEliminar:hover {
-  border-color: #067bb6;
-  color: #067bb6;
-  background: #eef7ff;
+  border-color: #6b7280;
+  color: #6b7280;
+  background: #f4f5fc;
 }
 
 .inventarioImagen {
@@ -1007,7 +1007,7 @@
     min-height: 40px;
     padding: 0 10px;
     border-bottom: 1px solid #d5dce8;
-    background: #ffffff;
+    background: #f4f5fc;
   }
 
   .inventarioListaMovilCeldaCheckbox,
