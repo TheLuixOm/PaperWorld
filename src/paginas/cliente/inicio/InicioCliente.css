@@ -235,8 +235,41 @@
   display: grid;
   align-content: center;
   justify-items: center;
-  padding: 26px 18px 20px;
+  padding: 26px clamp(120px, 20vw, 280px) 20px;
   position: relative;
+}
+
+.inicioClienteHeroMarco::before,
+.inicioClienteHeroMarco::after {
+  content: '';
+  position: absolute;
+  width: clamp(150px, 30vw, 500px);
+  height: 100%;
+  background-image: url('../../../images/Imagen_inicio.svg');
+  background-position: center;
+  background-size: cover;
+  opacity: 0.85;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.inicioClienteHeroMarco::before {
+  left: 0;
+  border-top-right-radius: 20%;
+  border-bottom-right-radius: 10%;
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 72%, rgba(0, 0, 0, 0) 100%);
+}
+
+.inicioClienteHeroMarco::after {
+  right: 0;
+  border-top-left-radius: 20%;
+  border-bottom-left-radius: 10%;
+  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 72%, rgba(0, 0, 0, 0) 100%);
+}
+
+.inicioClienteHeroMarco > * {
+  position: relative;
+  z-index: 2;
 }
 
 .inicioClienteHeroTexto {

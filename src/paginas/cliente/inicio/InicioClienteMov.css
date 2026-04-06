@@ -187,9 +187,44 @@
     radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 45%),
     radial-gradient(circle at 80% 40%, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 52%),
     linear-gradient(135deg, #0b3a6a 0%, #124e8e 40%, #0b3a6a 100%);
-  padding: 18px 14px 14px;
+  padding: 18px clamp(64px, 24vw, 98px) 14px;
   text-align: center;
   color: #ffffff;
+  position: relative;
+}
+
+.inicioClienteMovHeroMarco::before,
+.inicioClienteMovHeroMarco::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(75px, 15vw, 120px);
+  background-image: url('../../../images/Imagen_inicio.svg');
+  background-position: center;
+  background-size: cover;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.inicioClienteMovHeroMarco::before {
+  left: 0;
+  border-top-right-radius: 20%;
+  border-bottom-right-radius: 10%;
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+}
+
+.inicioClienteMovHeroMarco::after {
+  right: 0;
+  border-top-left-radius: 20%;
+  border-bottom-left-radius: 10%;
+  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+}
+
+.inicioClienteMovHeroMarco > * {
+  position: relative;
+  z-index: 2;
 }
 
 .inicioClienteMovHeroKicker {
