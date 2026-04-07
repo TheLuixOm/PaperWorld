@@ -16,6 +16,7 @@ import CatalogoCliente from './paginas/cliente/catalogo/Catalogo'
 import CatalogoMov from './paginas/cliente/catalogo/CatalogoMov'
 import CarritoCliente from './paginas/cliente/carrito/Carrito'
 import CarritoMov from './paginas/cliente/carrito/CarritoMov.tsx'
+import Ventas_Esc from './paginas/empleado/Ventas/Ventas_Esc.tsx'
 
 const puntoCorteMovil = 900 
 
@@ -65,7 +66,7 @@ function Aplicacion() {
       <Route element={<Empleado />}>
         <Route path="/dashboard" element={<InicioEmpleado />} />
         <Route path="/inventario" element={<Inventario />} />
-        <Route path="/ventas" element={<VistaEmpleado titulo="Ventas" />} />
+        <Route path="/ventas" element={<Ventas_Esc />} />
         <Route path="/proveedores" element={<Proveedores />} />
         <Route path="/proveedores/agregar" element={<AgregarProveedores />} />
         <Route path="/reportes" element={<VistaEmpleado titulo="Reportes" />} />

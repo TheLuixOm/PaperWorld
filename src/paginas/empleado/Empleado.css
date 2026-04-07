@@ -4,8 +4,8 @@
   height: 100svh;
   display: grid;
   grid-template-columns: var(--anchoSidebar) minmax(0, 1fr);
-  background: #f6f7fb;
-  color: #1f2937;
+  background: #ffffff;
+  color: #2c2c2c;
   font-family: 'Inter', sans-serif;
   transition: grid-template-columns 0.25s ease;
   overflow: hidden;
