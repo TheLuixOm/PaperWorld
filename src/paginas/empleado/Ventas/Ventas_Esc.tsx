@@ -143,7 +143,11 @@ function Ventas_Esc() {
                 <section className="inventarioVista ventas_esc" id="ventas"> 
                     <header className='encabezado'>  
                 <h2 className="VentasTitulo">Ventas</h2>
-                <div className="busqueda-wrap">
+                <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
+               </header>
+               
+                    <div className="panel-detalle">
+                        <div className="busqueda-wrap">
                     <input className='busqueda'
                                 type="text"
                                 placeholder="Buscar producto por nombre o ID..."
@@ -171,30 +175,16 @@ function Ventas_Esc() {
                         </ul>
                     )}
                 </div>
-
-                <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
-                
-               </header>
-
-                    
-                    <h3 className='VentasSubtitulo'>Producto seleccionado</h3> 
-                    <div className="panel-detalle">
-                        
-                            {productoSeleccionado ? (
-
-                                <>
-                                <h2 className='descripcion_producto'>{productoSeleccionado.nombre}</h2>
-                               
+                            {productoSeleccionado ? (          
                                 <div className="detalle-producto">
-                                    
-                                    <p>ID: {productoSeleccionado.id}</p>
-                                    <p>Categoria: {productoSeleccionado.categoria}</p>
-                                    <p>Precio: {productoSeleccionado.precio}</p>
-                                    <p>Cantidad: {productoSeleccionado.cantidad}</p>
-                                    <p>Vendidos: {productoSeleccionado.vendidos}</p>
+                                    <p><strong>Nombre:</strong> {productoSeleccionado.nombre}</p>
+                                    <p><strong>ID:</strong> {productoSeleccionado.id}</p>
+                                    <p><strong>Categoria:</strong> {productoSeleccionado.categoria}</p>
+                                    <p><strong>Precio:</strong> {productoSeleccionado.precio}</p>
+                                    <p><strong>Cantidad:</strong> {productoSeleccionado.cantidad}</p>
+                                    <p><strong>Vendidos:</strong> {productoSeleccionado.vendidos}</p>
                                     <p><img className="inventarioImagen" src={productoSeleccionado.imagen} alt={productoSeleccionado.nombre} /></p>
-                                </div>
-                                </>
+                                </div>                        
                             ) : null}
 
                     </div>
