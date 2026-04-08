@@ -10,6 +10,7 @@ import Proveedores from './paginas/empleado/Proveedores'
 import AgregarProveedores from './paginas/empleado/agregar_proveedores'
 import VistaEmpleado from './paginas/empleado/VistaEmpleado'
 import InicioEmpleado from './paginas/empleado/Inicio'
+import Reportes from './paginas/empleado/reportes/Reportes'
 import InicioCliente from './paginas/cliente/inicio/InicioCliente'
 import InicioClienteMov from './paginas/cliente/inicio/InicioClienteMov'
 import CatalogoCliente from './paginas/cliente/catalogo/Catalogo'
@@ -69,7 +70,7 @@ function Aplicacion() {
         <Route path="/ventas" element={<Ventas_Esc />} />
         <Route path="/proveedores" element={<Proveedores />} />
         <Route path="/proveedores/agregar" element={<AgregarProveedores />} />
-        <Route path="/reportes" element={<VistaEmpleado titulo="Reportes" />} />
+        <Route path="/reportes" element={<Reportes />} />
         <Route path="/ayuda" element={<VistaEmpleado titulo="Ayuda" />} />
         <Route path="/ajustes" element={<VistaEmpleado titulo="Configuracion" />} />
       </Route>
