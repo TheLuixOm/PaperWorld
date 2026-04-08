@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import UsuarioMenu from '../../empleado/UsuarioMenu';
+import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import clipAzul from '../../../images/Clip_azul.svg';
 import reactLogo from '../../../assets/react.svg';
 import '../inicio/InicioCliente.css';

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import '../Inventario.css';
+import '../inventario/Inventario.css';
 import './Ventas_Esc.css';
 import { productosIniciales, type Producto } from '../datosInventario';
-import UsuarioMenu from '../UsuarioMenu';
+import UsuarioMenu from '../Barras/UsuarioMenu';
 
 type ItemVenta = {
     producto: Producto;

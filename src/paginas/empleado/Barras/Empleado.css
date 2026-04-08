@@ -115,6 +115,13 @@
   box-shadow: 0 6px 18px rgba(25, 144, 208, 0.22);
 }
 
+.empleadoMenuItemActivo:hover {
+  background: #1990d0;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(25, 144, 208, 0.22);
+}
+
+
 .empleadoMenuIcono {
   width: 24px;
   height: 24px;

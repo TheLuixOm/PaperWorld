@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import './Inventario.css';
-import { productosIniciales, type Producto } from './datosInventario';
-import UsuarioMenu from './UsuarioMenu';
+import { productosIniciales, type Producto } from '../datosInventario';
+import UsuarioMenu from '../Barras/UsuarioMenu';
 import AgregarProducto, { type DatosAgregarProducto } from './AgregarProducto';
 import ModificarProducto from './ModificarProducto';
 import { type DatosModificarProducto } from './ModificarProducto';

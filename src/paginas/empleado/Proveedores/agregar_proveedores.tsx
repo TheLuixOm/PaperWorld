@@ -1,6 +1,6 @@
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Inventario.css';
+import '../inventario/Inventario.css';
 import './agregar_proveedores.css';
 
 type FormularioProveedor = {
