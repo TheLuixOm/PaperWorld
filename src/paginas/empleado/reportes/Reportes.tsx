@@ -139,6 +139,40 @@ function Reportes() {
     );
   }, [inventario, busquedaInventario]);
 
+  const navegacionTabs = (
+    <div className="reportesBottom">
+      <div className="reportesTabs" role="tablist" aria-label="Secciones de reportes">
+        <button
+          type="button"
+          className={`reportesTab ${tab === 'ventas' ? 'reportesTabActiva' : ''}`}
+          onClick={() => setTab('ventas')}
+          role="tab"
+          aria-selected={tab === 'ventas'}
+        >
+          Ventas
+        </button>
+        <button
+          type="button"
+          className={`reportesTab ${tab === 'pedidos' ? 'reportesTabActiva' : ''}`}
+          onClick={() => setTab('pedidos')}
+          role="tab"
+          aria-selected={tab === 'pedidos'}
+        >
+          Pedidos
+        </button>
+        <button
+          type="button"
+          className={`reportesTab ${tab === 'inventario' ? 'reportesTabActiva' : ''}`}
+          onClick={() => setTab('inventario')}
+          role="tab"
+          aria-selected={tab === 'inventario'}
+        >
+          Inventario
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <section className="inventarioVista reportesVista" id="reportes">
       <header className="inventarioEncabezado reportesEncabezado">
@@ -146,54 +180,7 @@ function Reportes() {
           <h2 className="inventarioTitulo">REPORTES</h2>
 
           <div className="reportesTopAcciones">
-            <div className="reportesResumen" aria-label="Resumen">
-              <div className="reportesKpi">
-                <p className="reportesKpiLabel">Ventas procesadas</p>
-                <p className="reportesKpiValor">{formatearDinero(totalVentas)}</p>
-              </div>
-              <div className="reportesKpi">
-                <p className="reportesKpiLabel">Pedidos (carrito)</p>
-                <p className="reportesKpiValor">{formatearDinero(totalPedidos)}</p>
-              </div>
-              <div className="reportesKpi">
-                <p className="reportesKpiLabel">Stock bajo</p>
-                <p className="reportesKpiValor">{stockBajo}</p>
-              </div>
-            </div>
-
             <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
-          </div>
-        </div>
-
-        <div className="reportesBottom">
-          <div className="reportesTabs" role="tablist" aria-label="Secciones de reportes">
-            <button
-              type="button"
-              className={`reportesTab ${tab === 'ventas' ? 'reportesTabActiva' : ''}`}
-              onClick={() => setTab('ventas')}
-              role="tab"
-              aria-selected={tab === 'ventas'}
-            >
-              Ventas
-            </button>
-            <button
-              type="button"
-              className={`reportesTab ${tab === 'pedidos' ? 'reportesTabActiva' : ''}`}
-              onClick={() => setTab('pedidos')}
-              role="tab"
-              aria-selected={tab === 'pedidos'}
-            >
-              Pedidos
-            </button>
-            <button
-              type="button"
-              className={`reportesTab ${tab === 'inventario' ? 'reportesTabActiva' : ''}`}
-              onClick={() => setTab('inventario')}
-              role="tab"
-              aria-selected={tab === 'inventario'}
-            >
-              Inventario
-            </button>
           </div>
         </div>
       </header>
@@ -202,6 +189,7 @@ function Reportes() {
         {tab === 'ventas' && (
           <>
             <div className="reportesSeccionHeader">
+              {navegacionTabs}
               <h3 className="inventarioSubtitulo reportesSubtitulo">Registro de ventas procesadas</h3>
 
               <div className="reportesBusquedaWrap">
@@ -215,6 +203,21 @@ function Reportes() {
                   value={busquedaVentas}
                   onChange={(e) => setBusquedaVentas(e.target.value)}
                 />
+              </div>
+
+              <div className="reportesResumen" aria-label="Resumen">
+                <div className="reportesKpi">
+                  <p className="reportesKpiLabel">Ventas procesadas</p>
+                  <p className="reportesKpiValor">{formatearDinero(totalVentas)}</p>
+                </div>
+                <div className="reportesKpi">
+                  <p className="reportesKpiLabel">Pedidos (carrito)</p>
+                  <p className="reportesKpiValor">{formatearDinero(totalPedidos)}</p>
+                </div>
+                <div className="reportesKpi">
+                  <p className="reportesKpiLabel">Stock bajo</p>
+                  <p className="reportesKpiValor">{stockBajo}</p>
+                </div>
               </div>
             </div>
 
@@ -272,6 +275,7 @@ function Reportes() {
         {tab === 'pedidos' && (
           <>
             <div className="reportesSeccionHeader">
+              {navegacionTabs}
               <h3 className="inventarioSubtitulo reportesSubtitulo">Pedidos pendientes (procesados desde carrito)</h3>
 
               <div className="reportesBusquedaWrap">
@@ -351,6 +355,7 @@ function Reportes() {
         {tab === 'inventario' && (
           <>
             <div className="reportesSeccionHeader">
+              {navegacionTabs}
               <h3 className="inventarioSubtitulo reportesSubtitulo">Stock bajo y cambios recientes de inventario</h3>
 
               <div className="reportesBusquedaWrap">
