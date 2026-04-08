@@ -11,14 +11,30 @@ function Inventario() {
     const [productos, setProductos] = useState(productosIniciales);
     const [vistaActual, setVistaActual] = useState<'lista' | 'agregar' | 'modificar'>('lista');
     const [productoEnEdicion, setProductoEnEdicion] = useState<Producto | null>(null);
+    const [productoPendienteEliminar, setProductoPendienteEliminar] = useState<Producto | null>(null);
     const [paginaActual, setPaginaActual] = useState(1);
     const [productoExpandidoId, setProductoExpandidoId] = useState<string | null>(null);
     const [busquedaMovilActiva, setBusquedaMovilActiva] = useState(false);
     const inputBusquedaRef = useRef<HTMLInputElement | null>(null);
     const productosPorPagina = 8;
 
-    const eliminarProducto = (id: string) => {
-        setProductos((productosActuales) => productosActuales.filter((producto) => producto.id !== id));
+    const solicitarEliminarProducto = (producto: Producto) => {
+        setProductoPendienteEliminar(producto);
+    };
+
+    const confirmarEliminarProducto = () => {
+        if (!productoPendienteEliminar) {
+            return;
+        }
+
+        setProductos((productosActuales) =>
+            productosActuales.filter((producto) => producto.id !== productoPendienteEliminar.id)
+        );
+        setProductoPendienteEliminar(null);
+    };
+
+    const cancelarEliminarProducto = () => {
+        setProductoPendienteEliminar(null);
     };
 
     const productosFiltrados = useMemo(() => {
@@ -286,7 +302,7 @@ function Inventario() {
                                                 className="inventarioAccion inventarioAccionEliminar"
                                                 type="button"
                                                 aria-label={`Eliminar ${producto.nombre}`}
-                                                onClick={() => eliminarProducto(producto.id)}
+                                                    onClick={() => solicitarEliminarProducto(producto)}
                                             >
                                                 <svg viewBox="0 0 24 24" focusable="false">
                                                     <path d="M5 7h14" />
@@ -395,6 +411,35 @@ function Inventario() {
                             ›
                         </button>
                     </div>
+
+                    {productoPendienteEliminar && (
+                        <div className="inventarioModalOverlay" role="presentation" onClick={cancelarEliminarProducto}>
+                            <div
+                                className="inventarioModalEliminar"
+                                role="dialog"
+                                aria-modal="true"
+                                aria-labelledby="confirmar-eliminacion-titulo"
+                                aria-describedby="confirmar-eliminacion-mensaje"
+                                onClick={(event) => event.stopPropagation()}
+                            >
+                                <h4 id="confirmar-eliminacion-titulo" className="inventarioModalTitulo">
+                                    Eliminar producto
+                                </h4>
+                                <p id="confirmar-eliminacion-mensaje" className="inventarioModalMensaje">
+                                    ¿Desea eliminar este producto?
+                                </p>
+
+                                <div className="inventarioModalAcciones">
+                                    <button type="button" className="inventarioModalBoton inventarioModalBotonCancelar" onClick={cancelarEliminarProducto}>
+                                        No
+                                    </button>
+                                    <button type="button" className="inventarioModalBoton inventarioModalBotonEliminar" onClick={confirmarEliminarProducto}>
+                                        Sí, eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </section>
                 )}
         </section>

@@ -500,6 +500,94 @@
   border-color: #1990d0;
 }
 
+.inventarioModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 50;
+}
+
+.inventarioModalEliminar {
+  width: min(100%, 360px);
+  border-radius: 18px;
+  border: 1px solid #dbe3ee;
+  background: #ffffff;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+  padding: 20px 18px 18px;
+}
+
+.inventarioModalTitulo {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.inventarioModalMensaje {
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #4b5563;
+}
+
+.inventarioModalAcciones {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.inventarioModalBoton {
+  min-width: 96px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  padding: 0 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.inventarioModalBotonCancelar {
+  background: #f4f5fc;
+  color: #374151;
+  border-color: #d7deea;
+}
+
+.inventarioModalBotonEliminar {
+  background: #067bb6;
+  color: #ffffff;
+  border-color: #067bb6;
+}
+
+.inventarioModalBotonCancelar:hover {
+  background: #e9eef6;
+}
+
+.inventarioModalBotonEliminar:hover {
+  background: #056694;
+  border-color: #056694;
+}
+
+@media (max-width: 520px) {
+  .inventarioModalEliminar {
+    width: min(100%, 320px);
+    padding: 18px 16px 16px;
+    border-radius: 16px;
+  }
+
+  .inventarioModalAcciones {
+    flex-direction: column-reverse;
+  }
+
+  .inventarioModalBoton {
+    width: 100%;
+  }
+}
+
 @media (max-width: 1100px) {
   .inventarioEncabezado {
     grid-template-columns: 1fr;
