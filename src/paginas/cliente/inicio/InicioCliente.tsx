@@ -1,34 +1,109 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import UsuarioMenu from '../../empleado/UsuarioMenu';
+import { productosIniciales } from '../../empleado/datosInventario';
 import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
 import clipAzul from '../../../images/Clip_azul.svg';
-import reactLogo from '../../../assets/react.svg';
 import './InicioCliente.css';
 
-type ProductoMasVendido = {
+type ProductoInicio = {
   id: string;
   nombre: string;
+  categoria: string;
   precio: number;
-  precioAnterior?: number;
-  descuento?: number;
   imagen: string;
+  vendidos: number;
 };
 
-const productosMasVendidos: ProductoMasVendido[] = [
-  { id: 'p-1', nombre: 'PINCEL', precio: 120, precioAnterior: 160, descuento: 40, imagen: reactLogo },
-  { id: 'p-2', nombre: 'Pinceles', precio: 960, precioAnterior: 1160, descuento: 35, imagen: reactLogo },
-  { id: 'p-3', nombre: 'Brocha', precio: 370, precioAnterior: 400, descuento: 30, imagen: reactLogo },
-  { id: 'p-4', nombre: 'combo', precio: 375, precioAnterior: 400, descuento: 25, imagen: reactLogo },
-  { id: 'p-5', nombre: 'brochas', precio: 375, precioAnterior: 400, descuento: 25, imagen: reactLogo },
-  { id: 'p-6', nombre: 'brocha', precio: 375, precioAnterior: 400, descuento: 25, imagen: reactLogo },
-  { id: 'p-7', nombre: 'Cuaderno', precio: 45, precioAnterior: 60, descuento: 25, imagen: reactLogo },
-  { id: 'p-8', nombre: 'Lapices', precio: 25, precioAnterior: 40, descuento: 37, imagen: reactLogo },
-  { id: 'p-9', nombre: 'Marcadores', precio: 55, precioAnterior: 80, descuento: 31, imagen: reactLogo },
-  { id: 'p-10', nombre: 'Resaltadores', precio: 30, precioAnterior: 45, descuento: 33, imagen: reactLogo },
-  { id: 'p-11', nombre: 'Carpeta', precio: 20, precioAnterior: 28, descuento: 28, imagen: reactLogo },
-  { id: 'p-12', nombre: 'Pegamento', precio: 15, precioAnterior: 22, descuento: 32, imagen: reactLogo },
-];
+function parsearPrecio(precio: string) {
+  const limpio = precio.replace(/[^0-9,.-]/g, '').replace(/,/g, '');
+  const numero = Number(limpio);
+  return Number.isFinite(numero) ? numero : 0;
+}
+
+function normalizarTexto(texto: string) {
+  return texto
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .trim();
+}
+
+function levenshtein(a: string, b: string) {
+  if (a === b) {
+    return 0;
+  }
+
+  const alen = a.length;
+  const blen = b.length;
+  if (!alen) {
+    return blen;
+  }
+  if (!blen) {
+    return alen;
+  }
+
+  const prev = new Array<number>(blen + 1);
+  const cur = new Array<number>(blen + 1);
+
+  for (let j = 0; j <= blen; j += 1) {
+    prev[j] = j;
+  }
+
+  for (let i = 1; i <= alen; i += 1) {
+    cur[0] = i;
+    const ca = a.charCodeAt(i - 1);
+
+    for (let j = 1; j <= blen; j += 1) {
+      const cb = b.charCodeAt(j - 1);
+      const cost = ca === cb ? 0 : 1;
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+    }
+
+    for (let j = 0; j <= blen; j += 1) {
+      prev[j] = cur[j];
+    }
+  }
+
+  return prev[blen];
+}
+
+function puntajeBusquedaAproximada(consulta: string, campos: string[]) {
+  const q = normalizarTexto(consulta);
+  if (!q) {
+    return 0;
+  }
+
+  const textos = campos.map((c) => normalizarTexto(c)).filter(Boolean);
+  if (!textos.length) {
+    return null;
+  }
+
+  for (const t of textos) {
+    if (t.includes(q)) {
+      return 0;
+    }
+  }
+
+  const palabras = textos
+    .flatMap((t) => t.split(/[^\p{L}\p{N}]+/gu))
+    .filter(Boolean);
+
+  const umbral = q.length <= 4 ? 1 : q.length <= 7 ? 2 : 3;
+  let mejor = Number.POSITIVE_INFINITY;
+  for (const palabra of palabras) {
+    mejor = Math.min(mejor, levenshtein(q, palabra));
+    if (mejor === 0) {
+      break;
+    }
+  }
+
+  if (mejor <= umbral) {
+    return 1 + mejor;
+  }
+
+  return null;
+}
 
 function IconoLupa() {
   return (
@@ -45,14 +120,6 @@ function IconoCarrito() {
       <circle cx="9" cy="19" r="1.6" />
       <circle cx="17" cy="19" r="1.6" />
       <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
-function IconoCorazon() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M12 20s-7-4.4-9.3-8.7C1 7.9 3.3 5 6.6 5c1.9 0 3.4 1 4.4 2.3C12 6 13.5 5 15.4 5c3.3 0 5.6 2.9 3.9 6.3C19 15.6 12 20 12 20z" />
     </svg>
   );
 }
@@ -100,14 +167,60 @@ function IconoFlecha({ direccion }: { direccion: 'izquierda' | 'derecha' }) {
 }
 
 function InicioCliente() {
-  const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
   const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoPcData | null>(null);
+  const [busquedaInicio, setBusquedaInicio] = useState('');
+  const [sugerenciasAbiertas, setSugerenciasAbiertas] = useState(false);
   const [arrastrando, setArrastrando] = useState(false);
   const carruselRef = useRef<HTMLDivElement | null>(null);
+  const buscadorRef = useRef<HTMLFormElement | null>(null);
+  const inputBusquedaRef = useRef<HTMLInputElement | null>(null);
   const arrastreRef = useRef<{ activo: boolean; x: number; scrollLeft: number; movio: boolean }>(
     { activo: false, x: 0, scrollLeft: 0, movio: false },
   );
   const pointerCapturadoRef = useRef(false);
+
+  const productosInicio = useMemo<ProductoInicio[]>(() => {
+    return productosIniciales.map((p) => ({
+      id: p.id,
+      nombre: p.nombre,
+      categoria: p.categoria,
+      precio: parsearPrecio(p.precio),
+      imagen: p.imagen,
+      vendidos: p.vendidos,
+    }));
+  }, []);
+
+  const productosMasVendidosBase = useMemo(() => {
+    return [...productosInicio].sort((a, b) => b.vendidos - a.vendidos).slice(0, 12);
+  }, [productosInicio]);
+
+  useEffect(() => {
+    const alPointerDown = (event: PointerEvent) => {
+      const contenedor = buscadorRef.current;
+      if (!contenedor) {
+        return;
+      }
+
+      const objetivo = event.target;
+      if (objetivo instanceof Node && !contenedor.contains(objetivo)) {
+        setSugerenciasAbiertas(false);
+      }
+    };
+
+    const alKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setSugerenciasAbiertas(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', alPointerDown);
+    document.addEventListener('keydown', alKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', alPointerDown);
+      document.removeEventListener('keydown', alKeyDown);
+    };
+  }, []);
 
   const obtenerPasoScroll = () => {
     const contenedor = carruselRef.current;
@@ -197,7 +310,7 @@ function InicioCliente() {
     }
   };
 
-  const abrirProducto = (producto: ProductoMasVendido, opciones?: { forzar?: boolean }) => {
+  const abrirProducto = (producto: ProductoInicio, opciones?: { forzar?: boolean }) => {
     if (!opciones?.forzar && arrastreRef.current.movio) {
       arrastreRef.current.movio = false;
       return;
@@ -210,6 +323,32 @@ function InicioCliente() {
       imagen: producto.imagen,
     });
   };
+
+  const productosConScore = useMemo(() => {
+    const consulta = busquedaInicio.trim();
+    if (!consulta) {
+      return productosInicio.map((p) => ({ producto: p, score: 0 }));
+    }
+
+    return productosInicio
+      .map((producto) => ({
+        producto,
+        score: puntajeBusquedaAproximada(consulta, [producto.nombre, producto.categoria, producto.id]),
+      }))
+      .filter((item): item is { producto: ProductoInicio; score: number } => item.score !== null);
+  }, [busquedaInicio, productosInicio]);
+
+  const sugerencias = useMemo(() => {
+    const consulta = busquedaInicio.trim();
+    if (!consulta) {
+      return [];
+    }
+
+    const ordenadas = [...productosConScore].sort((a, b) => a.score - b.score).map((x) => x.producto);
+    return ordenadas.slice(0, 6);
+  }, [busquedaInicio, productosConScore]);
+
+  const mostrarSugerencias = sugerenciasAbiertas && !!busquedaInicio.trim() && sugerencias.length > 0;
 
   return (
     <div className="inicioCliente" id="inicio-cliente">
@@ -226,7 +365,13 @@ function InicioCliente() {
               <span className="inicioClienteMarcaTexto">Paper world</span>
             </div>
 
-            <form className="inicioClienteBuscador" role="search" aria-label="Busqueda">
+            <form
+              className="inicioClienteBuscador"
+              role="search"
+              aria-label="Busqueda"
+              ref={buscadorRef}
+              onSubmit={(e) => e.preventDefault()}
+            >
               <span className="inicioClienteBuscadorIcono" aria-hidden="true">
                 <IconoLupa />
               </span>
@@ -236,7 +381,36 @@ function InicioCliente() {
                 placeholder="Busca por productos, categorias, etc..."
                 name="q"
                 autoComplete="off"
+                ref={inputBusquedaRef}
+                value={busquedaInicio}
+                onFocus={() => setSugerenciasAbiertas(true)}
+                onChange={(e) => {
+                  setBusquedaInicio(e.target.value);
+                  setSugerenciasAbiertas(true);
+                }}
               />
+
+              {mostrarSugerencias && (
+                <div className="inicioClienteSugerencias" role="listbox" aria-label="Sugerencias">
+                  {sugerencias.map((producto) => (
+                    <button
+                      key={producto.id}
+                      type="button"
+                      className="inicioClienteSugerencia"
+                      role="option"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        abrirProducto(producto, { forzar: true });
+                        setSugerenciasAbiertas(false);
+                        inputBusquedaRef.current?.focus();
+                      }}
+                    >
+                      <span className="inicioClienteSugerenciaNombre">{producto.nombre}</span>
+                      <span className="inicioClienteSugerenciaPrecio">AED {producto.precio.toFixed(2)}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </form>
 
             <div className="inicioClienteAcciones">
@@ -343,28 +517,10 @@ function InicioCliente() {
               onPointerUp={alFinalizarArrastre}
               onPointerCancel={alFinalizarArrastre}
             >
-              {productosMasVendidos.map((producto) => (
+              {productosMasVendidosBase.map((producto) => (
                 <article key={producto.id} className="inicioClienteProducto" role="listitem">
                   <div className="inicioClienteProductoMarco" onClick={() => abrirProducto(producto)}>
-                    {typeof producto.descuento === 'number' && (
-                      <span className="inicioClienteProductoDescuento">-{producto.descuento}%</span>
-                    )}
-
                     <div className="inicioClienteProductoAcciones" aria-label="Acciones">
-                      <button
-                        type="button"
-                        className={`inicioClienteProductoAccion ${
-                          favoritos[producto.id] ? 'inicioClienteProductoAccionActiva' : ''
-                        }`}
-                        aria-label="Agregar a favoritos"
-                        aria-pressed={!!favoritos[producto.id]}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }));
-                        }}
-                      >
-                        <IconoCorazon />
-                      </button>
                       <button
                         type="button"
                         className="inicioClienteProductoAccion"
@@ -386,12 +542,7 @@ function InicioCliente() {
                   <div className="inicioClienteProductoInfo">
                     <p className="inicioClienteProductoNombre">{producto.nombre}</p>
                     <p className="inicioClienteProductoPrecio">
-                      <span className="inicioClienteProductoPrecioActual">${producto.precio}</span>
-                      {typeof producto.precioAnterior === 'number' && (
-                        <span className="inicioClienteProductoPrecioAnterior">
-                          ${producto.precioAnterior}
-                        </span>
-                      )}
+                      <span className="inicioClienteProductoPrecioActual">AED {producto.precio.toFixed(2)}</span>
                     </p>
                   </div>
                 </article>

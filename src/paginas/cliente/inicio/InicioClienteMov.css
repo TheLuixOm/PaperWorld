@@ -275,8 +275,12 @@
   opacity: 0.92;
 }
 
-.inicioClienteMovBusqueda {
+.inicioClienteMovBusquedaWrap {
   margin-top: 10px;
+  position: relative;
+}
+
+.inicioClienteMovBusqueda {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -286,6 +290,57 @@
   background: #ffffff;
   padding: 0 12px;
   box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+}
+
+.inicioClienteMovSugerencias {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  background: #ffffff;
+  border: 1px solid rgba(34, 88, 155, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+  padding: 6px;
+  max-height: 240px;
+  overflow: auto;
+  z-index: 30;
+}
+
+.inicioClienteMovSugerencia {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+}
+
+.inicioClienteMovSugerencia:hover,
+.inicioClienteMovSugerencia:focus-visible {
+  background: rgba(6, 123, 182, 0.08);
+  outline: none;
+}
+
+.inicioClienteMovSugerenciaNombre {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.inicioClienteMovSugerenciaPrecio {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  white-space: nowrap;
 }
 
 .inicioClienteMovBusquedaIcono {
@@ -458,16 +513,6 @@
   place-items: center;
 }
 
-.inicioClienteMovAccionActiva {
-  color: #067bb6;
-  background: rgba(255, 255, 255, 0.92);
-}
-
-.inicioClienteMovAccionActiva svg {
-  fill: currentColor;
-  stroke: currentColor;
-}
-
 .inicioClienteMovAccion svg {
   width: 14px;
   height: 14px;
@@ -478,10 +523,17 @@
   stroke-linejoin: round;
 }
 
+.inicioClienteMovProductoImagen {
+  width: 100%;
+  height: 100%;
+}
+
 .inicioClienteMovProductoImagen img {
-  width: 84px;
-  height: 84px;
-  opacity: 0.75;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 1;
 }
 
 .inicioClienteMovProductoInfo {
@@ -504,7 +556,7 @@
 }
 
 .inicioClienteMovProductoPrecioActual {
-  color: #ef4444;
+  color: #0f172a;
   font-size: 11px;
   font-weight: 900;
 }

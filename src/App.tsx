@@ -20,7 +20,7 @@ import CarritoMov from './paginas/cliente/carrito/CarritoMov.tsx'
 import Ventas_Esc from './paginas/empleado/Ventas/Ventas_Esc.tsx'
 import Ventas_mov from './paginas/empleado/Ventas/Ventas_mov.tsx'
 
-const puntoCorteMovil = 900 
+const puntoCorteMovil = 500
 
 const obtenerEsMovil = () => {
   if (typeof window === 'undefined') {

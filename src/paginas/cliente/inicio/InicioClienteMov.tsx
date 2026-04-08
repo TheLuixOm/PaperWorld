@@ -1,29 +1,110 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import UsuarioMenu from '../../empleado/UsuarioMenu';
+import { productosIniciales } from '../../empleado/datosInventario';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
 import ProductoExpandidoMov, { type ProductoExpandidoMovData } from '../componentes/ProductoExpandidoMov';
 import clipAzul from '../../../images/Clip_azul.svg';
-import reactLogo from '../../../assets/react.svg';
 import './InicioClienteMov.css';
 
-type ProductoMasVendido = {
+type ProductoInicio = {
   id: string;
   nombre: string;
+  categoria: string;
   precio: number;
-  precioAnterior?: number;
-  descuento?: number;
   imagen: string;
+  vendidos: number;
 };
 
-const productosBase: ProductoMasVendido[] = [
-  { id: 'p-1', nombre: 'PINCEL', precio: 120, precioAnterior: 160, descuento: 40, imagen: reactLogo },
-  { id: 'p-2', nombre: 'brochas', precio: 375, precioAnterior: 400, descuento: 25, imagen: reactLogo },
-  { id: 'p-3', nombre: 'brochas', precio: 375, precioAnterior: 400, descuento: 25, imagen: reactLogo },
-  { id: 'p-4', nombre: 'Pinceles', precio: 960, precioAnterior: 1160, descuento: 35, imagen: reactLogo },
-  { id: 'p-5', nombre: 'Brocha', precio: 370, precioAnterior: 400, descuento: 30, imagen: reactLogo },
-  { id: 'p-6', nombre: 'combo', precio: 375, precioAnterior: 400, descuento: 25, imagen: reactLogo },
-];
+function parsearPrecio(precio: string) {
+  const limpio = precio.replace(/[^0-9,.-]/g, '').replace(/,/g, '');
+  const numero = Number(limpio);
+  return Number.isFinite(numero) ? numero : 0;
+}
+
+function normalizarTexto(texto: string) {
+  return texto
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .trim();
+}
+
+function levenshtein(a: string, b: string) {
+  if (a === b) {
+    return 0;
+  }
+
+  const alen = a.length;
+  const blen = b.length;
+  if (!alen) {
+    return blen;
+  }
+  if (!blen) {
+    return alen;
+  }
+
+  const prev = new Array<number>(blen + 1);
+  const cur = new Array<number>(blen + 1);
+
+  for (let j = 0; j <= blen; j += 1) {
+    prev[j] = j;
+  }
+
+  for (let i = 1; i <= alen; i += 1) {
+    cur[0] = i;
+    const ca = a.charCodeAt(i - 1);
+
+    for (let j = 1; j <= blen; j += 1) {
+      const cb = b.charCodeAt(j - 1);
+      const cost = ca === cb ? 0 : 1;
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+    }
+
+    for (let j = 0; j <= blen; j += 1) {
+      prev[j] = cur[j];
+    }
+  }
+
+  return prev[blen];
+}
+
+function puntajeBusquedaAproximada(consulta: string, campos: string[]) {
+  const q = normalizarTexto(consulta);
+  if (!q) {
+    return 0;
+  }
+
+  const textos = campos.map((c) => normalizarTexto(c)).filter(Boolean);
+  if (!textos.length) {
+    return null;
+  }
+
+  for (const t of textos) {
+    if (t.includes(q)) {
+      return 0;
+    }
+  }
+
+  const palabras = textos
+    .flatMap((t) => t.split(/[^\p{L}\p{N}]+/gu))
+    .filter(Boolean);
+
+  const umbral = q.length <= 4 ? 1 : q.length <= 7 ? 2 : 3;
+  let mejor = Number.POSITIVE_INFINITY;
+  for (const palabra of palabras) {
+    mejor = Math.min(mejor, levenshtein(q, palabra));
+    if (mejor === 0) {
+      break;
+    }
+  }
+
+  if (mejor <= umbral) {
+    return 1 + mejor;
+  }
+
+  return null;
+}
 
 function IconoHamburguesa() {
   return (
@@ -74,14 +155,6 @@ function IconoInicio() {
   );
 }
 
-function IconoCorazon() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M12 20s-7-4.4-9.3-8.7C1 7.9 3.3 5 6.6 5c1.9 0 3.4 1 4.4 2.3C12 6 13.5 5 15.4 5c3.3 0 5.6 2.9 3.9 6.3C19 15.6 12 20 12 20z" />
-    </svg>
-  );
-}
-
 function IconoOjo() {
   return (
     <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
@@ -93,15 +166,57 @@ function IconoOjo() {
 
 function InicioClienteMov() {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
   const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoMovData | null>(null);
+  const [busquedaInicio, setBusquedaInicio] = useState('');
+  const [sugerenciasAbiertas, setSugerenciasAbiertas] = useState(false);
   const footerRef = useRef<HTMLElement | null>(null);
   const [offsetFab, setOffsetFab] = useState(16);
 
-  const productosMasVendidos = useMemo(
-    () => [...productosBase, ...productosBase.map((p) => ({ ...p, id: `${p.id}-b` }))],
-    [],
-  );
+  const buscadorRef = useRef<HTMLDivElement | null>(null);
+  const inputBusquedaRef = useRef<HTMLInputElement | null>(null);
+
+  const productosInicio = useMemo<ProductoInicio[]>(() => {
+    return productosIniciales.map((p) => ({
+      id: p.id,
+      nombre: p.nombre,
+      categoria: p.categoria,
+      precio: parsearPrecio(p.precio),
+      imagen: p.imagen,
+      vendidos: p.vendidos,
+    }));
+  }, []);
+
+  const productosMasVendidosBase = useMemo(() => {
+    return [...productosInicio].sort((a, b) => b.vendidos - a.vendidos).slice(0, 12);
+  }, [productosInicio]);
+
+  useEffect(() => {
+    const alPointerDown = (event: PointerEvent) => {
+      const contenedor = buscadorRef.current;
+      if (!contenedor) {
+        return;
+      }
+
+      const objetivo = event.target;
+      if (objetivo instanceof Node && !contenedor.contains(objetivo)) {
+        setSugerenciasAbiertas(false);
+      }
+    };
+
+    const alKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setSugerenciasAbiertas(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', alPointerDown);
+    document.addEventListener('keydown', alKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', alPointerDown);
+      document.removeEventListener('keydown', alKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -185,7 +300,7 @@ function InicioClienteMov() {
     }
   };
 
-  const abrirProducto = (producto: ProductoMasVendido) => {
+  const abrirProducto = (producto: ProductoInicio) => {
     if (arrastreRef.current.movio) {
       arrastreRef.current.movio = false;
       return;
@@ -198,6 +313,32 @@ function InicioClienteMov() {
       imagen: producto.imagen,
     });
   };
+
+  const productosConScore = useMemo(() => {
+    const consulta = busquedaInicio.trim();
+    if (!consulta) {
+      return productosInicio.map((p) => ({ producto: p, score: 0 }));
+    }
+
+    return productosInicio
+      .map((producto) => ({
+        producto,
+        score: puntajeBusquedaAproximada(consulta, [producto.nombre, producto.categoria, producto.id]),
+      }))
+      .filter((item): item is { producto: ProductoInicio; score: number } => item.score !== null);
+  }, [busquedaInicio, productosInicio]);
+
+  const sugerencias = useMemo(() => {
+    const consulta = busquedaInicio.trim();
+    if (!consulta) {
+      return [];
+    }
+
+    const ordenadas = [...productosConScore].sort((a, b) => a.score - b.score).map((x) => x.producto);
+    return ordenadas.slice(0, 6);
+  }, [busquedaInicio, productosConScore]);
+
+  const mostrarSugerencias = sugerenciasAbiertas && !!busquedaInicio.trim() && sugerencias.length > 0;
 
   const desplazarCarrusel = (direccion: 'izquierda' | 'derecha') => {
     const contenedor = carruselRef.current;
@@ -299,16 +440,48 @@ function InicioClienteMov() {
           </div>
         </section>
 
-        <section className="inicioClienteMovBusqueda" aria-label="Buscar">
-          <span className="inicioClienteMovBusquedaIcono" aria-hidden="true">
-            <IconoLupa />
-          </span>
-          <input
-            className="inicioClienteMovBusquedaInput"
-            type="search"
-            placeholder="Buscar producto"
-            aria-label="Buscar producto"
-          />
+        <section className="inicioClienteMovBusquedaWrap" aria-label="Buscar" ref={buscadorRef}>
+          <div className="inicioClienteMovBusqueda">
+            <span className="inicioClienteMovBusquedaIcono" aria-hidden="true">
+              <IconoLupa />
+            </span>
+            <input
+              className="inicioClienteMovBusquedaInput"
+              type="search"
+              placeholder="Buscar producto"
+              aria-label="Buscar producto"
+              autoComplete="off"
+              ref={inputBusquedaRef}
+              value={busquedaInicio}
+              onFocus={() => setSugerenciasAbiertas(true)}
+              onChange={(e) => {
+                setBusquedaInicio(e.target.value);
+                setSugerenciasAbiertas(true);
+              }}
+            />
+          </div>
+
+          {mostrarSugerencias && (
+            <div className="inicioClienteMovSugerencias" role="listbox" aria-label="Sugerencias">
+              {sugerencias.map((producto) => (
+                <button
+                  key={producto.id}
+                  type="button"
+                  className="inicioClienteMovSugerencia"
+                  role="option"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    abrirProducto(producto);
+                    setSugerenciasAbiertas(false);
+                    inputBusquedaRef.current?.focus();
+                  }}
+                >
+                  <span className="inicioClienteMovSugerenciaNombre">{producto.nombre}</span>
+                  <span className="inicioClienteMovSugerenciaPrecio">AED {producto.precio.toFixed(2)}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="inicioClienteMovSeccion" aria-label="Mas vendidos">
@@ -346,7 +519,7 @@ function InicioClienteMov() {
               onPointerUp={alFinalizarArrastre}
               onPointerCancel={alFinalizarArrastre}
             >
-              {productosMasVendidos.map((producto) => (
+              {productosMasVendidosBase.map((producto) => (
                 <article
                   key={producto.id}
                   className="inicioClienteMovProducto"
@@ -364,23 +537,7 @@ function InicioClienteMov() {
                       }
                     }}
                   >
-                    {typeof producto.descuento === 'number' && (
-                      <span className="inicioClienteMovProductoDescuento">-{producto.descuento}%</span>
-                    )}
-
                     <div className="inicioClienteMovProductoAcciones" aria-label="Acciones">
-                      <button
-                        type="button"
-                        className={`inicioClienteMovAccion ${favoritos[producto.id] ? 'inicioClienteMovAccionActiva' : ''}`}
-                        aria-label="Favorito"
-                        aria-pressed={!!favoritos[producto.id]}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }));
-                        }}
-                      >
-                        <IconoCorazon />
-                      </button>
                       <button
                         type="button"
                         className="inicioClienteMovAccion"
@@ -402,10 +559,7 @@ function InicioClienteMov() {
                   <div className="inicioClienteMovProductoInfo">
                     <p className="inicioClienteMovProductoNombre">{producto.nombre}</p>
                     <p className="inicioClienteMovProductoPrecio">
-                      <span className="inicioClienteMovProductoPrecioActual">${producto.precio}</span>
-                      {typeof producto.precioAnterior === 'number' && (
-                        <span className="inicioClienteMovProductoPrecioAnterior">${producto.precioAnterior}</span>
-                      )}
+                      <span className="inicioClienteMovProductoPrecioActual">AED {producto.precio.toFixed(2)}</span>
                     </p>
                   </div>
                 </article>

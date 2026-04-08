@@ -1,47 +1,111 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import UsuarioMenu from '../../empleado/UsuarioMenu';
+import { productosIniciales } from '../../empleado/datosInventario';
 import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
 import clipAzul from '../../../images/Clip_azul.svg';
-import reactLogo from '../../../assets/react.svg';
 import '../inicio/InicioCliente.css';
 import './CatalogoCliente.css';
 
 type ProductoCatalogo = {
   id: string;
   nombre: string;
+  categoria: string;
   precio: number;
-  precioAnterior?: number;
-  etiqueta?: 'New' | 'Sale';
   imagen: string;
 };
 
-const categorias = [
-  'Papel',
-  'pinceles',
-  'pinceles',
-  'pinceles',
-  'pinceles',
-  'pinceles',
-  'pinceles',
-  'pinceles Color',
-  'pinceles',
-  'pinceles',
-  'pinceles',
-  'pinceles',
-  'pinceles',
-];
+type OrdenCatalogo = 'relevancia' | 'precio_desc' | 'precio_asc' | 'nombre_asc' | 'nombre_desc';
 
-const marcas = ['Brand name', 'Brand name', 'Brand name', 'Brand name', 'Brand name'];
+function parsearPrecio(precio: string) {
+  const limpio = precio.replace(/[^0-9,.-]/g, '').replace(/,/g, '');
+  const numero = Number(limpio);
+  return Number.isFinite(numero) ? numero : 0;
+}
 
-const productosCatalogo: ProductoCatalogo[] = Array.from({ length: 20 }).map((_, i) => ({
-  id: `c-${i + 1}`,
-  nombre: 'un producto de los kito muy',
-  precio: 76.6,
-  precioAnterior: 80.0,
-  etiqueta: i % 3 === 0 ? 'New' : i % 4 === 0 ? 'Sale' : undefined,
-  imagen: reactLogo,
-}));
+function normalizarTexto(texto: string) {
+  return texto
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .trim();
+}
+
+function levenshtein(a: string, b: string) {
+  if (a === b) {
+    return 0;
+  }
+
+  const alen = a.length;
+  const blen = b.length;
+  if (!alen) {
+    return blen;
+  }
+  if (!blen) {
+    return alen;
+  }
+
+  const prev = new Array<number>(blen + 1);
+  const cur = new Array<number>(blen + 1);
+
+  for (let j = 0; j <= blen; j += 1) {
+    prev[j] = j;
+  }
+
+  for (let i = 1; i <= alen; i += 1) {
+    cur[0] = i;
+    const ca = a.charCodeAt(i - 1);
+
+    for (let j = 1; j <= blen; j += 1) {
+      const cb = b.charCodeAt(j - 1);
+      const cost = ca === cb ? 0 : 1;
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+    }
+
+    for (let j = 0; j <= blen; j += 1) {
+      prev[j] = cur[j];
+    }
+  }
+
+  return prev[blen];
+}
+
+function puntajeBusquedaAproximada(consulta: string, campos: string[]) {
+  const q = normalizarTexto(consulta);
+  if (!q) {
+    return 0;
+  }
+
+  const textos = campos.map((c) => normalizarTexto(c)).filter(Boolean);
+  if (!textos.length) {
+    return null;
+  }
+
+  for (const t of textos) {
+    if (t.includes(q)) {
+      return 0;
+    }
+  }
+
+  const palabras = textos
+    .flatMap((t) => t.split(/[^\p{L}\p{N}]+/gu))
+    .filter(Boolean);
+
+  const umbral = q.length <= 4 ? 1 : q.length <= 7 ? 2 : 3;
+  let mejor = Number.POSITIVE_INFINITY;
+  for (const palabra of palabras) {
+    mejor = Math.min(mejor, levenshtein(q, palabra));
+    if (mejor === 0) {
+      break;
+    }
+  }
+
+  if (mejor <= umbral) {
+    return 1 + mejor;
+  }
+
+  return null;
+}
 
 function IconoLupa() {
   return (
@@ -92,6 +156,55 @@ function IconoChevronDerecha() {
 
 function CatalogoCliente() {
   const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoPcData | null>(null);
+  const [busquedaCatalogo, setBusquedaCatalogo] = useState('');
+  const [sugerenciasAbiertas, setSugerenciasAbiertas] = useState(false);
+  const [orden, setOrden] = useState<OrdenCatalogo>('relevancia');
+  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState<Set<string>>(() => new Set());
+  const buscadorRef = useRef<HTMLElement | null>(null);
+  const inputBusquedaRef = useRef<HTMLInputElement | null>(null);
+
+  const productosCatalogo = useMemo<ProductoCatalogo[]>(() => {
+    return productosIniciales.map((p) => ({
+      id: p.id,
+      nombre: p.nombre,
+      categoria: p.categoria,
+      precio: parsearPrecio(p.precio),
+      imagen: p.imagen,
+    }));
+  }, []);
+
+  const categorias = useMemo(() => {
+    const unicas = new Set(productosCatalogo.map((p) => p.categoria).filter(Boolean));
+    return Array.from(unicas).sort((a, b) => a.localeCompare(b));
+  }, [productosCatalogo]);
+
+  useEffect(() => {
+    const alPointerDown = (event: PointerEvent) => {
+      const contenedor = buscadorRef.current;
+      if (!contenedor) {
+        return;
+      }
+
+      const objetivo = event.target;
+      if (objetivo instanceof Node && !contenedor.contains(objetivo)) {
+        setSugerenciasAbiertas(false);
+      }
+    };
+
+    const alKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setSugerenciasAbiertas(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', alPointerDown);
+    document.addEventListener('keydown', alKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', alPointerDown);
+      document.removeEventListener('keydown', alKeyDown);
+    };
+  }, []);
 
   const abrirProducto = (producto: ProductoCatalogo) => {
     setProductoExpandido({
@@ -101,6 +214,64 @@ function CatalogoCliente() {
       imagen: producto.imagen,
     });
   };
+
+  const productosConScore = useMemo(() => {
+    const consulta = busquedaCatalogo.trim();
+    const filtradosPorCategoria = categoriasSeleccionadas.size
+      ? productosCatalogo.filter((p) => categoriasSeleccionadas.has(p.categoria))
+      : productosCatalogo;
+
+    if (!consulta) {
+      return filtradosPorCategoria.map((p) => ({ producto: p, score: 0 }));
+    }
+
+    return filtradosPorCategoria
+      .map((producto) => ({
+        producto,
+        score: puntajeBusquedaAproximada(consulta, [producto.nombre, producto.categoria, producto.id]),
+      }))
+      .filter((item): item is { producto: ProductoCatalogo; score: number } => item.score !== null);
+  }, [busquedaCatalogo, categoriasSeleccionadas, productosCatalogo]);
+
+  const productosFiltrados = useMemo(() => {
+    const consulta = busquedaCatalogo.trim();
+
+    const base = [...productosConScore];
+
+    if (orden === 'relevancia') {
+      if (consulta) {
+        base.sort((a, b) => a.score - b.score);
+      }
+      return base.map((x) => x.producto);
+    }
+
+    const productos = base.map((x) => x.producto);
+    if (orden === 'precio_desc') {
+      productos.sort((a, b) => b.precio - a.precio);
+    } else if (orden === 'precio_asc') {
+      productos.sort((a, b) => a.precio - b.precio);
+    } else if (orden === 'nombre_asc') {
+      productos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    } else if (orden === 'nombre_desc') {
+      productos.sort((a, b) => b.nombre.localeCompare(a.nombre));
+    }
+
+    return productos;
+  }, [busquedaCatalogo, productosConScore, orden]);
+
+  const sugerencias = useMemo(() => {
+    const consulta = busquedaCatalogo.trim();
+    if (!consulta) {
+      return [] as ProductoCatalogo[];
+    }
+
+    return [...productosConScore]
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 6)
+      .map((x) => x.producto);
+  }, [busquedaCatalogo, productosConScore]);
+
+  const mostrarSugerencias = sugerenciasAbiertas && busquedaCatalogo.trim().length > 0 && sugerencias.length > 0;
 
   return (
     <div className="inicioCliente catalogoCliente" id="catalogo-cliente">
@@ -199,7 +370,7 @@ function CatalogoCliente() {
           </div>
         </section>
 
-        <section className="catalogoClienteBusqueda" aria-label="Busqueda de catalogo">
+        <section className="catalogoClienteBusqueda" aria-label="Busqueda de catalogo" ref={buscadorRef}>
           <span className="catalogoClienteBusquedaIcono" aria-hidden="true">
             <IconoLupa />
           </span>
@@ -208,21 +379,70 @@ function CatalogoCliente() {
             type="search"
             placeholder="Catalogo, brand, etc..."
             aria-label="Buscar en catalogo"
+            ref={inputBusquedaRef}
+            value={busquedaCatalogo}
+            onFocus={() => setSugerenciasAbiertas(true)}
+            onChange={(e) => {
+              setBusquedaCatalogo(e.target.value);
+              setSugerenciasAbiertas(true);
+            }}
           />
+
+          {mostrarSugerencias && (
+            <div className="catalogoClienteSugerencias" role="listbox" aria-label="Sugerencias">
+              {sugerencias.map((producto) => (
+                <button
+                  key={producto.id}
+                  type="button"
+                  className="catalogoClienteSugerencia"
+                  role="option"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    abrirProducto(producto);
+                    setSugerenciasAbiertas(false);
+                    inputBusquedaRef.current?.focus();
+                  }}
+                >
+                  <span className="catalogoClienteSugerenciaNombre">{producto.nombre}</span>
+                  <span className="catalogoClienteSugerenciaPrecio">AED {producto.precio.toFixed(2)}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="catalogoClienteCuerpo" aria-label="Catalogo">
           <aside className="catalogoClienteFiltros" aria-label="Filtros">
             <article className="catalogoClienteFiltroBloque" aria-label="Filtro categoria">
               <header className="catalogoClienteFiltroEncabezado">
-                <h3 className="catalogoClienteFiltroTitulo">Catogory</h3>
-                <button type="button" className="catalogoClienteFiltroAll">ALL</button>
+                <h3 className="catalogoClienteFiltroTitulo">Categoria</h3>
+                <button
+                  type="button"
+                  className="catalogoClienteFiltroAll"
+                  onClick={() => setCategoriasSeleccionadas(new Set())}
+                >
+                  ALL
+                </button>
               </header>
 
               <div className="catalogoClienteFiltroLista" role="list">
                 {categorias.map((categoria, index) => (
                   <label key={`${categoria}-${index}`} className="catalogoClienteCheck" role="listitem">
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      checked={categoriasSeleccionadas.has(categoria)}
+                      onChange={(e) => {
+                        setCategoriasSeleccionadas((prev) => {
+                          const next = new Set(prev);
+                          if (e.target.checked) {
+                            next.add(categoria);
+                          } else {
+                            next.delete(categoria);
+                          }
+                          return next;
+                        });
+                      }}
+                    />
                     <span className="catalogoClienteCheckCaja" aria-hidden="true" />
                     <span className="catalogoClienteCheckTexto">{categoria}</span>
                   </label>
@@ -230,37 +450,71 @@ function CatalogoCliente() {
               </div>
             </article>
 
-            <article className="catalogoClienteFiltroBloque" aria-label="Filtro marca">
+            <article className="catalogoClienteFiltroBloque" aria-label="Ordenar">
               <header className="catalogoClienteFiltroEncabezado">
-                <h3 className="catalogoClienteFiltroTitulo">Algo</h3>
-                <button type="button" className="catalogoClienteFiltroAll">ALL</button>
+                <h3 className="catalogoClienteFiltroTitulo">Ordenar</h3>
+                <button
+                  type="button"
+                  className="catalogoClienteFiltroAll"
+                  onClick={() => setOrden('relevancia')}
+                >
+                  ALL
+                </button>
               </header>
 
               <div className="catalogoClienteFiltroLista" role="list">
-                {marcas.map((marca, index) => (
-                  <label key={`${marca}-${index}`} className="catalogoClienteCheck" role="listitem">
-                    <input type="checkbox" />
-                    <span className="catalogoClienteCheckCaja" aria-hidden="true" />
-                    <span className="catalogoClienteCheckTexto">{marca}</span>
-                  </label>
-                ))}
+                <label className="catalogoClienteCheck" role="listitem">
+                  <input
+                    type="radio"
+                    name="orden-catalogo"
+                    checked={orden === 'precio_desc'}
+                    onChange={() => setOrden('precio_desc')}
+                  />
+                  <span className="catalogoClienteCheckCaja" aria-hidden="true" />
+                  <span className="catalogoClienteCheckTexto">Precio (mayor a menor)</span>
+                </label>
+
+                <label className="catalogoClienteCheck" role="listitem">
+                  <input
+                    type="radio"
+                    name="orden-catalogo"
+                    checked={orden === 'precio_asc'}
+                    onChange={() => setOrden('precio_asc')}
+                  />
+                  <span className="catalogoClienteCheckCaja" aria-hidden="true" />
+                  <span className="catalogoClienteCheckTexto">Precio (menor a mayor)</span>
+                </label>
+
+                <label className="catalogoClienteCheck" role="listitem">
+                  <input
+                    type="radio"
+                    name="orden-catalogo"
+                    checked={orden === 'nombre_asc'}
+                    onChange={() => setOrden('nombre_asc')}
+                  />
+                  <span className="catalogoClienteCheckCaja" aria-hidden="true" />
+                  <span className="catalogoClienteCheckTexto">Nombre (A-Z)</span>
+                </label>
+
+                <label className="catalogoClienteCheck" role="listitem">
+                  <input
+                    type="radio"
+                    name="orden-catalogo"
+                    checked={orden === 'nombre_desc'}
+                    onChange={() => setOrden('nombre_desc')}
+                  />
+                  <span className="catalogoClienteCheckCaja" aria-hidden="true" />
+                  <span className="catalogoClienteCheckTexto">Nombre (Z-A)</span>
+                </label>
               </div>
             </article>
           </aside>
 
           <section className="catalogoClienteResultados" aria-label="Resultados">
             <div className="catalogoClienteGrid" role="list">
-              {productosCatalogo.map((producto) => (
+              {productosFiltrados.map((producto) => (
                 <article key={producto.id} className="catalogoClienteProducto" role="listitem">
                   <div className="catalogoClienteProductoMarco" onClick={() => abrirProducto(producto)}>
-                    {producto.etiqueta && (
-                      <span
-                        className={`catalogoClienteProductoTag ${producto.etiqueta === 'New' ? 'catalogoClienteProductoTagNew' : 'catalogoClienteProductoTagSale'}`}
-                      >
-                        {producto.etiqueta}
-                      </span>
-                    )}
-
                     <div className="catalogoClienteProductoImagen">
                       <img src={producto.imagen} alt={producto.nombre} loading="lazy" />
                     </div>
@@ -278,10 +532,7 @@ function CatalogoCliente() {
                   <div className="catalogoClienteProductoInfo">
                     <p className="catalogoClienteProductoNombre">{producto.nombre}</p>
                     <p className="catalogoClienteProductoPrecio">
-                      <span className="catalogoClienteProductoPrecioActual">AED {producto.precio}</span>
-                      {typeof producto.precioAnterior === 'number' && (
-                        <span className="catalogoClienteProductoPrecioAnterior">{producto.precioAnterior}</span>
-                      )}
+                      <span className="catalogoClienteProductoPrecioActual">AED {producto.precio.toFixed(2)}</span>
                     </p>
                   </div>
                 </article>

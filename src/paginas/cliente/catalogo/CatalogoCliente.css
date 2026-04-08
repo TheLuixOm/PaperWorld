@@ -11,6 +11,7 @@
 
 .catalogoClienteBusqueda {
   margin-top: 14px;
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -52,6 +53,57 @@
 
 .catalogoClienteBusquedaInput::placeholder {
   color: #94a3b8;
+}
+
+.catalogoClienteSugerencias {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  background: #ffffff;
+  border: 1px solid rgba(34, 88, 155, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+  padding: 6px;
+  max-height: 280px;
+  overflow: auto;
+  z-index: 30;
+}
+
+.catalogoClienteSugerencia {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+}
+
+.catalogoClienteSugerencia:hover,
+.catalogoClienteSugerencia:focus-visible {
+  background: rgba(6, 123, 182, 0.08);
+  outline: none;
+}
+
+.catalogoClienteSugerenciaNombre {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.catalogoClienteSugerenciaPrecio {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  white-space: nowrap;
 }
 
 .catalogoClienteCuerpo {
@@ -149,7 +201,7 @@
 
 .catalogoClienteGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: 12px;
 }
 
@@ -163,7 +215,7 @@
   background: #f1f5f9;
   border: 1px solid rgba(34, 88, 155, 0.12);
   overflow: hidden;
-  padding: 10px;
+  padding: 0;
   height: 126px;
   display: grid;
   place-items: center;
@@ -188,10 +240,17 @@
   background: #f59e0b;
 }
 
+.catalogoClienteProductoImagen {
+  width: 100%;
+  height: 100%;
+}
+
 .catalogoClienteProductoImagen img {
-  width: 72px;
-  height: 72px;
-  opacity: 0.75;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  display: block;
 }
 
 .catalogoClienteProductoCarrito {
@@ -318,7 +377,7 @@
   }
 }
 
-@media (max-width: 980px) {
+@media (max-width: 500px) {
   .catalogoClienteCuerpo {
     grid-template-columns: 1fr;
   }
@@ -328,7 +387,7 @@
   }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 500px) {
   .catalogoClienteGrid {
     grid-template-columns: 1fr;
   }

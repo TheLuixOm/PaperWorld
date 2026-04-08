@@ -2,11 +2,70 @@
   padding-bottom: 0;
 }
 
+.catalogoMovBusquedaWrap {
+  position: relative;
+}
+
+.catalogoMovSugerencias {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  background: #ffffff;
+  border: 1px solid rgba(34, 88, 155, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+  padding: 6px;
+  max-height: 240px;
+  overflow: auto;
+  z-index: 30;
+}
+
+.catalogoMovSugerencia {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+}
+
+.catalogoMovSugerencia:hover,
+.catalogoMovSugerencia:focus-visible {
+  background: rgba(6, 123, 182, 0.08);
+  outline: none;
+}
+
+.catalogoMovSugerenciaNombre {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.catalogoMovSugerenciaPrecio {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  white-space: nowrap;
+}
+
 .catalogoMovControles {
   margin-top: 10px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+}
+
+.catalogoMovControlesWrap {
+  position: relative;
 }
 
 .catalogoMovControl {
@@ -22,6 +81,92 @@
   font-size: 13px;
   font-weight: 900;
   color: #0f172a;
+}
+
+.catalogoMovControlActivo {
+  border-color: rgba(6, 123, 182, 0.35);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+}
+
+.catalogoMovPanel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  border-radius: 14px;
+  border: 1px solid rgba(34, 88, 155, 0.12);
+  background: #f3f5fb;
+  padding: 12px 12px 10px;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+  z-index: 26;
+}
+
+.catalogoMovPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2px 2px 10px;
+}
+
+.catalogoMovPanelTitle {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 900;
+  color: #067bb6;
+}
+
+.catalogoMovPanelAll {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.catalogoMovPanelLista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 240px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.catalogoMovOpcion {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.catalogoMovOpcion input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.catalogoMovOpcionCaja {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.catalogoMovOpcionTexto {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.catalogoMovOpcion:has(input:checked) .catalogoMovOpcionCaja {
+  background: #067BB6;
+  border-color: #067BB6;
 }
 
 .catalogoMovControlIcono {
@@ -122,9 +267,16 @@
 }
 
 .catalogoMovImagen img {
-  width: 92px;
-  height: 92px;
-  opacity: 0.72;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  display: block;
+}
+
+.catalogoMovImagen {
+  width: 100%;
+  height: 100%;
 }
 
 .catalogoMovMiniCarrito {
