@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, BookOpen, Eye, Home, Search, ShoppingCart } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import { productosIniciales } from '../../empleado/datosInventario';
+import { useCart } from '../carrito/CarritoContext';
 import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
 import clipAzul from '../../../images/Clip_azul.svg';
 import './InicioCliente.css';
@@ -105,68 +107,8 @@ function puntajeBusquedaAproximada(consulta: string, campos: string[]) {
   return null;
 }
 
-function IconoLupa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="11" cy="11" r="6.5" />
-      <path d="M16.2 16.2 21 21" />
-    </svg>
-  );
-}
-
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
-function IconoOjo() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" />
-      <circle cx="12" cy="12" r="2.7" />
-    </svg>
-  );
-}
-
-function IconoCatalogo() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M6 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 0-2 2V6a2 2 0 0 1 2-2z" />
-      <path d="M6 20h14" />
-      <path d="M9 8h8" />
-      <path d="M9 12h8" />
-    </svg>
-  );
-}
-
-function IconoInicio() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M3 10.5 12 3l9 7.5" />
-      <path d="M5 10v11h14V10" />
-    </svg>
-  );
-}
-
-function IconoFlecha({ direccion }: { direccion: 'izquierda' | 'derecha' }) {
-  const d =
-    direccion === 'izquierda'
-      ? 'M18 12H6M10.5 7.5 6 12l4.5 4.5'
-      : 'M6 12h12M13.5 7.5 18 12l-4.5 4.5';
-
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d={d} />
-    </svg>
-  );
-}
-
 function InicioCliente() {
+  const { addItem, totalItems, totalPrice } = useCart();
   const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoPcData | null>(null);
   const [busquedaInicio, setBusquedaInicio] = useState('');
   const [sugerenciasAbiertas, setSugerenciasAbiertas] = useState(false);
@@ -373,7 +315,7 @@ function InicioCliente() {
               onSubmit={(e) => e.preventDefault()}
             >
               <span className="inicioClienteBuscadorIcono" aria-hidden="true">
-                <IconoLupa />
+                <Search />
               </span>
               <input
                 className="inicioClienteBuscadorInput"
@@ -418,15 +360,15 @@ function InicioCliente() {
 
               <Link to="/cliente/carrito" className="inicioClienteCarrito" aria-label="Carrito">
                 <span className="inicioClienteCarritoIcono" aria-hidden="true">
-                  <IconoCarrito />
+                  <ShoppingCart />
                 </span>
                 <span className="inicioClienteCarritoContador" aria-label="Productos en carrito">
-                  0
+                  {totalItems}
                 </span>
               </Link>
 
               <p className="inicioClienteTotal" aria-label="Total del carrito">
-                AED 0.00
+                AED {totalPrice.toFixed(2)}
               </p>
             </div>
           </div>
@@ -439,7 +381,7 @@ function InicioCliente() {
               }
             >
               <span className="inicioClienteNavIcono" aria-hidden="true">
-                <IconoCatalogo />
+                <BookOpen />
               </span>
               <span className="inicioClienteNavTexto">Catalogo</span>
             </NavLink>
@@ -452,7 +394,7 @@ function InicioCliente() {
               end
             >
               <span className="inicioClienteNavIcono" aria-hidden="true">
-                <IconoInicio />
+                <Home />
               </span>
               <span className="inicioClienteNavTexto">Inicio</span>
             </NavLink>
@@ -496,7 +438,7 @@ function InicioCliente() {
                 onClick={() => desplazarCarrusel('izquierda')}
                 aria-label="Mover productos a la izquierda"
               >
-                <IconoFlecha direccion="izquierda" />
+                <ArrowLeft />
               </button>
               <button
                 type="button"
@@ -504,7 +446,7 @@ function InicioCliente() {
                 onClick={() => desplazarCarrusel('derecha')}
                 aria-label="Mover productos a la derecha"
               >
-                <IconoFlecha direccion="derecha" />
+                <ArrowRight />
               </button>
             </div>
 
@@ -530,7 +472,25 @@ function InicioCliente() {
                           abrirProducto(producto, { forzar: true });
                         }}
                       >
-                        <IconoOjo />
+                        <Eye />
+                      </button>
+
+                      <button
+                        type="button"
+                        className="inicioClienteProductoAccion"
+                        aria-label="Agregar al carrito"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addItem({
+                            id: producto.id,
+                            nombre: producto.nombre,
+                            precio: producto.precio,
+                            imagen: producto.imagen,
+                            categoria: producto.categoria,
+                          });
+                        }}
+                      >
+                        <ShoppingCart />
                       </button>
                     </div>
 

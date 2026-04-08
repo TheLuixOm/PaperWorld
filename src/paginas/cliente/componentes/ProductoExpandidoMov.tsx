@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { ChevronLeft, ShoppingCart } from 'lucide-react';
+import { useCart } from '../carrito/CarritoContext';
 import './ProductoExpandidoMov.css';
 
 const CIERRE_MS = 180;
@@ -21,25 +23,8 @@ type Props = {
   alCerrar: () => void;
 };
 
-function IconoAtras() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M15 18 9 12l6-6" />
-    </svg>
-  );
-}
-
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
 export default function ProductoExpandidoMov({ abierto, producto, alCerrar }: Props) {
+  const { addItem } = useCart();
   const [estadoAnimacion, setEstadoAnimacion] = useState<'opening' | 'open' | 'closing'>('opening');
   const cierreTimeoutRef = useRef<number | null>(null);
 
@@ -111,7 +96,7 @@ export default function ProductoExpandidoMov({ abierto, producto, alCerrar }: Pr
             aria-label="Volver"
             onClick={cerrarConAnimacion}
           >
-            <IconoAtras />
+            <ChevronLeft />
           </button>
         </div>
 
@@ -142,9 +127,21 @@ export default function ProductoExpandidoMov({ abierto, producto, alCerrar }: Pr
             <button type="button" className="productoExpandidoMovCancelar" onClick={cerrarConAnimacion}>
               Cancelar
             </button>
-            <button type="button" className="productoExpandidoMovAgregar">
+            <button
+              type="button"
+              className="productoExpandidoMovAgregar"
+              onClick={() => {
+                addItem({
+                  id: producto.id,
+                  nombre: producto.nombre,
+                  precio: producto.precio,
+                  imagen: producto.imagen,
+                  categoria: producto.categoria,
+                });
+              }}
+            >
               <span className="productoExpandidoMovAgregarIcono" aria-hidden="true">
-                <IconoCarrito />
+                <ShoppingCart />
               </span>
               <span>Añadir al carrito</span>
             </button>

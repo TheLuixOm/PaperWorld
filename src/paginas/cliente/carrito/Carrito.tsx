@@ -1,126 +1,24 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { BookOpen, Home, Search, ShoppingCart } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import clipAzul from '../../../images/Clip_azul.svg';
-import reactLogo from '../../../assets/react.svg';
+import { useCart } from './CarritoContext';
 import '../inicio/InicioCliente.css';
 import './CarritoCliente.css';
 
-type ItemCarritoPc = {
-  id: string;
-  nombre: string;
-  precio: number;
-  imagen: string;
-  order: string;
-  dia: string;
-  nClient: string;
-  cantidad: number;
-};
-
-const itemsIniciales: ItemCarritoPc[] = [
-  {
-    id: 'pc-1',
-    nombre: 'Brochas',
-    precio: 500.26,
-    imagen: reactLogo,
-    order: '321012456',
-    dia: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 1,
-  },
-  {
-    id: 'pc-2',
-    nombre: 'Brochas',
-    precio: 10.6,
-    imagen: reactLogo,
-    order: '321012456',
-    dia: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 5,
-  },
-  {
-    id: 'pc-3',
-    nombre: 'Brochas',
-    precio: 2.26,
-    imagen: reactLogo,
-    order: '321012456',
-    dia: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 9,
-  },
-  {
-    id: 'pc-4',
-    nombre: 'Brochas',
-    precio: 152.26,
-    imagen: reactLogo,
-    order: '321012456',
-    dia: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 8,
-  },
-];
-
-function IconoLupa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="11" cy="11" r="6.5" />
-      <path d="M16.2 16.2 21 21" />
-    </svg>
-  );
-}
-
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
-function IconoCatalogo() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M6 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 0-2 2V6a2 2 0 0 1 2-2z" />
-      <path d="M6 20h14" />
-      <path d="M9 8h8" />
-      <path d="M9 12h8" />
-    </svg>
-  );
-}
-
-function IconoInicio() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M3 10.5 12 3l9 7.5" />
-      <path d="M5 10v11h14V10" />
-    </svg>
-  );
-}
-
 function Carrito() {
-  const [items, setItems] = useState<ItemCarritoPc[]>(itemsIniciales);
-
-  const total = useMemo(
-    () => items.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
-    [items],
-  );
+  const { items, totalItems, totalPrice, removeItem, setQuantity } = useCart();
 
   const actualizarCantidad = (id: string, delta: number) => {
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.id !== id) {
-          return item;
-        }
-        return { ...item, cantidad: Math.max(1, item.cantidad + delta) };
-      }),
-    );
+    const actual = items.find((x) => x.id === id);
+    if (!actual) {
+      return;
+    }
+    setQuantity(id, actual.cantidad + delta);
   };
 
-  const remover = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  const total = useMemo(() => totalPrice, [totalPrice]);
 
   return (
     <div className="inicioCliente carritoCliente" id="carrito-cliente">
@@ -134,7 +32,7 @@ function Carrito() {
 
             <form className="inicioClienteBuscador" role="search" aria-label="Busqueda">
               <span className="inicioClienteBuscadorIcono" aria-hidden="true">
-                <IconoLupa />
+                <Search />
               </span>
               <input
                 className="inicioClienteBuscadorInput"
@@ -150,15 +48,15 @@ function Carrito() {
 
               <Link to="/cliente/carrito" className="inicioClienteCarrito" aria-label="Carrito">
                 <span className="inicioClienteCarritoIcono" aria-hidden="true">
-                  <IconoCarrito />
+                  <ShoppingCart />
                 </span>
                 <span className="inicioClienteCarritoContador" aria-label="Productos en carrito">
-                  {items.length}
+                  {totalItems}
                 </span>
               </Link>
 
               <p className="inicioClienteTotal" aria-label="Total del carrito">
-                USD 200
+                AED {total.toFixed(2)}
               </p>
             </div>
           </div>
@@ -172,7 +70,7 @@ function Carrito() {
               end
             >
               <span className="inicioClienteNavIcono" aria-hidden="true">
-                <IconoCatalogo />
+                <BookOpen />
               </span>
               <span className="inicioClienteNavTexto">Catalogo</span>
             </NavLink>
@@ -184,7 +82,7 @@ function Carrito() {
             }
             >
               <span className="inicioClienteNavIcono" aria-hidden="true">
-                <IconoInicio />
+                <Home />
               </span>
               <span className="inicioClienteNavTexto">Inicio</span>
             </NavLink>
@@ -196,8 +94,8 @@ function Carrito() {
         <div className="carritoClienteTitulo" aria-label="Carrito">
           <h1>Carrito</h1>
           <span className="carritoClienteTituloIcono" aria-hidden="true">
-            <IconoCarrito />
-            <span className="carritoClienteTituloBadge">{items.length}</span>
+            <ShoppingCart />
+            <span className="carritoClienteTituloBadge">{totalItems}</span>
           </span>
         </div>
 
@@ -214,14 +112,13 @@ function Carrito() {
                 <p className="carritoClienteNombre">{item.nombre}</p>
                 <div className="carritoClienteMeta">
                   <p>
-                    <strong>Orden:</strong> {item.order}
+                    <strong>ID:</strong> {item.id}
                   </p>
-                  <p>
-                    <strong>Dia:</strong> {item.dia}
-                  </p>
-                  <p>
-                    <strong>N° Client:</strong> {item.nClient}
-                  </p>
+                  {item.categoria && (
+                    <p>
+                      <strong>Categoria:</strong> {item.categoria}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -248,8 +145,8 @@ function Carrito() {
               </div>
 
               <div className="carritoClienteAcciones" aria-label="Acciones">
-                <p className="carritoClientePrecio">{item.precio.toFixed(2)} $</p>
-                <button type="button" className="carritoClienteRemove" onClick={() => remover(item.id)}>
+                <p className="carritoClientePrecio">AED {item.precio.toFixed(2)}</p>
+                <button type="button" className="carritoClienteRemove" onClick={() => removeItem(item.id)}>
                   Remover
                 </button>
               </div>
@@ -259,7 +156,7 @@ function Carrito() {
 
         <div className="carritoClienteResumen" aria-label="Resumen">
           <p className="carritoClienteResumenLabel">Total</p>
-          <p className="carritoClienteResumenValor">{total.toFixed(2)} $</p>
+          <p className="carritoClienteResumenValor">AED {total.toFixed(2)}</p>
           <button type="button" className="carritoClienteComprar">
             Comprar
           </button>

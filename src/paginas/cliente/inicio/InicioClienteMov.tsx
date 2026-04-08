@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { BookOpen, Eye, Home, Menu, Search, ShoppingCart } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import { productosIniciales } from '../../empleado/datosInventario';
+import { useCart } from '../carrito/CarritoContext';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
 import ProductoExpandidoMov, { type ProductoExpandidoMovData } from '../componentes/ProductoExpandidoMov';
 import clipAzul from '../../../images/Clip_azul.svg';
@@ -106,65 +108,8 @@ function puntajeBusquedaAproximada(consulta: string, campos: string[]) {
   return null;
 }
 
-function IconoHamburguesa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M4 7h16" />
-      <path d="M4 12h16" />
-      <path d="M4 17h16" />
-    </svg>
-  );
-}
-
-function IconoLupa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="11" cy="11" r="6.5" />
-      <path d="M16.2 16.2 21 21" />
-    </svg>
-  );
-}
-
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
-function IconoCatalogo() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M6 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 0-2 2V6a2 2 0 0 1 2-2z" />
-      <path d="M6 20h14" />
-      <path d="M9 8h8" />
-      <path d="M9 12h8" />
-    </svg>
-  );
-}
-
-function IconoInicio() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M3 10.5 12 3l9 7.5" />
-      <path d="M5 10v11h14V10" />
-    </svg>
-  );
-}
-
-function IconoOjo() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" />
-      <circle cx="12" cy="12" r="2.7" />
-    </svg>
-  );
-}
-
 function InicioClienteMov() {
+  const { addItem, totalItems, totalPrice } = useCart();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoMovData | null>(null);
   const [busquedaInicio, setBusquedaInicio] = useState('');
@@ -368,7 +313,7 @@ function InicioClienteMov() {
             aria-expanded={menuAbierto}
             onClick={() => setMenuAbierto(true)}
           >
-            <IconoHamburguesa />
+            <Menu />
           </button>
 
           <div className="inicioClienteMovMarca" aria-label="Paper world">
@@ -380,14 +325,14 @@ function InicioClienteMov() {
             <UsuarioMenu className="clienteUsuarioMenuMov" ariaLabel="Menu de usuario" />
 
             <Link to="/cliente/carrito" className="inicioClienteMovCarrito" aria-label="Carrito">
-              <IconoCarrito />
+              <ShoppingCart />
               <span className="inicioClienteMovCarritoBadge" aria-label="Productos en carrito">
-                0
+                {totalItems}
               </span>
             </Link>
 
             <p className="inicioClienteMovTotal" aria-label="Total del carrito">
-              AED 0.00
+              AED {totalPrice.toFixed(2)}
             </p>
           </div>
         </div>
@@ -400,7 +345,7 @@ function InicioClienteMov() {
             }
           >
             <span className="inicioClienteMovNavIcon" aria-hidden="true">
-              <IconoCatalogo />
+              <BookOpen />
             </span>
             <span className="inicioClienteMovNavText">Catalogo</span>
           </NavLink>
@@ -413,7 +358,7 @@ function InicioClienteMov() {
             }
           >
             <span className="inicioClienteMovNavIcon" aria-hidden="true">
-              <IconoInicio />
+              <Home />
             </span>
             <span className="inicioClienteMovNavText">Inicio</span>
           </NavLink>
@@ -443,7 +388,7 @@ function InicioClienteMov() {
         <section className="inicioClienteMovBusquedaWrap" aria-label="Buscar" ref={buscadorRef}>
           <div className="inicioClienteMovBusqueda">
             <span className="inicioClienteMovBusquedaIcono" aria-hidden="true">
-              <IconoLupa />
+              <Search />
             </span>
             <input
               className="inicioClienteMovBusquedaInput"
@@ -547,7 +492,25 @@ function InicioClienteMov() {
                           abrirProducto(producto);
                         }}
                       >
-                        <IconoOjo />
+                        <Eye />
+                      </button>
+
+                      <button
+                        type="button"
+                        className="inicioClienteMovAccion"
+                        aria-label="Agregar al carrito"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addItem({
+                            id: producto.id,
+                            nombre: producto.nombre,
+                            precio: producto.precio,
+                            imagen: producto.imagen,
+                            categoria: producto.categoria,
+                          });
+                        }}
+                      >
+                        <ShoppingCart />
                       </button>
                     </div>
 
@@ -577,7 +540,7 @@ function InicioClienteMov() {
         style={{ bottom: `${offsetFab}px` }}
         aria-label="Abrir carrito"
       >
-        <IconoCarrito />
+        <ShoppingCart />
       </Link>
     </div>
   );

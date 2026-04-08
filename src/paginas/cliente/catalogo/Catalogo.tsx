@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { BookOpen, ChevronRight, Home, Search, ShoppingCart } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import { productosIniciales } from '../../empleado/datosInventario';
+import { useCart } from '../carrito/CarritoContext';
 import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
 import clipAzul from '../../../images/Clip_azul.svg';
 import '../inicio/InicioCliente.css';
@@ -107,54 +109,8 @@ function puntajeBusquedaAproximada(consulta: string, campos: string[]) {
   return null;
 }
 
-function IconoLupa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="11" cy="11" r="6.5" />
-      <path d="M16.2 16.2 21 21" />
-    </svg>
-  );
-}
-
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
-function IconoCatalogo() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M6 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 0-2 2V6a2 2 0 0 1 2-2z" />
-      <path d="M6 20h14" />
-      <path d="M9 8h8" />
-      <path d="M9 12h8" />
-    </svg>
-  );
-}
-
-function IconoInicio() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M3 10.5 12 3l9 7.5" />
-      <path d="M5 10v11h14V10" />
-    </svg>
-  );
-}
-
-function IconoChevronDerecha() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M10 6l6 6-6 6" />
-    </svg>
-  );
-}
-
 function CatalogoCliente() {
+  const { addItem, totalItems, totalPrice } = useCart();
   const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoPcData | null>(null);
   const [busquedaCatalogo, setBusquedaCatalogo] = useState('');
   const [sugerenciasAbiertas, setSugerenciasAbiertas] = useState(false);
@@ -290,7 +246,7 @@ function CatalogoCliente() {
 
             <form className="inicioClienteBuscador" role="search" aria-label="Busqueda">
               <span className="inicioClienteBuscadorIcono" aria-hidden="true">
-                <IconoLupa />
+                <Search />
               </span>
               <input
                 className="inicioClienteBuscadorInput"
@@ -306,15 +262,15 @@ function CatalogoCliente() {
 
               <Link to="/cliente/carrito" className="inicioClienteCarrito" aria-label="Carrito">
                 <span className="inicioClienteCarritoIcono" aria-hidden="true">
-                  <IconoCarrito />
+                  <ShoppingCart />
                 </span>
                 <span className="inicioClienteCarritoContador" aria-label="Productos en carrito">
-                  0
+                  {totalItems}
                 </span>
               </Link>
 
               <p className="inicioClienteTotal" aria-label="Total del carrito">
-                AED 0.00
+                AED {totalPrice.toFixed(2)}
               </p>
             </div>
           </div>
@@ -328,7 +284,7 @@ function CatalogoCliente() {
               end
             >
               <span className="inicioClienteNavIcono" aria-hidden="true">
-                <IconoCatalogo />
+                <BookOpen />
               </span>
               <span className="inicioClienteNavTexto">Catalogo</span>
             </NavLink>
@@ -340,7 +296,7 @@ function CatalogoCliente() {
               }
             >
               <span className="inicioClienteNavIcono" aria-hidden="true">
-                <IconoInicio />
+                <Home />
               </span>
               <span className="inicioClienteNavTexto">Inicio</span>
             </NavLink>
@@ -372,7 +328,7 @@ function CatalogoCliente() {
 
         <section className="catalogoClienteBusqueda" aria-label="Busqueda de catalogo" ref={buscadorRef}>
           <span className="catalogoClienteBusquedaIcono" aria-hidden="true">
-            <IconoLupa />
+            <Search />
           </span>
           <input
             className="catalogoClienteBusquedaInput"
@@ -523,9 +479,18 @@ function CatalogoCliente() {
                       type="button"
                       className="catalogoClienteProductoCarrito"
                       aria-label="Agregar al carrito"
-                      onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addItem({
+                            id: producto.id,
+                            nombre: producto.nombre,
+                            precio: producto.precio,
+                            imagen: producto.imagen,
+                            categoria: producto.categoria,
+                          });
+                        }}
                     >
-                      <IconoCarrito />
+                        <ShoppingCart />
                     </button>
                   </div>
 
@@ -546,7 +511,7 @@ function CatalogoCliente() {
               <button type="button" className="catalogoClientePagina">2</button>
               <button type="button" className="catalogoClientePagina">3</button>
               <button type="button" className="catalogoClientePagina" aria-label="Siguiente pagina">
-                <IconoChevronDerecha />
+                <ChevronRight />
               </button>
             </nav>
           </section>

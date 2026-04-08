@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
+import { BookOpen, HelpCircle, Home, Settings, ShoppingCart } from 'lucide-react';
 import clipAzul from '../../../images/Clip_azul.svg';
 import './MenuLateralMovil.css';
 
@@ -7,55 +8,6 @@ type MenuLateralMovilProps = {
   abierto: boolean;
   alCerrar: () => void;
 };
-
-function IconoInicio() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M3 10.5 12 3l9 7.5" />
-      <path d="M5 10v11h14V10" />
-    </svg>
-  );
-}
-
-function IconoCatalogo() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M6 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 0-2 2V6a2 2 0 0 1 2-2z" />
-      <path d="M6 20h14" />
-      <path d="M9 8h8" />
-      <path d="M9 12h8" />
-    </svg>
-  );
-}
-
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
-function IconoHelp() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M12 18h.01" />
-      <path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-2.9 2.2-2.9 4" />
-      <path d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10z" />
-    </svg>
-  );
-}
-
-function IconoSettings() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M12 15.5a3.5 3.5 0 1 0-3.5-3.5 3.5 3.5 0 0 0 3.5 3.5z" />
-      <path d="M19.4 15a8.3 8.3 0 0 0 .1-1 8.3 8.3 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7.8 7.8 0 0 0-1.7-1l-.4-2.6H10l-.4 2.6a7.8 7.8 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a8.3 8.3 0 0 0-.1 1 8.3 8.3 0 0 0 .1 1l-2 1.6 2 3.4 2.4-1a7.8 7.8 0 0 0 1.7 1l.4 2.6h4.6l.4-2.6a7.8 7.8 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6z" />
-    </svg>
-  );
-}
 
 function MenuLateralMovil({ abierto, alCerrar }: MenuLateralMovilProps) {
   const primerItemRef = useRef<HTMLAnchorElement | null>(null);
@@ -112,7 +64,7 @@ function MenuLateralMovil({ abierto, alCerrar }: MenuLateralMovilProps) {
             onClick={alCerrar}
           >
             <span className="menuLateralMovilIcono" aria-hidden="true">
-              <IconoInicio />
+              <Home />
             </span>
             <span className="menuLateralMovilTexto">Inicio</span>
           </NavLink>
@@ -125,7 +77,7 @@ function MenuLateralMovil({ abierto, alCerrar }: MenuLateralMovilProps) {
             onClick={alCerrar}
           >
             <span className="menuLateralMovilIcono" aria-hidden="true">
-              <IconoCatalogo />
+              <BookOpen />
             </span>
             <span className="menuLateralMovilTexto">Catalogo</span>
           </NavLink>
@@ -138,7 +90,7 @@ function MenuLateralMovil({ abierto, alCerrar }: MenuLateralMovilProps) {
             onClick={alCerrar}
           >
             <span className="menuLateralMovilIcono" aria-hidden="true">
-              <IconoCarrito />
+              <ShoppingCart />
             </span>
             <span className="menuLateralMovilTexto">Carrito</span>
           </NavLink>
@@ -151,14 +103,14 @@ function MenuLateralMovil({ abierto, alCerrar }: MenuLateralMovilProps) {
 
           <button type="button" className="menuLateralMovilItem menuLateralMovilItemBoton" onClick={alCerrar}>
             <span className="menuLateralMovilIcono" aria-hidden="true">
-              <IconoHelp />
+              <HelpCircle />
             </span>
             <span className="menuLateralMovilTexto">Help</span>
           </button>
 
           <button type="button" className="menuLateralMovilItem menuLateralMovilItemBoton" onClick={alCerrar}>
             <span className="menuLateralMovilIcono" aria-hidden="true">
-              <IconoSettings />
+              <Settings />
             </span>
             <span className="menuLateralMovilTexto">Settings</span>
           </button>

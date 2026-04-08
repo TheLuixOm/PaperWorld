@@ -1,131 +1,25 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Menu, ShoppingCart, Trash2 } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
 import clipAzul from '../../../images/Clip_azul.svg';
-import reactLogo from '../../../assets/react.svg';
+import { useCart } from './CarritoContext';
 import '../inicio/InicioClienteMov.css';
 import './CarritoMov.css';
 
-type ItemCarritoMov = {
-  id: string;
-  nombre: string;
-  precio: number;
-  imagen: string;
-  order: string;
-  did: string;
-  nClient: string;
-  cantidad: number;
-};
-
-const itemsBase: ItemCarritoMov[] = [
-  {
-    id: 'cm-1',
-    nombre: 'Brochas',
-    precio: 500.26,
-    imagen: reactLogo,
-    order: '321012456',
-    did: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 1,
-  },
-  {
-    id: 'cm-2',
-    nombre: 'Brochas',
-    precio: 500.26,
-    imagen: reactLogo,
-    order: '321012456',
-    did: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 1,
-  },
-  {
-    id: 'cm-3',
-    nombre: 'Brochas',
-    precio: 500.26,
-    imagen: reactLogo,
-    order: '321012456',
-    did: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 1,
-  },
-  {
-    id: 'cm-4',
-    nombre: 'Brochas',
-    precio: 500.26,
-    imagen: reactLogo,
-    order: '321012456',
-    did: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 1,
-  },
-  {
-    id: 'cm-5',
-    nombre: 'Brochas',
-    precio: 500.26,
-    imagen: reactLogo,
-    order: '321012456',
-    did: '17/2/2026',
-    nClient: '3217796',
-    cantidad: 1,
-  },
-];
-
-function IconoHamburguesa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M4 7h16" />
-      <path d="M4 12h16" />
-      <path d="M4 17h16" />
-    </svg>
-  );
-}
-
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
-function IconoBasura() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M4 7h16" />
-      <path d="M10 11v7" />
-      <path d="M14 11v7" />
-      <path d="M6 7l1 14h10l1-14" />
-      <path d="M9 7V4h6v3" />
-    </svg>
-  );
-}
-
 function CarritoMov() {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [items, setItems] = useState<ItemCarritoMov[]>(itemsBase);
+  const { items, totalItems, totalPrice, removeItem, setQuantity } = useCart();
 
-  const total = useMemo(
-    () => items.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
-    [items],
-  );
+  const total = useMemo(() => totalPrice, [totalPrice]);
 
   const actualizarCantidad = (id: string, delta: number) => {
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.id !== id) {
-          return item;
-        }
-        const nueva = Math.max(1, item.cantidad + delta);
-        return { ...item, cantidad: nueva };
-      }),
-    );
-  };
-
-  const eliminarItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    const actual = items.find((x) => x.id === id);
+    if (!actual) {
+      return;
+    }
+    setQuantity(id, actual.cantidad + delta);
   };
 
   return (
@@ -141,7 +35,7 @@ function CarritoMov() {
             aria-expanded={menuAbierto}
             onClick={() => setMenuAbierto(true)}
           >
-            <IconoHamburguesa />
+            <Menu />
           </button>
 
           <div className="inicioClienteMovMarca" aria-label="Paper world">
@@ -154,15 +48,15 @@ function CarritoMov() {
 
             <div className="carritoMovAccionCarrito" aria-label="Carrito">
               <span className="carritoMovCarritoIcono" aria-hidden="true">
-                <IconoCarrito />
+                <ShoppingCart />
               </span>
               <span className="carritoMovCarritoBadge" aria-label="Productos en carrito">
-                {items.length}
+                {totalItems}
               </span>
             </div>
 
             <p className="carritoMovTotalTop" aria-label="Total del carrito">
-              USD 0.00
+              AED {total.toFixed(2)}
             </p>
           </div>
         </div>
@@ -172,7 +66,7 @@ function CarritoMov() {
         <section className="carritoMovTitulo" aria-label="Titulo">
           <h1 className="carritoMovTituloTexto">Carrito</h1>
           <span className="carritoMovTituloBadge" aria-label="Cantidad">
-            {items.length}
+            {totalItems}
           </span>
         </section>
 
@@ -192,17 +86,15 @@ function CarritoMov() {
 
                     <div className="carritoMovItemMeta">
                       <p>
-                        <span>Order: </span>
-                        {item.order}
+                        <span>ID: </span>
+                        {item.id}
                       </p>
-                      <p>
-                        <span>Did: </span>
-                        {item.did}
-                      </p>
-                      <p>
-                        <span>N° Client: </span>
-                        {item.nClient}
-                      </p>
+                      {item.categoria && (
+                        <p>
+                          <span>Categoria: </span>
+                          {item.categoria}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -235,9 +127,9 @@ function CarritoMov() {
                       type="button"
                       className="carritoMovTrash"
                       aria-label="Eliminar"
-                      onClick={() => eliminarItem(item.id)}
+                      onClick={() => removeItem(item.id)}
                     >
-                      <IconoBasura />
+                      <Trash2 />
                     </button>
                   </div>
                 </div>
@@ -252,7 +144,7 @@ function CarritoMov() {
           <div className="carritoMovLinea" aria-hidden="true" />
           <div className="carritoMovResumenFila">
             <p className="carritoMovResumenLabel">Total</p>
-            <p className="carritoMovResumenValor">{total.toFixed(2)} $</p>
+            <p className="carritoMovResumenValor">AED {total.toFixed(2)}</p>
           </div>
 
           <div className="carritoMovLinea" aria-hidden="true" />

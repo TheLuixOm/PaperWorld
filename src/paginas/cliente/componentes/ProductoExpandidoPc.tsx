@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { ShoppingCart } from 'lucide-react';
+import { useCart } from '../carrito/CarritoContext';
 import './ProductoExpandidoPc.css';
 
 const CIERRE_MS = 180;
@@ -21,17 +23,8 @@ type Props = {
   alCerrar: () => void;
 };
 
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
 export default function ProductoExpandidoPc({ abierto, producto, alCerrar }: Props) {
+  const { addItem } = useCart();
   const [estadoAnimacion, setEstadoAnimacion] = useState<'opening' | 'open' | 'closing'>('opening');
   const cierreTimeoutRef = useRef<number | null>(null);
   const modalRef = useRef<HTMLElement | null>(null);
@@ -163,9 +156,21 @@ export default function ProductoExpandidoPc({ abierto, producto, alCerrar }: Pro
               <button type="button" className="productoExpandidoPcCancelar" onClick={cerrarConAnimacion}>
                 Cancelar
               </button>
-              <button type="button" className="productoExpandidoPcAgregar">
+              <button
+                type="button"
+                className="productoExpandidoPcAgregar"
+                onClick={() => {
+                  addItem({
+                    id: producto.id,
+                    nombre: producto.nombre,
+                    precio: producto.precio,
+                    imagen: producto.imagen,
+                    categoria: producto.categoria,
+                  });
+                }}
+              >
                 <span className="productoExpandidoPcAgregarIcono" aria-hidden="true">
-                  <IconoCarrito />
+                  <ShoppingCart />
                 </span>
                 <span>Añadir al carrito</span>
               </button>

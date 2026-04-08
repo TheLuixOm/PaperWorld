@@ -134,9 +134,9 @@
 }
 
 .carritoMovItemImagen img {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .carritoMovItemInfo {

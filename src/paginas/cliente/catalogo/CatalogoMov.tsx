@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { ArrowUpDown, BookOpen, Filter, Heart, Home, Menu, Search, ShoppingCart } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import { productosIniciales } from '../../empleado/datosInventario';
+import { useCart } from '../carrito/CarritoContext';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
 import ProductoExpandidoMov, { type ProductoExpandidoMovData } from '../componentes/ProductoExpandidoMov';
 import clipAzul from '../../../images/Clip_azul.svg';
@@ -109,86 +111,8 @@ function puntajeBusquedaAproximada(consulta: string, campos: string[]) {
   return null;
 }
 
-function IconoHamburguesa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M4 7h16" />
-      <path d="M4 12h16" />
-      <path d="M4 17h16" />
-    </svg>
-  );
-}
-
-function IconoLupa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="11" cy="11" r="6.5" />
-      <path d="M16.2 16.2 21 21" />
-    </svg>
-  );
-}
-
-function IconoCarrito() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="9" cy="19" r="1.6" />
-      <circle cx="17" cy="19" r="1.6" />
-      <path d="M3 5h2l2.2 9.2h10.4l2-6.5H6.1" />
-    </svg>
-  );
-}
-
-function IconoCatalogo() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M6 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 0-2 2V6a2 2 0 0 1 2-2z" />
-      <path d="M6 20h14" />
-      <path d="M9 8h8" />
-      <path d="M9 12h8" />
-    </svg>
-  );
-}
-
-function IconoInicio() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M3 10.5 12 3l9 7.5" />
-      <path d="M5 10v11h14V10" />
-    </svg>
-  );
-}
-
-function IconoFiltro() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M4 6h16" />
-      <path d="M7 12h10" />
-      <path d="M10 18h4" />
-    </svg>
-  );
-}
-
-function IconoOrdenar() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M8 6h13" />
-      <path d="M8 12h10" />
-      <path d="M8 18h7" />
-      <path d="M3 7l2-2 2 2" />
-      <path d="M5 5v14" />
-    </svg>
-  );
-}
-
-function IconoCorazon() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path d="M12 20s-7-4.4-9.3-8.7C1 7.9 3.3 5 6.6 5c1.9 0 3.4 1 4.4 2.3C12 6 13.5 5 15.4 5c3.3 0 5.6 2.9 3.9 6.3C19 15.6 12 20 12 20z" />
-    </svg>
-  );
-}
-
 function CatalogoMov() {
+  const { addItem, totalItems, totalPrice } = useCart();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
   const [productoExpandido, setProductoExpandido] = useState<ProductoExpandidoMovData | null>(null);
@@ -376,7 +300,7 @@ function CatalogoMov() {
             aria-expanded={menuAbierto}
             onClick={() => setMenuAbierto(true)}
           >
-            <IconoHamburguesa />
+            <Menu />
           </button>
 
           <div className="inicioClienteMovMarca" aria-label="Paper world">
@@ -388,14 +312,14 @@ function CatalogoMov() {
             <UsuarioMenu className="clienteUsuarioMenuMov" ariaLabel="Menu de usuario" />
 
             <Link to="/cliente/carrito" className="inicioClienteMovCarrito" aria-label="Carrito">
-              <IconoCarrito />
+              <ShoppingCart />
               <span className="inicioClienteMovCarritoBadge" aria-label="Productos en carrito">
-                0
+                {totalItems}
               </span>
             </Link>
 
             <p className="inicioClienteMovTotal" aria-label="Total del carrito">
-              AED 0.00
+              AED {totalPrice.toFixed(2)}
             </p>
           </div>
         </div>
@@ -409,7 +333,7 @@ function CatalogoMov() {
             }
           >
             <span className="inicioClienteMovNavIcon" aria-hidden="true">
-              <IconoCatalogo />
+              <BookOpen />
             </span>
             <span className="inicioClienteMovNavText">Catalogo</span>
           </NavLink>
@@ -421,7 +345,7 @@ function CatalogoMov() {
             }
           >
             <span className="inicioClienteMovNavIcon" aria-hidden="true">
-              <IconoInicio />
+              <Home />
             </span>
             <span className="inicioClienteMovNavText">Inicio</span>
           </NavLink>
@@ -451,7 +375,7 @@ function CatalogoMov() {
         <div className="catalogoMovBusquedaWrap" ref={buscadorRef}>
           <section className="inicioClienteMovBusqueda" aria-label="Buscar">
             <span className="inicioClienteMovBusquedaIcono" aria-hidden="true">
-              <IconoLupa />
+              <Search />
             </span>
             <input
               className="inicioClienteMovBusquedaInput"
@@ -504,7 +428,7 @@ function CatalogoMov() {
               }}
             >
               <span className="catalogoMovControlIcono" aria-hidden="true">
-                <IconoFiltro />
+                <Filter />
               </span>
               <span>Filtrar</span>
             </button>
@@ -519,7 +443,7 @@ function CatalogoMov() {
               }}
             >
               <span className="catalogoMovControlIcono" aria-hidden="true">
-                <IconoOrdenar />
+                <ArrowUpDown />
               </span>
               <span>Ordenar</span>
             </button>
@@ -660,7 +584,7 @@ function CatalogoMov() {
                     setFavoritos((prev) => ({ ...prev, [producto.id]: !prev[producto.id] }));
                   }}
                 >
-                  <IconoCorazon />
+                  <Heart />
                 </button>
 
                 <div className="catalogoMovImagen">
@@ -671,9 +595,18 @@ function CatalogoMov() {
                   type="button"
                   className="catalogoMovMiniCarrito"
                   aria-label="Agregar al carrito"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addItem({
+                      id: producto.id,
+                      nombre: producto.nombre,
+                      precio: producto.precio,
+                      imagen: producto.imagen,
+                      categoria: producto.categoria,
+                    });
+                  }}
                 >
-                  <IconoCarrito />
+                  <ShoppingCart />
                 </button>
               </div>
 
@@ -697,7 +630,7 @@ function CatalogoMov() {
         aria-label="Abrir carrito"
       >
         <span className="catalogoMovFabIcono" aria-hidden="true">
-          <IconoCarrito />
+          <ShoppingCart />
         </span>
         <span className="catalogoMovFabPlus" aria-hidden="true">
           +
