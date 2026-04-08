@@ -34,10 +34,10 @@
 
 .reportesSeccionHeader {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 12px;
 }
 
 .reportesBusquedaWrap {
@@ -136,44 +136,51 @@
 }
 
 .reportesResumen {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 12px;
-  flex-wrap: wrap;
-  width: fit-content;
-  max-width: 100%;
+  width: 100%;
+  max-width: none;
 }
 
 .reportesKpi {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
   background: #ffffff;
-  border: 1px solid #e3e8ef;
-  border-radius: 14px;
-  padding: 12px 14px;
-  min-width: 170px;
-  flex: 1 1 170px;
-  max-width: 220px;
-  min-height: 72px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 14px 16px;
+  min-width: 0;
+  min-height: 84px;
   box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
 .reportesKpiLabel {
   margin: 0;
-  font-weight: 500;
-  color: #5b6570;
-  font-size: 0.9rem;
+  font-weight: 700;
+  color: #475569;
+  font-size: 0.78rem;
   line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: none;
   overflow-wrap: anywhere;
 }
 
 .reportesKpiValor {
-  margin: 6px 0 0;
-  font-weight: 500;
-  color: #111827;
-  font-size: 1.22rem;
-  line-height: 1.1;
-  white-space: nowrap;
+  margin: 0;
+  font-weight: 900;
+  color: #0b8acb;
+  font-size: 1.34rem;
+  line-height: 1.05;
+  white-space: normal;
+  letter-spacing: -0.01em;
 }
 
 .reportesPanel {
@@ -282,6 +289,9 @@
   border-radius: 14px;
   padding: 12px 12px;
   background: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 24, 40, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
 .reportesCardTop {
@@ -295,6 +305,7 @@
   margin: 0;
   font-weight: 900;
   color: #111827;
+  font-size: 0.98rem;
 }
 
 .reportesCardMeta {
@@ -316,6 +327,9 @@
   font-weight: 800;
 }
 
+.reportesCardLinea + .reportesCardLinea {
+  margin-top: 4px;
+}
 .reportesAccionMovil {
   width: 100%;
   margin-top: 10px;
@@ -334,7 +348,7 @@
 
   .reportesResumen {
     width: 100%;
-    justify-content: flex-start;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .reportesTabs {
@@ -364,6 +378,160 @@
 
   .reportesListaMovil {
     display: grid;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .reportesTop {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .reportesTopAcciones {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .reportesResumen {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .reportesKpi {
+    width: 100%;
+    max-width: none;
+    min-height: 72px;
+    padding: 10px 10px 10px 12px;
+  }
+
+  .reportesKpiValor {
+    font-size: 1rem;
+  }
+
+  .reportesSeccionHeader {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .reportesBusquedaWrap {
+    height: 42px;
+    padding: 0 12px;
+  }
+
+  .reportesResumen {
+    gap: 8px;
+  }
+
+  .reportesBusquedaInput {
+    font-size: 15px;
+  }
+
+  .reportesTabs {
+    gap: 8px;
+    overflow-x: hidden;
+    padding-bottom: 10px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .reportesTabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reportesTab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 10px 4px;
+    font-size: 0.92rem;
+    text-align: center;
+  }
+
+  .reportesTabActiva::after {
+    left: 4px;
+    right: 4px;
+  }
+
+  .reportesListaMovil {
+    gap: 12px;
+  }
+
+  .reportesCard {
+    padding: 10px;
+  }
+
+  .reportesCardTop {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .reportesCardMeta {
+    font-size: 0.86rem;
+  }
+
+  .reportesCardLinea {
+    font-size: 0.92rem;
+  }
+
+  .reportesAccionMovil {
+    height: 42px;
+    margin-top: 12px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .reportesSubtitulo {
+    font-size: 17px;
+    line-height: 1.25;
+  }
+
+  .reportesTab {
+    font-size: 0.84rem;
+    padding: 9px 2px;
+  }
+
+  .reportesKpiLabel {
+    font-size: 0.62rem;
+  }
+
+  .reportesKpiValor {
+    font-size: 0.9rem;
+  }
+
+  .reportesBusquedaInput {
+    font-size: 14px;
+  }
+
+  .reportesResumen {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .reportesKpi {
+    min-height: 68px;
+    border-radius: 12px;
+    padding: 9px 8px 9px 10px;
+  }
+
+  .reportesCard {
+    border-radius: 12px;
+  }
+
+  .reportesCardTitulo {
+    font-size: 0.94rem;
+  }
+
+  .reportesCardMeta,
+  .reportesCardLinea {
+    font-size: 0.88rem;
   }
 }
 
