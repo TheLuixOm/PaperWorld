@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import UsuarioMenu from '../../empleado/UsuarioMenu';
+import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
 import clipAzul from '../../../images/Clip_azul.svg';
 import reactLogo from '../../../assets/react.svg';

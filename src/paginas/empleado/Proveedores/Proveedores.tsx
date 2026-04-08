@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Inventario.css';
+import '../inventario/Inventario.css';
 import './Proveedores.css';
-import { proveedoresIniciales } from './datosInventario';
-import UsuarioMenu from './UsuarioMenu';
+import { proveedoresIniciales } from '../datosInventario';
+import UsuarioMenu from '../Barras/UsuarioMenu';
 
 function Proveedores() {
   const [textoBusqueda, setTextoBusqueda] = useState('');
@@ -14,6 +14,18 @@ function Proveedores() {
   const inputBusquedaRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const proveedoresPorPagina = 8;
+
+  const abrirVistaModificarProveedor = (id: string) => {
+    const proveedorSeleccionado = proveedores.find((proveedor) => proveedor.id === id);
+
+    if (!proveedorSeleccionado) {
+      return;
+    }
+
+    navigate('/proveedores/modificar', {
+      state: { proveedor: proveedorSeleccionado },
+    });
+  };
 
   const eliminarProveedor = (id: string) => {
     setProveedores((proveedoresActuales) => proveedoresActuales.filter((proveedor) => proveedor.id !== id));
@@ -133,7 +145,12 @@ function Proveedores() {
                 <tr key={proveedor.id} className="inventarioFila">
                   <td>
                     <div className="inventarioCeldaNombre">
-                      <button className="inventarioAccion inventarioAccionEditar" type="button" aria-label={`Editar ${proveedor.nombre}`}>
+                      <button
+                        className="inventarioAccion inventarioAccionEditar"
+                        type="button"
+                        aria-label={`Editar ${proveedor.nombre}`}
+                        onClick={() => abrirVistaModificarProveedor(proveedor.id)}
+                      >
                         <svg viewBox="0 0 24 24" focusable="false">
                           <path d="M4 20h4l10-10-4-4L4 16z" />
                           <path d="m12.8 6.8 4 4" />

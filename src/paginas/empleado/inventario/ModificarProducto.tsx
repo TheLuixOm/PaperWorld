@@ -1,5 +1,6 @@
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
-import UsuarioMenu from './UsuarioMenu';
+import type { Producto } from '../datosInventario';
+import UsuarioMenu from '../Barras/UsuarioMenu';
 
 type DatosFormulario = {
   nombre: string;
@@ -10,28 +11,42 @@ type DatosFormulario = {
   descripcion: string;
 };
 
-export type DatosAgregarProducto = DatosFormulario & {
+export type DatosModificarProducto = DatosFormulario & {
   imagen: string;
 };
 
-type AgregarProductoProps = {
-  onGuardar: (datos: DatosAgregarProducto, mantenerAbierto: boolean) => void;
+type ModificarProductoProps = {
+  productoInicial: Producto;
+  onGuardar: (datos: DatosModificarProducto) => void;
   onCancelar: () => void;
 };
 
-const formularioVacio: DatosFormulario = {
-  nombre: '',
-  referencia: '',
-  categoria: '',
-  precio: '',
-  cantidad: '',
-  descripcion: '',
-};
+function construirFormulario(producto: Producto): DatosFormulario {
+  return {
+    nombre: producto.nombre,
+    referencia: producto.id,
+    categoria: producto.categoria,
+    precio: producto.precio,
+    cantidad: String(producto.cantidad),
+    descripcion: '',
+  };
+}
 
-function AgregarProducto({ onGuardar, onCancelar }: AgregarProductoProps) {
-  const [formularioProducto, setFormularioProducto] = useState<DatosFormulario>(formularioVacio);
-  const [imagenSeleccionada, setImagenSeleccionada] = useState('');
+function ModificarProducto({ productoInicial, onGuardar, onCancelar }: ModificarProductoProps) {
+  const [formularioProducto, setFormularioProducto] = useState<DatosFormulario>(
+    construirFormulario(productoInicial)
+  );
+  const [imagenSeleccionada, setImagenSeleccionada] = useState(productoInicial.imagen ?? '');
   const inputImagenRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    setFormularioProducto(construirFormulario(productoInicial));
+    setImagenSeleccionada(productoInicial.imagen ?? '');
+
+    if (inputImagenRef.current) {
+      inputImagenRef.current.value = '';
+    }
+  }, [productoInicial]);
 
   useEffect(() => {
     return () => {
@@ -46,20 +61,6 @@ function AgregarProducto({ onGuardar, onCancelar }: AgregarProductoProps) {
       ...formularioActual,
       [campo]: valor,
     }));
-  };
-
-  const limpiarFormulario = () => {
-    setFormularioProducto(formularioVacio);
-
-    if (imagenSeleccionada.startsWith('blob:')) {
-      URL.revokeObjectURL(imagenSeleccionada);
-    }
-
-    setImagenSeleccionada('');
-
-    if (inputImagenRef.current) {
-      inputImagenRef.current.value = '';
-    }
   };
 
   const manejarSeleccionImagen = (evento: ChangeEvent<HTMLInputElement>) => {
@@ -77,28 +78,21 @@ function AgregarProducto({ onGuardar, onCancelar }: AgregarProductoProps) {
     setImagenSeleccionada(urlTemporal);
   };
 
-  const guardarProducto = (mantenerAbierto: boolean) => {
+  const guardarCambios = () => {
     if (!formularioProducto.nombre.trim()) {
       return;
     }
 
-    onGuardar(
-      {
-        ...formularioProducto,
-        imagen: imagenSeleccionada,
-      },
-      mantenerAbierto
-    );
-
-    if (mantenerAbierto) {
-      limpiarFormulario();
-    }
+    onGuardar({
+      ...formularioProducto,
+      imagen: imagenSeleccionada,
+    });
   };
 
   return (
     <>
-      <header className="inventarioEncabezadoAgregar">
-        <h2 className="inventarioTituloAgregar">Añadir nuevo producto</h2>
+      <header className="inventarioEncabezadoAgregar inventarioEncabezadoEditar">
+        <h2 className="inventarioTituloAgregar">Modificar producto</h2>
         <button className="inventarioBotonCancelar" type="button" onClick={onCancelar}>
           Cancelar
         </button>
@@ -110,7 +104,7 @@ function AgregarProducto({ onGuardar, onCancelar }: AgregarProductoProps) {
           className="inventarioFormularioAgregar"
           onSubmit={(event) => {
             event.preventDefault();
-            guardarProducto(false);
+            guardarCambios();
           }}
         >
           <input
@@ -190,10 +184,6 @@ function AgregarProducto({ onGuardar, onCancelar }: AgregarProductoProps) {
             <button className="inventarioBotonGuardar" type="submit">
               Guardar producto
             </button>
-
-            <button className="inventarioBotonGuardar" type="button" onClick={() => guardarProducto(true)}>
-              Guardar y añadir otro
-            </button>
           </div>
         </form>
       </section>
@@ -201,4 +191,4 @@ function AgregarProducto({ onGuardar, onCancelar }: AgregarProductoProps) {
   );
 }
 
-export default AgregarProducto;
+export default ModificarProducto;

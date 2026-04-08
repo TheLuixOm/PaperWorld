@@ -4,12 +4,13 @@ import InicioSesionEsc from './paginas/login/LoginEsc'
 import InicioSesionMov from './paginas/login/LoginMov'
 import RegistroEsc from './paginas/register/Register'
 import RegistroMov from './paginas/register/RegisterMov'
-import Empleado from './paginas/empleado/Empleado'
-import Inventario from './paginas/empleado/Inventario'
-import Proveedores from './paginas/empleado/Proveedores'
-import AgregarProveedores from './paginas/empleado/agregar_proveedores'
+import Empleado from './paginas/empleado/Barras/Empleado.tsx'
+import Inventario from './paginas/empleado/inventario/Inventario.tsx'
+import Proveedores from './paginas/empleado/Proveedores/Proveedores.tsx'
+import AgregarProveedores from './paginas/empleado/Proveedores/agregar_proveedores.tsx'
+import ModificarProveedores from './paginas/empleado/Proveedores/Modificar_proveedores.tsx'
 import VistaEmpleado from './paginas/empleado/VistaEmpleado'
-import InicioEmpleado from './paginas/empleado/Inicio'
+import InicioEmpleado from './paginas/empleado/Inicio/Inicio'
 import Reportes from './paginas/empleado/reportes/Reportes'
 import InicioCliente from './paginas/cliente/inicio/InicioCliente'
 import InicioClienteMov from './paginas/cliente/inicio/InicioClienteMov'
@@ -20,7 +21,7 @@ import CarritoMov from './paginas/cliente/carrito/CarritoMov.tsx'
 import Ventas_Esc from './paginas/empleado/Ventas/Ventas_Esc.tsx'
 import Ventas_mov from './paginas/empleado/Ventas/Ventas_mov.tsx'
 
-const puntoCorteMovil = 900 
+const puntoCorteMovil = 600; 
 
 const obtenerEsMovil = () => {
   if (typeof window === 'undefined') {
@@ -72,6 +73,7 @@ function Aplicacion() {
         <Route path="/ventas" element={elementoVentasEmpleado} />
         <Route path="/proveedores" element={<Proveedores />} />
         <Route path="/proveedores/agregar" element={<AgregarProveedores />} />
+        <Route path="/proveedores/modificar" element={<ModificarProveedores />} />
         <Route path="/reportes" element={<Reportes />} />
         <Route path="/ayuda" element={<VistaEmpleado titulo="Ayuda" />} />
         <Route path="/ajustes" element={<VistaEmpleado titulo="Configuracion" />} />

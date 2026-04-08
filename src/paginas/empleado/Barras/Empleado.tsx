@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import clipAzul from '../../images/Clip_azul.svg';
+import clipAzul from '../../../images/Clip_azul.svg';
 import './Empleado.css';
 
 type TipoIcono =
@@ -116,6 +116,12 @@ function Empleado() {
     setEstaColapsado(false);
   };
 
+  const manejarClickSidebar = () => {
+    if (!esVistaMovil()) {
+      setEstaColapsado((estadoPrevio) => !estadoPrevio);
+    }
+  };
+
   useEffect(() => {
     const manejarRedimension = () => {
       if (!esVistaMovil()) {
@@ -134,12 +140,15 @@ function Empleado() {
     <main
       className={`empleadoLayout ${estaColapsado ? 'empleadoLayoutColapsado' : ''} ${menuMovilAbierto ? 'empleadoLayoutMenuMovilAbierto' : ''}`}
     >
-      <header className="empleadoBarraMovil">
+      <header className="empleadoBarraMovil" onClick={alternarSidebar}>
         <div className="empleadoMarcaMovil">
           <button
             type="button"
             className="empleadoBotonMenuMovil"
-            onClick={alternarSidebar}
+            onClick={(event) => {
+              event.stopPropagation();
+              alternarSidebar();
+            }}
             aria-label={menuMovilAbierto ? 'Cerrar menu lateral' : 'Abrir menu lateral'}
             aria-expanded={menuMovilAbierto}
           >
@@ -157,13 +166,16 @@ function Empleado() {
         </div>
       </header>
 
-      <aside className="empleadoSidebar" aria-label="Navegacion del empleado">
+      <aside className="empleadoSidebar" aria-label="Navegacion del empleado" onClick={manejarClickSidebar}>
         <div className="empleadoMarca">
           <h1 className="empleadoLogo">Paper world</h1>
           <button
             type="button"
             className="empleadoBotonClip"
-            onClick={alternarSidebar}
+            onClick={(event) => {
+              event.stopPropagation();
+              alternarSidebar();
+            }}
             aria-label={estaColapsado ? 'Expandir menu lateral' : 'Contraer menu lateral'}
           >
             <img className="empleadoIconoClip" src={clipAzul} alt="Clip azul" />

@@ -1,6 +1,6 @@
 import './Inicio.css';
-import { productosIniciales } from './datosInventario';
-import UsuarioMenu from './UsuarioMenu';
+import { productosIniciales } from '../datosInventario';
+import UsuarioMenu from '../Barras/UsuarioMenu';
 
 const filasVacias = 0;
 

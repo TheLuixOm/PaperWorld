@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import '../Inventario.css';
+import '../inventario/Inventario.css';
 import './Reportes.css';
-import UsuarioMenu from '../UsuarioMenu';
+import UsuarioMenu from '../Barras/UsuarioMenu';
 
 type ReporteTab = 'ventas' | 'pedidos' | 'inventario';
 
