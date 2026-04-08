@@ -35,6 +35,7 @@
   padding: 12px;
   display: flex;
   flex-direction: column;
+  font-family: 'Montserrat', 'Inter', sans-serif;
 }
 
 .menuLateralMovilAbierto .menuLateralMovilPanel {

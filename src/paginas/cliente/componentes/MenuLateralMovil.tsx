@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import { BookOpen, HelpCircle, Home, Settings, ShoppingCart } from 'lucide-react';
+import { BookOpen, Home, ShoppingCart } from 'lucide-react';
 import clipAzul from '../../../images/Clip_azul.svg';
 import './MenuLateralMovil.css';
 
@@ -79,7 +79,7 @@ function MenuLateralMovil({ abierto, alCerrar }: MenuLateralMovilProps) {
             <span className="menuLateralMovilIcono" aria-hidden="true">
               <BookOpen />
             </span>
-            <span className="menuLateralMovilTexto">Catalogo</span>
+            <span className="menuLateralMovilTexto">Catálogo</span>
           </NavLink>
 
           <NavLink
@@ -95,26 +95,6 @@ function MenuLateralMovil({ abierto, alCerrar }: MenuLateralMovilProps) {
             <span className="menuLateralMovilTexto">Carrito</span>
           </NavLink>
         </nav>
-
-        <div className="menuLateralMovilSeparador" />
-
-        <div className="menuLateralMovilBloque" aria-label="Support">
-          <p className="menuLateralMovilLabel">SUPPORT</p>
-
-          <button type="button" className="menuLateralMovilItem menuLateralMovilItemBoton" onClick={alCerrar}>
-            <span className="menuLateralMovilIcono" aria-hidden="true">
-              <HelpCircle />
-            </span>
-            <span className="menuLateralMovilTexto">Help</span>
-          </button>
-
-          <button type="button" className="menuLateralMovilItem menuLateralMovilItemBoton" onClick={alCerrar}>
-            <span className="menuLateralMovilIcono" aria-hidden="true">
-              <Settings />
-            </span>
-            <span className="menuLateralMovilTexto">Settings</span>
-          </button>
-        </div>
       </aside>
     </div>
   );

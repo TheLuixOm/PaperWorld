@@ -5,6 +5,7 @@ import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import { productosIniciales } from '../../empleado/datosInventario';
 import { useCart } from '../carrito/CarritoContext';
 import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
+import FooterCliente from '../componentes/FooterCliente';
 import clipAzul from '../../../images/Clip_azul.svg';
 import './InicioCliente.css';
 
@@ -15,6 +16,7 @@ type ProductoInicio = {
   precio: number;
   imagen: string;
   vendidos: number;
+  cantidad: number;
 };
 
 function parsearPrecio(precio: string) {
@@ -129,6 +131,7 @@ function InicioCliente() {
       precio: parsearPrecio(p.precio),
       imagen: p.imagen,
       vendidos: p.vendidos,
+      cantidad: p.cantidad,
     }));
   }, []);
 
@@ -263,6 +266,9 @@ function InicioCliente() {
       nombre: producto.nombre,
       precio: producto.precio,
       imagen: producto.imagen,
+      categoria: producto.categoria,
+      stock: producto.cantidad,
+      codigo: producto.id,
     });
   };
 
@@ -348,7 +354,7 @@ function InicioCliente() {
                       }}
                     >
                       <span className="inicioClienteSugerenciaNombre">{producto.nombre}</span>
-                      <span className="inicioClienteSugerenciaPrecio">AED {producto.precio.toFixed(2)}</span>
+                      <span className="inicioClienteSugerenciaPrecio">USD {producto.precio.toFixed(2)}</span>
                     </button>
                   ))}
                 </div>
@@ -368,7 +374,7 @@ function InicioCliente() {
               </Link>
 
               <p className="inicioClienteTotal" aria-label="Total del carrito">
-                AED {totalPrice.toFixed(2)}
+                USD {totalPrice.toFixed(2)}
               </p>
             </div>
           </div>
@@ -502,7 +508,7 @@ function InicioCliente() {
                   <div className="inicioClienteProductoInfo">
                     <p className="inicioClienteProductoNombre">{producto.nombre}</p>
                     <p className="inicioClienteProductoPrecio">
-                      <span className="inicioClienteProductoPrecioActual">AED {producto.precio.toFixed(2)}</span>
+                      <span className="inicioClienteProductoPrecioActual">USD {producto.precio.toFixed(2)}</span>
                     </p>
                   </div>
                 </article>
@@ -512,7 +518,7 @@ function InicioCliente() {
         </section>
       </main>
 
-      <footer className="inicioClienteFooter" aria-label="Footer" />
+      <FooterCliente className="inicioClienteFooter" />
     </div>
   );
 }

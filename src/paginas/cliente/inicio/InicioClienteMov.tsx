@@ -6,6 +6,7 @@ import { productosIniciales } from '../../empleado/datosInventario';
 import { useCart } from '../carrito/CarritoContext';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
 import ProductoExpandidoMov, { type ProductoExpandidoMovData } from '../componentes/ProductoExpandidoMov';
+import FooterCliente from '../componentes/FooterCliente';
 import clipAzul from '../../../images/Clip_azul.svg';
 import './InicioClienteMov.css';
 
@@ -16,6 +17,7 @@ type ProductoInicio = {
   precio: number;
   imagen: string;
   vendidos: number;
+  cantidad: number;
 };
 
 function parsearPrecio(precio: string) {
@@ -128,6 +130,7 @@ function InicioClienteMov() {
       precio: parsearPrecio(p.precio),
       imagen: p.imagen,
       vendidos: p.vendidos,
+      cantidad: p.cantidad,
     }));
   }, []);
 
@@ -256,6 +259,9 @@ function InicioClienteMov() {
       nombre: producto.nombre,
       precio: producto.precio,
       imagen: producto.imagen,
+      categoria: producto.categoria,
+      stock: producto.cantidad,
+      codigo: producto.id,
     });
   };
 
@@ -332,7 +338,7 @@ function InicioClienteMov() {
             </Link>
 
             <p className="inicioClienteMovTotal" aria-label="Total del carrito">
-              AED {totalPrice.toFixed(2)}
+              USD {totalPrice.toFixed(2)}
             </p>
           </div>
         </div>
@@ -422,7 +428,7 @@ function InicioClienteMov() {
                   }}
                 >
                   <span className="inicioClienteMovSugerenciaNombre">{producto.nombre}</span>
-                  <span className="inicioClienteMovSugerenciaPrecio">AED {producto.precio.toFixed(2)}</span>
+                  <span className="inicioClienteMovSugerenciaPrecio">USD {producto.precio.toFixed(2)}</span>
                 </button>
               ))}
             </div>
@@ -522,7 +528,7 @@ function InicioClienteMov() {
                   <div className="inicioClienteMovProductoInfo">
                     <p className="inicioClienteMovProductoNombre">{producto.nombre}</p>
                     <p className="inicioClienteMovProductoPrecio">
-                      <span className="inicioClienteMovProductoPrecioActual">AED {producto.precio.toFixed(2)}</span>
+                      <span className="inicioClienteMovProductoPrecioActual">USD {producto.precio.toFixed(2)}</span>
                     </p>
                   </div>
                 </article>
@@ -531,7 +537,7 @@ function InicioClienteMov() {
           </div>
         </section>
 
-        <footer ref={footerRef} className="inicioClienteMovFooter" aria-label="Footer" />
+        <FooterCliente ref={footerRef} className="inicioClienteMovFooter" />
       </main>
 
       <Link

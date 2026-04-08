@@ -6,6 +6,7 @@ import { productosIniciales } from '../../empleado/datosInventario';
 import { useCart } from '../carrito/CarritoContext';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
 import ProductoExpandidoMov, { type ProductoExpandidoMovData } from '../componentes/ProductoExpandidoMov';
+import FooterCliente from '../componentes/FooterCliente';
 import clipAzul from '../../../images/Clip_azul.svg';
 import '../inicio/InicioClienteMov.css';
 import './CatalogoMov.css';
@@ -17,6 +18,7 @@ type ProductoMovil = {
   categoria: string;
   precio: number;
   imagen: string;
+  cantidad: number;
 };
 
 type OrdenCatalogo = 'relevancia' | 'precio_desc' | 'precio_asc' | 'nombre_asc' | 'nombre_desc';
@@ -135,6 +137,7 @@ function CatalogoMov() {
       categoria: p.categoria,
       precio: parsearPrecio(p.precio),
       imagen: p.imagen,
+      cantidad: p.cantidad,
     }));
   }, []);
 
@@ -222,6 +225,9 @@ function CatalogoMov() {
       descripcion: producto.descripcion,
       precio: producto.precio,
       imagen: producto.imagen,
+      categoria: producto.categoria,
+      stock: producto.cantidad,
+      codigo: producto.id,
     });
   };
 
@@ -319,7 +325,7 @@ function CatalogoMov() {
             </Link>
 
             <p className="inicioClienteMovTotal" aria-label="Total del carrito">
-              AED {totalPrice.toFixed(2)}
+              USD {totalPrice.toFixed(2)}
             </p>
           </div>
         </div>
@@ -373,7 +379,7 @@ function CatalogoMov() {
         </section>
 
         <div className="catalogoMovBusquedaWrap" ref={buscadorRef}>
-          <section className="inicioClienteMovBusqueda" aria-label="Buscar">
+          <section className="inicioClienteMovBusqueda" aria-label="Búsqueda">
             <span className="inicioClienteMovBusquedaIcono" aria-hidden="true">
               <Search />
             </span>
@@ -408,7 +414,7 @@ function CatalogoMov() {
                   }}
                 >
                   <span className="catalogoMovSugerenciaNombre">{producto.descripcion || producto.nombre}</span>
-                  <span className="catalogoMovSugerenciaPrecio">AED {producto.precio.toFixed(2)}</span>
+                  <span className="catalogoMovSugerenciaPrecio">USD {producto.precio.toFixed(2)}</span>
                 </button>
               ))}
             </div>
@@ -613,14 +619,14 @@ function CatalogoMov() {
               <div className="catalogoMovInfo">
                 <p className="catalogoMovNombre">{producto.descripcion}</p>
                 <p className="catalogoMovPrecio">
-                  <span className="catalogoMovPrecioActual">AED {producto.precio.toFixed(2)}</span>
+                  <span className="catalogoMovPrecioActual">USD {producto.precio.toFixed(2)}</span>
                 </p>
               </div>
             </article>
           ))}
         </section>
 
-        <footer ref={footerRef} className="inicioClienteMovFooter" aria-label="Footer" />
+        <FooterCliente ref={footerRef} className="inicioClienteMovFooter" />
       </main>
 
       <Link

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Menu, ShoppingCart, Trash2 } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import MenuLateralMovil from '../componentes/MenuLateralMovil';
+import FooterCliente from '../componentes/FooterCliente';
 import clipAzul from '../../../images/Clip_azul.svg';
 import { useCart } from './CarritoContext';
 import '../inicio/InicioClienteMov.css';
@@ -56,7 +57,7 @@ function CarritoMov() {
             </div>
 
             <p className="carritoMovTotalTop" aria-label="Total del carrito">
-              AED {total.toFixed(2)}
+              USD {total.toFixed(2)}
             </p>
           </div>
         </div>
@@ -144,7 +145,7 @@ function CarritoMov() {
           <div className="carritoMovLinea" aria-hidden="true" />
           <div className="carritoMovResumenFila">
             <p className="carritoMovResumenLabel">Total</p>
-            <p className="carritoMovResumenValor">AED {total.toFixed(2)}</p>
+            <p className="carritoMovResumenValor">USD {total.toFixed(2)}</p>
           </div>
 
           <div className="carritoMovLinea" aria-hidden="true" />
@@ -156,6 +157,8 @@ function CarritoMov() {
 
         <div className="carritoMovEspaciador" aria-hidden="true" />
       </main>
+
+      <FooterCliente className="inicioClienteMovFooter" />
 
       <Link to="/cliente/catalogo" className="carritoMovVolver" aria-label="Volver a catalogo">
         Volver al catalogo

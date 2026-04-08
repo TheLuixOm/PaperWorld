@@ -89,11 +89,10 @@ export default function ProductoExpandidoPc({ abierto, producto, alCerrar }: Pro
     return null;
   }
 
-  const codigo = producto.codigo ?? '002315640';
-  const stock = typeof producto.stock === 'number' ? producto.stock : 350;
-  const categoria = producto.categoria ?? 'hola';
-  const precioDetalle = typeof producto.precioDetalle === 'number' ? producto.precioDetalle : 5;
-  const descripcion = producto.descripcion ?? 'esto es una descripcion';
+  const codigo = producto.codigo ?? producto.id;
+  const stockLabel = typeof producto.stock === 'number' ? String(producto.stock) : '—';
+  const categoria = producto.categoria ?? '—';
+  const descripcion = producto.descripcion?.trim() ? producto.descripcion : 'Sin descripción.';
 
   return (
     <div
@@ -117,12 +116,12 @@ export default function ProductoExpandidoPc({ abierto, producto, alCerrar }: Pro
             </div>
 
             <div className="productoExpandidoPcInfo">
-              <p className="productoExpandidoPcCodigo">CODIGO: {codigo}</p>
-              <p className="productoExpandidoPcNombre">Nombre del producto - {producto.nombre}</p>
+              <p className="productoExpandidoPcCodigo">CÓDIGO: {codigo}</p>
+              <p className="productoExpandidoPcNombre">{producto.nombre}</p>
               <button type="button" className="productoExpandidoPcReadMore" onClick={(e) => e.preventDefault()}>
-                Leer mas
+                Leer más
               </button>
-              <p className="productoExpandidoPcPrecio">AED {producto.precio.toFixed(2)}</p>
+              <p className="productoExpandidoPcPrecio">USD {producto.precio.toFixed(2)}</p>
             </div>
           </div>
 
@@ -132,22 +131,22 @@ export default function ProductoExpandidoPc({ abierto, producto, alCerrar }: Pro
             <div className="productoExpandidoPcDetalles">
               <div className="productoExpandidoPcDetalle">
                 <p className="productoExpandidoPcDetalleLabel">Stock</p>
-                <p className="productoExpandidoPcDetalleValor">{stock}</p>
+                <p className="productoExpandidoPcDetalleValor">{stockLabel}</p>
               </div>
               <div className="productoExpandidoPcDetalle">
-                <p className="productoExpandidoPcDetalleLabel">Codigo</p>
+                <p className="productoExpandidoPcDetalleLabel">Código</p>
                 <p className="productoExpandidoPcDetalleValor">{codigo}</p>
               </div>
               <div className="productoExpandidoPcDetalle">
                 <p className="productoExpandidoPcDetalleLabel">Precio</p>
-                <p className="productoExpandidoPcDetalleValor">{precioDetalle.toFixed(2)} bs</p>
+                <p className="productoExpandidoPcDetalleValor">USD {producto.precio.toFixed(2)}</p>
               </div>
               <div className="productoExpandidoPcDetalle">
-                <p className="productoExpandidoPcDetalleLabel">categoria</p>
+                <p className="productoExpandidoPcDetalleLabel">Categoría</p>
                 <p className="productoExpandidoPcDetalleValor">{categoria}</p>
               </div>
               <div className="productoExpandidoPcDetalle productoExpandidoPcDetalleFull">
-                <p className="productoExpandidoPcDetalleLabel">Description</p>
+                <p className="productoExpandidoPcDetalleLabel">Descripción</p>
                 <p className="productoExpandidoPcDetalleValor">{descripcion}</p>
               </div>
             </div>
@@ -167,6 +166,7 @@ export default function ProductoExpandidoPc({ abierto, producto, alCerrar }: Pro
                     imagen: producto.imagen,
                     categoria: producto.categoria,
                   });
+                  cerrarConAnimacion();
                 }}
               >
                 <span className="productoExpandidoPcAgregarIcono" aria-hidden="true">

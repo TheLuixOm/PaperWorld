@@ -4,6 +4,7 @@ import { BookOpen, Home, Search, ShoppingCart } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import clipAzul from '../../../images/Clip_azul.svg';
 import { useCart } from './CarritoContext';
+import FooterCliente from '../componentes/FooterCliente';
 import '../inicio/InicioCliente.css';
 import './CarritoCliente.css';
 
@@ -56,7 +57,7 @@ function Carrito() {
               </Link>
 
               <p className="inicioClienteTotal" aria-label="Total del carrito">
-                AED {total.toFixed(2)}
+                USD {total.toFixed(2)}
               </p>
             </div>
           </div>
@@ -145,7 +146,7 @@ function Carrito() {
               </div>
 
               <div className="carritoClienteAcciones" aria-label="Acciones">
-                <p className="carritoClientePrecio">AED {item.precio.toFixed(2)}</p>
+                <p className="carritoClientePrecio">USD {item.precio.toFixed(2)}</p>
                 <button type="button" className="carritoClienteRemove" onClick={() => removeItem(item.id)}>
                   Remover
                 </button>
@@ -156,14 +157,14 @@ function Carrito() {
 
         <div className="carritoClienteResumen" aria-label="Resumen">
           <p className="carritoClienteResumenLabel">Total</p>
-          <p className="carritoClienteResumenValor">AED {total.toFixed(2)}</p>
+          <p className="carritoClienteResumenValor">USD {total.toFixed(2)}</p>
           <button type="button" className="carritoClienteComprar">
             Comprar
           </button>
         </div>
       </main>
 
-      <footer className="carritoClienteFooter" aria-label="Footer" />
+      <FooterCliente className="carritoClienteFooter" />
     </div>
   );
 }

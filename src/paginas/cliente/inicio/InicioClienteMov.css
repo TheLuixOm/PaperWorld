@@ -569,7 +569,8 @@
 }
 
 .inicioClienteMovFooter {
-  height: calc(78px + env(safe-area-inset-bottom));
+  min-height: calc(78px + env(safe-area-inset-bottom));
+  height: auto;
   padding-bottom: env(safe-area-inset-bottom);
   background: #067bb6;
   margin-top: auto;

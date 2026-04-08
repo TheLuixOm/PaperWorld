@@ -5,6 +5,7 @@ import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import { productosIniciales } from '../../empleado/datosInventario';
 import { useCart } from '../carrito/CarritoContext';
 import ProductoExpandidoPc, { type ProductoExpandidoPcData } from '../componentes/ProductoExpandidoPc';
+import FooterCliente from '../componentes/FooterCliente';
 import clipAzul from '../../../images/Clip_azul.svg';
 import '../inicio/InicioCliente.css';
 import './CatalogoCliente.css';
@@ -15,6 +16,7 @@ type ProductoCatalogo = {
   categoria: string;
   precio: number;
   imagen: string;
+  cantidad: number;
 };
 
 type OrdenCatalogo = 'relevancia' | 'precio_desc' | 'precio_asc' | 'nombre_asc' | 'nombre_desc';
@@ -126,6 +128,7 @@ function CatalogoCliente() {
       categoria: p.categoria,
       precio: parsearPrecio(p.precio),
       imagen: p.imagen,
+      cantidad: p.cantidad,
     }));
   }, []);
 
@@ -168,6 +171,9 @@ function CatalogoCliente() {
       nombre: producto.nombre,
       precio: producto.precio,
       imagen: producto.imagen,
+      categoria: producto.categoria,
+      stock: producto.cantidad,
+      codigo: producto.id,
     });
   };
 
@@ -244,14 +250,14 @@ function CatalogoCliente() {
               <span className="inicioClienteMarcaTexto">Paper world</span>
             </div>
 
-            <form className="inicioClienteBuscador" role="search" aria-label="Busqueda">
+            <form className="inicioClienteBuscador" role="search" aria-label="Búsqueda">
               <span className="inicioClienteBuscadorIcono" aria-hidden="true">
                 <Search />
               </span>
               <input
                 className="inicioClienteBuscadorInput"
                 type="search"
-                placeholder="Busca por productos, categorias, etc..."
+                placeholder="Buscar producto"
                 name="q"
                 autoComplete="off"
               />
@@ -270,7 +276,7 @@ function CatalogoCliente() {
               </Link>
 
               <p className="inicioClienteTotal" aria-label="Total del carrito">
-                AED {totalPrice.toFixed(2)}
+                USD {totalPrice.toFixed(2)}
               </p>
             </div>
           </div>
@@ -326,15 +332,15 @@ function CatalogoCliente() {
           </div>
         </section>
 
-        <section className="catalogoClienteBusqueda" aria-label="Busqueda de catalogo" ref={buscadorRef}>
+        <section className="catalogoClienteBusqueda" aria-label="Búsqueda de catálogo" ref={buscadorRef}>
           <span className="catalogoClienteBusquedaIcono" aria-hidden="true">
             <Search />
           </span>
           <input
             className="catalogoClienteBusquedaInput"
             type="search"
-            placeholder="Catalogo, brand, etc..."
-            aria-label="Buscar en catalogo"
+            placeholder="Buscar producto"
+            aria-label="Buscar producto"
             ref={inputBusquedaRef}
             value={busquedaCatalogo}
             onFocus={() => setSugerenciasAbiertas(true)}
@@ -360,7 +366,7 @@ function CatalogoCliente() {
                   }}
                 >
                   <span className="catalogoClienteSugerenciaNombre">{producto.nombre}</span>
-                  <span className="catalogoClienteSugerenciaPrecio">AED {producto.precio.toFixed(2)}</span>
+                  <span className="catalogoClienteSugerenciaPrecio">USD {producto.precio.toFixed(2)}</span>
                 </button>
               ))}
             </div>
@@ -497,7 +503,7 @@ function CatalogoCliente() {
                   <div className="catalogoClienteProductoInfo">
                     <p className="catalogoClienteProductoNombre">{producto.nombre}</p>
                     <p className="catalogoClienteProductoPrecio">
-                      <span className="catalogoClienteProductoPrecioActual">AED {producto.precio.toFixed(2)}</span>
+                      <span className="catalogoClienteProductoPrecioActual">USD {producto.precio.toFixed(2)}</span>
                     </p>
                   </div>
                 </article>
@@ -518,7 +524,7 @@ function CatalogoCliente() {
         </section>
       </main>
 
-      <footer className="catalogoClienteFooter" aria-label="Footer" />
+      <FooterCliente className="catalogoClienteFooter" />
     </div>
   );
 }

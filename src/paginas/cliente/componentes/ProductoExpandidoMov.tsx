@@ -67,11 +67,10 @@ export default function ProductoExpandidoMov({ abierto, producto, alCerrar }: Pr
     return null;
   }
 
-  const codigo = producto.codigo ?? '8901425031926';
-  const stock = typeof producto.stock === 'number' ? producto.stock : 350;
-  const categoria = producto.categoria ?? 'hola';
-  const precioDetalle = typeof producto.precioDetalle === 'number' ? producto.precioDetalle : 9;
-  const descripcion = producto.descripcion ?? 'esto es una descripcion';
+  const codigo = producto.codigo ?? producto.id;
+  const stockLabel = typeof producto.stock === 'number' ? String(producto.stock) : '—';
+  const categoria = producto.categoria ?? '—';
+  const descripcion = producto.descripcion?.trim() ? producto.descripcion : 'Sin descripción.';
 
   return (
     <div
@@ -105,10 +104,10 @@ export default function ProductoExpandidoMov({ abierto, producto, alCerrar }: Pr
         </div>
 
         <div className="productoExpandidoMovBody">
-          <p className="productoExpandidoMovCodigo">CODIGO: {codigo}</p>
+          <p className="productoExpandidoMovCodigo">CÓDIGO: {codigo}</p>
 
           <div className="productoExpandidoMovNombreFila">
-            <p className="productoExpandidoMovNombre">Nombre del producto - {producto.nombre}</p>
+            <p className="productoExpandidoMovNombre">{producto.nombre}</p>
           </div>
 
           <p className="productoExpandidoMovDescripcionCorta">{descripcion}</p>
@@ -118,10 +117,10 @@ export default function ProductoExpandidoMov({ abierto, producto, alCerrar }: Pr
             className="productoExpandidoMovReadMore"
             onClick={(e) => e.preventDefault()}
           >
-            Leer mas
+            Leer más
           </button>
 
-          <p className="productoExpandidoMovPrecio">AED {producto.precio.toFixed(2)}</p>
+          <p className="productoExpandidoMovPrecio">USD {producto.precio.toFixed(2)}</p>
 
           <div className="productoExpandidoMovAcciones">
             <button type="button" className="productoExpandidoMovCancelar" onClick={cerrarConAnimacion}>
@@ -138,6 +137,7 @@ export default function ProductoExpandidoMov({ abierto, producto, alCerrar }: Pr
                   imagen: producto.imagen,
                   categoria: producto.categoria,
                 });
+                cerrarConAnimacion();
               }}
             >
               <span className="productoExpandidoMovAgregarIcono" aria-hidden="true">
@@ -152,18 +152,18 @@ export default function ProductoExpandidoMov({ abierto, producto, alCerrar }: Pr
           <div className="productoExpandidoMovDetalles">
             <div className="productoExpandidoMovDetalle">
               <p className="productoExpandidoMovDetalleLabel">Stock</p>
-              <p className="productoExpandidoMovDetalleValor">{stock}</p>
+              <p className="productoExpandidoMovDetalleValor">{stockLabel}</p>
             </div>
             <div className="productoExpandidoMovDetalle">
-              <p className="productoExpandidoMovDetalleLabel">Codigo</p>
+              <p className="productoExpandidoMovDetalleLabel">Código</p>
               <p className="productoExpandidoMovDetalleValor">{codigo}</p>
             </div>
             <div className="productoExpandidoMovDetalle">
               <p className="productoExpandidoMovDetalleLabel">Precio</p>
-              <p className="productoExpandidoMovDetalleValor">{precioDetalle.toFixed(2)} AED</p>
+              <p className="productoExpandidoMovDetalleValor">USD {producto.precio.toFixed(2)}</p>
             </div>
             <div className="productoExpandidoMovDetalle">
-              <p className="productoExpandidoMovDetalleLabel">Categoria</p>
+              <p className="productoExpandidoMovDetalleLabel">Categoría</p>
               <p className="productoExpandidoMovDetalleValor">{categoria}</p>
             </div>
           </div>

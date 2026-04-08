@@ -394,6 +394,7 @@
 }
 
 .catalogoClienteFooter {
-  height: 76px;
+  min-height: 76px;
+  height: auto;
   background: #067BB6;
 }
