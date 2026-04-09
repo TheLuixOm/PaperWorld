@@ -203,11 +203,9 @@ function Inventario() {
 
     return (
         <section className={claseVista} id="inventario">
+            <div className="inventarioVistaCambio" key={vistaActual}>
                 {vistaActual === 'agregar' ? (
-                    <AgregarProducto
-                        onGuardar={guardarNuevoProducto}
-                        onCancelar={cerrarVistaFormulario}
-                    />
+                    <AgregarProducto onGuardar={guardarNuevoProducto} onCancelar={cerrarVistaFormulario} />
                 ) : vistaActual === 'modificar' && productoEnEdicion ? (
                     <ModificarProducto
                         productoInicial={productoEnEdicion}
@@ -215,59 +213,60 @@ function Inventario() {
                         onCancelar={cerrarVistaFormulario}
                     />
                 ) : (
-                    <header className="inventarioEncabezado">
-                        <h2 className="inventarioTitulo">INVENTARIO</h2>
+                    <>
+                        <header className="inventarioEncabezado">
+                            <h2 className="inventarioTitulo">INVENTARIO</h2>
 
-                        <label
-                            className={`inventarioBuscador ${busquedaMovilActiva ? 'inventarioBuscadorMovilActivo' : ''}`}
-                        >
-                            <button
-                                type="button"
-                                className="inventarioBuscadorBoton"
-                                aria-label="Abrir busqueda"
-                                onClick={activarBusquedaMovil}
+                            <label
+                                className={`inventarioBuscador ${busquedaMovilActiva ? 'inventarioBuscadorMovilActivo' : ''}`}
                             >
-                                <span className="inventarioBuscadorIcono" aria-hidden="true">
-                                <Search />
+                                <button
+                                    type="button"
+                                    className="inventarioBuscadorBoton"
+                                    aria-label="Abrir busqueda"
+                                    onClick={activarBusquedaMovil}
+                                >
+                                    <span className="inventarioBuscadorIcono" aria-hidden="true">
+                                        <Search />
+                                    </span>
+                                </button>
+                                <input
+                                    ref={inputBusquedaRef}
+                                    type="search"
+                                    placeholder="Search"
+                                    className="inventarioInput"
+                                    aria-label="Buscar producto"
+                                    value={textoBusqueda}
+                                    onBlur={cerrarBusquedaMovilSiVacia}
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Escape') {
+                                            cerrarBusquedaMovilSiVacia();
+                                        }
+                                    }}
+                                    onChange={(event) => {
+                                        setTextoBusqueda(event.target.value);
+                                        setPaginaActual(1);
+                                    }}
+                                />
+                            </label>
+
+                            <button
+                                className="inventarioBotonAgregar"
+                                type="button"
+                                onClick={abrirVistaAgregarProducto}
+                                aria-label="Añadir nuevo producto"
+                            >
+                                <span className="inventarioBotonIcono" aria-hidden="true">
+                                    +
                                 </span>
+                                <span className="inventarioBotonTexto">Añadir producto</span>
                             </button>
-                            <input
-                                ref={inputBusquedaRef}
-                                type="search"
-                                placeholder="Search"
-                                className="inventarioInput"
-                                aria-label="Buscar producto"
-                                value={textoBusqueda}
-                                onBlur={cerrarBusquedaMovilSiVacia}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Escape') {
-                                        cerrarBusquedaMovilSiVacia();
-                                    }
-                                }}
-                                onChange={(event) => {
-                                    setTextoBusqueda(event.target.value);
-                                    setPaginaActual(1);
-                                }}
-                            />
-                        </label>
 
-                        <button
-                            className="inventarioBotonAgregar"
-                            type="button"
-                            onClick={abrirVistaAgregarProducto}
-                            aria-label="Añadir nuevo producto"
-                        >
-                            <span className="inventarioBotonIcono" aria-hidden="true">+</span>
-                            <span className="inventarioBotonTexto">Añadir producto</span>
-                        </button>
+                            <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
+                        </header>
 
-                        <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
-                    </header>
-                )}
-
-                {vistaActual === 'lista' && (
-                <section className="inventarioPanel">
-                    <h3 className="inventarioSubtitulo">Lista de productos:</h3>
+                        <section className="inventarioPanel">
+                            <h3 className="inventarioSubtitulo">Lista de productos:</h3>
 
                     <div className="inventarioTablaContenedor">
                         <table className="inventarioTabla">
@@ -477,8 +476,10 @@ function Inventario() {
                             </div>
                         </div>
                     )}
-                </section>
+                        </section>
+                    </>
                 )}
+            </div>
         </section>
     );
 }

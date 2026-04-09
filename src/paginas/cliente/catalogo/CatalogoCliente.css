@@ -355,6 +355,11 @@
   place-items: center;
 }
 
+.catalogoClientePagina:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .catalogoClientePaginaActiva {
   background: #067bb6;
   border-color: #067bb6;

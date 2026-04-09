@@ -85,7 +85,7 @@ function ModificarProveedores() {
 	};
 
 	return (
-		<section className="inventarioVista inventarioVistaAgregar inventarioModificarProveedorVista" id="modificar-proveedores">
+		<section className="inventarioVista inventarioVistaCambio inventarioVistaAgregar inventarioModificarProveedorVista" id="modificar-proveedores">
 			<header className="inventarioEncabezadoAgregar">
 				<h2 className="inventarioTituloAgregar">Modificar proveedor</h2>
 				<button className="inventarioBotonCancelar" type="button" onClick={() => navigate('/proveedores')}>

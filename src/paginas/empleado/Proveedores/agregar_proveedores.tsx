@@ -75,7 +75,7 @@ function AgregarProveedores() {
   };
 
   return (
-    <section className="inventarioVista inventarioVistaAgregar inventarioAgregarProveedorVista" id="agregar-proveedores">
+    <section className="inventarioVista inventarioVistaCambio inventarioVistaAgregar inventarioAgregarProveedorVista" id="agregar-proveedores">
       <header className="inventarioEncabezadoAgregar">
         <h2 className="inventarioTituloAgregar">Añadir nuevo proveedor</h2>
         <button className="inventarioBotonCancelar" type="button" onClick={() => navigate('/proveedores')}>

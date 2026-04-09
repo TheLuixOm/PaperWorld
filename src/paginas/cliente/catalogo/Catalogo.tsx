@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { BookOpen, ChevronRight, Home, Search, ShoppingCart } from 'lucide-react';
+import { BookOpen, ChevronLeft, ChevronRight, Home, Search, ShoppingCart } from 'lucide-react';
 import UsuarioMenu from '../../empleado/Barras/UsuarioMenu';
 import { productosIniciales } from '../../empleado/datosInventario';
 import { useCart } from '../carrito/CarritoContext';
@@ -118,8 +118,10 @@ function CatalogoCliente() {
   const [sugerenciasAbiertas, setSugerenciasAbiertas] = useState(false);
   const [orden, setOrden] = useState<OrdenCatalogo>('relevancia');
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState<Set<string>>(() => new Set());
+  const [paginaActual, setPaginaActual] = useState(1);
   const buscadorRef = useRef<HTMLElement | null>(null);
   const inputBusquedaRef = useRef<HTMLInputElement | null>(null);
+  const productosPorPagina = 24;
 
   const productosCatalogo = useMemo<ProductoCatalogo[]>(() => {
     return productosIniciales.map((p) => ({
@@ -221,6 +223,26 @@ function CatalogoCliente() {
     return productos;
   }, [busquedaCatalogo, productosConScore, orden]);
 
+  const totalPaginas = Math.max(1, Math.ceil(productosFiltrados.length / productosPorPagina));
+
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [busquedaCatalogo, orden, categoriasSeleccionadas]);
+
+  useEffect(() => {
+    if (paginaActual > totalPaginas) {
+      setPaginaActual(totalPaginas);
+    }
+  }, [paginaActual, totalPaginas]);
+
+  const productosVisibles = useMemo(() => {
+    const indiceInicial = (paginaActual - 1) * productosPorPagina;
+    const indiceFinal = indiceInicial + productosPorPagina;
+    return productosFiltrados.slice(indiceInicial, indiceFinal);
+  }, [paginaActual, productosFiltrados]);
+
+  const paginas = useMemo(() => Array.from({ length: totalPaginas }, (_, indice) => indice + 1), [totalPaginas]);
+
   const sugerencias = useMemo(() => {
     const consulta = busquedaCatalogo.trim();
     if (!consulta) {
@@ -250,7 +272,12 @@ function CatalogoCliente() {
               <span className="inicioClienteMarcaTexto">Paper world</span>
             </div>
 
-            <form className="inicioClienteBuscador" role="search" aria-label="Búsqueda">
+            <form
+              className="inicioClienteBuscador"
+              role="search"
+              aria-label="Búsqueda"
+              onSubmit={(event) => event.preventDefault()}
+            >
               <span className="inicioClienteBuscadorIcono" aria-hidden="true">
                 <Search />
               </span>
@@ -258,8 +285,14 @@ function CatalogoCliente() {
                 className="inicioClienteBuscadorInput"
                 type="search"
                 placeholder="Buscar producto"
-                name="q"
+                aria-label="Buscar producto"
                 autoComplete="off"
+                value={busquedaCatalogo}
+                onFocus={() => setSugerenciasAbiertas(true)}
+                onChange={(event) => {
+                  setBusquedaCatalogo(event.target.value);
+                  setSugerenciasAbiertas(true);
+                }}
               />
             </form>
 
@@ -474,7 +507,7 @@ function CatalogoCliente() {
 
           <section className="catalogoClienteResultados" aria-label="Resultados">
             <div className="catalogoClienteGrid" role="list">
-              {productosFiltrados.map((producto) => (
+              {productosVisibles.map((producto) => (
                 <article key={producto.id} className="catalogoClienteProducto" role="listitem">
                   <div className="catalogoClienteProductoMarco" onClick={() => abrirProducto(producto)}>
                     <div className="catalogoClienteProductoImagen">
@@ -511,14 +544,41 @@ function CatalogoCliente() {
             </div>
 
             <nav className="catalogoClientePaginacion" aria-label="Paginacion">
-              <button type="button" className="catalogoClientePagina catalogoClientePaginaActiva" aria-current="page">
-                1
-              </button>
-              <button type="button" className="catalogoClientePagina">2</button>
-              <button type="button" className="catalogoClientePagina">3</button>
-              <button type="button" className="catalogoClientePagina" aria-label="Siguiente pagina">
-                <ChevronRight />
-              </button>
+              {totalPaginas > 1 && (
+                <button
+                  type="button"
+                  className="catalogoClientePagina"
+                  aria-label="Pagina anterior"
+                  onClick={() => setPaginaActual((actual) => Math.max(1, actual - 1))}
+                  disabled={paginaActual <= 1}
+                >
+                  <ChevronLeft />
+                </button>
+              )}
+
+              {paginas.map((pagina) => (
+                <button
+                  key={pagina}
+                  type="button"
+                  className={`catalogoClientePagina ${pagina === paginaActual ? 'catalogoClientePaginaActiva' : ''}`}
+                  aria-current={pagina === paginaActual ? 'page' : undefined}
+                  onClick={() => setPaginaActual(pagina)}
+                >
+                  {pagina}
+                </button>
+              ))}
+
+              {totalPaginas > 1 && (
+                <button
+                  type="button"
+                  className="catalogoClientePagina"
+                  aria-label="Siguiente pagina"
+                  onClick={() => setPaginaActual((actual) => Math.min(totalPaginas, actual + 1))}
+                  disabled={paginaActual >= totalPaginas}
+                >
+                  <ChevronRight />
+                </button>
+              )}
             </nav>
           </section>
         </section>

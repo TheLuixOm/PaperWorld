@@ -108,7 +108,7 @@ function Proveedores() {
   };
 
   return (
-    <section className="inventarioVista" id="proveedores">
+    <section className="inventarioVista inventarioVistaCambio" id="proveedores">
       <header className="inventarioEncabezado">
         <h2 className="inventarioTitulo">PROVEEDORES</h2>
 
