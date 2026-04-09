@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Search } from 'lucide-react';
 import './Inventario.css';
 import { productosIniciales, type Producto } from '../datosInventario';
 import UsuarioMenu from '../Barras/UsuarioMenu';
@@ -12,6 +13,7 @@ function Inventario() {
     const [vistaActual, setVistaActual] = useState<'lista' | 'agregar' | 'modificar'>('lista');
     const [productoEnEdicion, setProductoEnEdicion] = useState<Producto | null>(null);
     const [productoPendienteEliminar, setProductoPendienteEliminar] = useState<Producto | null>(null);
+    const [productoMenuAbiertoId, setProductoMenuAbiertoId] = useState<string | null>(null);
     const [paginaActual, setPaginaActual] = useState(1);
     const [productoExpandidoId, setProductoExpandidoId] = useState<string | null>(null);
     const [busquedaMovilActiva, setBusquedaMovilActiva] = useState(false);
@@ -19,6 +21,7 @@ function Inventario() {
     const productosPorPagina = 8;
 
     const solicitarEliminarProducto = (producto: Producto) => {
+        setProductoMenuAbiertoId(null);
         setProductoPendienteEliminar(producto);
     };
 
@@ -91,13 +94,19 @@ function Inventario() {
     };
 
     const abrirVistaAgregarProducto = () => {
+        setProductoMenuAbiertoId(null);
         setProductoEnEdicion(null);
         setVistaActual('agregar');
     };
 
     const abrirVistaEditarProducto = (producto: Producto) => {
+        setProductoMenuAbiertoId(null);
         setProductoEnEdicion(producto);
         setVistaActual('modificar');
+    };
+
+    const alternarMenuMovilProducto = (id: string) => {
+        setProductoMenuAbiertoId((idActual) => (idActual === id ? null : id));
     };
 
     const cerrarVistaFormulario = () => {
@@ -219,10 +228,7 @@ function Inventario() {
                                 onClick={activarBusquedaMovil}
                             >
                                 <span className="inventarioBuscadorIcono" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" focusable="false">
-                                    <circle cx="11" cy="11" r="6" />
-                                    <line x1="15.5" y1="15.5" x2="21" y2="21" />
-                                </svg>
+                                <Search />
                                 </span>
                             </button>
                             <input
@@ -328,6 +334,7 @@ function Inventario() {
 
                         {productosVisibles.map((producto) => {
                             const estaExpandido = productoExpandidoId === producto.id;
+                            const menuAbierto = productoMenuAbiertoId === producto.id;
 
                             return (
                                 <article key={`movil-${producto.id}`} className="inventarioMovilItem">
@@ -350,11 +357,34 @@ function Inventario() {
                                             className="inventarioMovilMenu"
                                             type="button"
                                             aria-label={`Opciones para ${producto.nombre}`}
+                                            aria-expanded={menuAbierto}
+                                            onClick={() => alternarMenuMovilProducto(producto.id)}
                                         >
                                             <span />
                                             <span />
                                             <span />
                                         </button>
+
+                                        {menuAbierto && (
+                                            <div className="inventarioMovilOpciones" role="menu" aria-label={`Opciones de ${producto.nombre}`}>
+                                                <button
+                                                    type="button"
+                                                    className="inventarioMovilOpcionBoton"
+                                                    role="menuitem"
+                                                    onClick={() => abrirVistaEditarProducto(producto)}
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="inventarioMovilOpcionBoton inventarioMovilOpcionBotonEliminar"
+                                                    role="menuitem"
+                                                    onClick={() => solicitarEliminarProducto(producto)}
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {estaExpandido && (
