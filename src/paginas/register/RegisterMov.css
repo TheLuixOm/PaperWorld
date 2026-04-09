@@ -100,6 +100,18 @@
   padding: 0;
   cursor: pointer;
   font-size: 14px;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+@media (hover: hover) {
+  .registro-mov-enlace:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.02);
+  }
+}
+
+.registro-mov-enlace:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .registro-mov-campo {
@@ -138,6 +150,20 @@
   background: #067bb6;
   font-size: 14px;
   margin-bottom: 8px;
+  cursor: pointer;
+  transition: transform 160ms ease, filter 160ms ease, background-color 160ms ease;
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .registro-mov-boton-crear:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.02);
+  }
+}
+
+.registro-mov-boton-crear:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .registro-mov-linea-aceptacion {
@@ -192,6 +218,20 @@
   gap: 8px;
   font-size: 14px;
   margin-bottom: 8px;
+  cursor: pointer;
+  transition: transform 160ms ease, filter 160ms ease, background-color 160ms ease, border-color 160ms ease;
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .registro-mov-boton-red:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.02);
+  }
+}
+
+.registro-mov-boton-red:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .registro-mov-icono-red {

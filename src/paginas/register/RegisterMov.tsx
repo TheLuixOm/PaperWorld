@@ -1,6 +1,6 @@
 import './RegisterMov.css';
 import { useNavigate } from 'react-router-dom';
-import loginImage from '../../images/login.jpg';
+import loginImage from '../../images/login.svg';
 import clipNegro from '../../images/Clip_negro.svg';
 
 type RegisterMovProps = {
