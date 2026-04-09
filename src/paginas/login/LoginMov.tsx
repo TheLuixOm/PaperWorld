@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import './LoginMov.css';
-import loginImage from '../../images/login.jpg';
+import loginImage from '../../images/login.svg';
 
 type LoginMovProps = {
   onIrRegistro?: () => void;

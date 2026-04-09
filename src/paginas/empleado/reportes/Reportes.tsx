@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Search } from 'lucide-react';
 import '../inventario/Inventario.css';
 import './Reportes.css';
 import UsuarioMenu from '../Barras/UsuarioMenu';
@@ -35,12 +36,7 @@ type RegistroInventario = {
 };
 
 function IconoLupa() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <circle cx="11" cy="11" r="6.5" />
-      <path d="M16.2 16.2 21 21" />
-    </svg>
-  );
+  return <Search aria-hidden="true" />;
 }
 
 function formatearDinero(valor: number) {

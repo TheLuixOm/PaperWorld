@@ -1,16 +1,19 @@
 .register_page {
-	min-height: 100svh;
+    height: 100svh;
+    min-height: 100svh;
 	background: #ececec;
 	display: flex;
 	align-items: stretch;
 	justify-content: stretch;
 	padding: 0;
+    overflow: hidden;
 	box-sizing: border-box;
 	font-family: 'Inter', sans-serif;
 }
 
 .register_layout {
     width: 100%;
+    height: 100%;
     min-height: 100svh;
     background: #f2f2f2;
     display: grid;
@@ -269,7 +272,27 @@
     display: block;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1000px) {
+    .contenido_registro {
+        padding: 40px 20px 32px;
+    }
+
+    .register_marca {
+        font-size: clamp(88px, 10vw, 104px);
+    }
+
+    .register_submarca {
+        font-size: 20px;
+    }
+
+    .register_descripcion,
+    .register_descripcion a,
+    .register_descripcion .register_link {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 500px) {
     .register_layout {
         grid-template-columns: 1fr;
         min-height: 100svh;
@@ -277,13 +300,5 @@
 
     .register_visual {
         min-height: 240px;
-    }
-
-    .contenido_registro {
-        padding: 40px 20px 32px;
-    }
-
-    .register_marca {
-        font-size: clamp(90px, 18vw, 110px);
     }
 }

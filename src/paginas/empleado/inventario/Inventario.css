@@ -1156,6 +1156,7 @@
     grid-template-columns: 34px minmax(0, 1fr) 34px;
     align-items: center;
     padding: 0 10px;
+    position: relative;
   }
 
   .inventarioMovilAlternar {
@@ -1212,6 +1213,44 @@
     border-radius: 50%;
     background: #677489;
     display: block;
+  }
+
+  .inventarioMovilOpciones {
+    position: absolute;
+    top: calc(100% - 2px);
+    right: 10px;
+    min-width: 130px;
+    background: #ffffff;
+    border: 1px solid #d7deea;
+    border-radius: 10px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 3;
+  }
+
+  .inventarioMovilOpcionBoton {
+    width: 100%;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+    padding: 0 10px;
+    cursor: pointer;
+  }
+
+  .inventarioMovilOpcionBoton:hover {
+    background: #eef3f9;
+  }
+
+  .inventarioMovilOpcionBotonEliminar {
+    color: #b42318;
   }
 
   .inventarioMovilDetalle {

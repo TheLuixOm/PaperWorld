@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import '../inventario/Inventario.css';
 import './Proveedores.css';
@@ -8,6 +9,8 @@ import UsuarioMenu from '../Barras/UsuarioMenu';
 function Proveedores() {
   const [textoBusqueda, setTextoBusqueda] = useState('');
   const [proveedores, setProveedores] = useState(proveedoresIniciales);
+  const [proveedorPendienteEliminar, setProveedorPendienteEliminar] = useState<(typeof proveedoresIniciales)[number] | null>(null);
+  const [proveedorMenuAbiertoId, setProveedorMenuAbiertoId] = useState<string | null>(null);
   const [paginaActual, setPaginaActual] = useState(1);
   const [proveedorExpandidoId, setProveedorExpandidoId] = useState<string | null>(null);
   const [busquedaMovilActiva, setBusquedaMovilActiva] = useState(false);
@@ -16,6 +19,7 @@ function Proveedores() {
   const proveedoresPorPagina = 8;
 
   const abrirVistaModificarProveedor = (id: string) => {
+    setProveedorMenuAbiertoId(null);
     const proveedorSeleccionado = proveedores.find((proveedor) => proveedor.id === id);
 
     if (!proveedorSeleccionado) {
@@ -27,8 +31,24 @@ function Proveedores() {
     });
   };
 
-  const eliminarProveedor = (id: string) => {
-    setProveedores((proveedoresActuales) => proveedoresActuales.filter((proveedor) => proveedor.id !== id));
+  const solicitarEliminarProveedor = (proveedor: (typeof proveedoresIniciales)[number]) => {
+    setProveedorMenuAbiertoId(null);
+    setProveedorPendienteEliminar(proveedor);
+  };
+
+  const confirmarEliminarProveedor = () => {
+    if (!proveedorPendienteEliminar) {
+      return;
+    }
+
+    setProveedores((proveedoresActuales) =>
+      proveedoresActuales.filter((proveedor) => proveedor.id !== proveedorPendienteEliminar.id),
+    );
+    setProveedorPendienteEliminar(null);
+  };
+
+  const cancelarEliminarProveedor = () => {
+    setProveedorPendienteEliminar(null);
   };
 
   const proveedoresFiltrados = useMemo(() => {
@@ -69,6 +89,10 @@ function Proveedores() {
     setProveedorExpandidoId((idActual) => (idActual === id ? null : id));
   };
 
+  const alternarMenuMovilProveedor = (id: string) => {
+    setProveedorMenuAbiertoId((idActual) => (idActual === id ? null : id));
+  };
+
   const activarBusquedaMovil = () => {
     setBusquedaMovilActiva(true);
 
@@ -91,10 +115,7 @@ function Proveedores() {
         <label className={`inventarioBuscador ${busquedaMovilActiva ? 'inventarioBuscadorMovilActivo' : ''}`}>
           <button type="button" className="inventarioBuscadorBoton" aria-label="Abrir busqueda" onClick={activarBusquedaMovil}>
             <span className="inventarioBuscadorIcono" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <circle cx="11" cy="11" r="6" />
-                <line x1="15.5" y1="15.5" x2="21" y2="21" />
-              </svg>
+              <Search />
             </span>
           </button>
           <input
@@ -175,7 +196,7 @@ function Proveedores() {
                       className="inventarioAccion inventarioAccionEliminar"
                       type="button"
                       aria-label={`Eliminar ${proveedor.nombre}`}
-                      onClick={() => eliminarProveedor(proveedor.id)}
+                      onClick={() => solicitarEliminarProveedor(proveedor)}
                     >
                       <svg viewBox="0 0 24 24" focusable="false">
                         <path d="M5 7h14" />
@@ -201,6 +222,7 @@ function Proveedores() {
 
           {proveedoresVisibles.map((proveedor) => {
             const estaExpandido = proveedorExpandidoId === proveedor.id;
+            const menuAbierto = proveedorMenuAbiertoId === proveedor.id;
 
             return (
               <article key={`movil-${proveedor.id}`} className="inventarioMovilItem">
@@ -219,11 +241,38 @@ function Proveedores() {
 
                   <p className="inventarioMovilNombre">{proveedor.nombre}</p>
 
-                  <button className="inventarioMovilMenu" type="button" aria-label={`Opciones para ${proveedor.nombre}`}>
+                  <button
+                    className="inventarioMovilMenu"
+                    type="button"
+                    aria-label={`Opciones para ${proveedor.nombre}`}
+                    aria-expanded={menuAbierto}
+                    onClick={() => alternarMenuMovilProveedor(proveedor.id)}
+                  >
                     <span />
                     <span />
                     <span />
                   </button>
+
+                  {menuAbierto && (
+                    <div className="inventarioMovilOpciones" role="menu" aria-label={`Opciones de ${proveedor.nombre}`}>
+                      <button
+                        type="button"
+                        className="inventarioMovilOpcionBoton"
+                        role="menuitem"
+                        onClick={() => abrirVistaModificarProveedor(proveedor.id)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        className="inventarioMovilOpcionBoton inventarioMovilOpcionBotonEliminar"
+                        role="menuitem"
+                        onClick={() => solicitarEliminarProveedor(proveedor)}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div
@@ -279,6 +328,43 @@ function Proveedores() {
             ›
           </button>
         </div>
+
+        {proveedorPendienteEliminar && (
+          <div className="inventarioModalOverlay" role="presentation" onClick={cancelarEliminarProveedor}>
+            <div
+              className="inventarioModalEliminar"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="confirmar-eliminacion-proveedor-titulo"
+              aria-describedby="confirmar-eliminacion-proveedor-mensaje"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <h4 id="confirmar-eliminacion-proveedor-titulo" className="inventarioModalTitulo">
+                Eliminar proveedor
+              </h4>
+              <p id="confirmar-eliminacion-proveedor-mensaje" className="inventarioModalMensaje">
+                ¿Desea eliminar este proveedor?
+              </p>
+
+              <div className="inventarioModalAcciones">
+                <button
+                  type="button"
+                  className="inventarioModalBoton inventarioModalBotonCancelar"
+                  onClick={cancelarEliminarProveedor}
+                >
+                  No
+                </button>
+                <button
+                  type="button"
+                  className="inventarioModalBoton inventarioModalBotonEliminar"
+                  onClick={confirmarEliminarProveedor}
+                >
+                  Sí, eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </section>
   );

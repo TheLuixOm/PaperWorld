@@ -93,7 +93,7 @@
 
 .panel-detalleMov {
 	width:94%;
-    height: clamp(150px, 25vh, 220px);
+    height: clamp(190px, 25vh, 220px);
 	margin-left: 3%;
 }
 

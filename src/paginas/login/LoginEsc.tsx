@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLayoutEffect, useRef, useState } from 'react';
 import './Login.css';
-import loginImage from '../../images/login.jpg';
+import loginImage from '../../images/login.svg';
 import Clip_negro from '../../images/Clip_negro.svg';
 import { animarImagenAuthOverlay, type Rect } from '../auth/animarImagenAuth';
 

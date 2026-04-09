@@ -1,16 +1,19 @@
 .login-esc-page {
+	height: 100svh;
 	min-height: 100svh;
 	background: #ececec;
 	display: flex;
 	align-items: stretch;
 	justify-content: stretch;
 	padding: 0;
+	overflow: hidden;
 	box-sizing: border-box;
 	font-family: 'Inter', sans-serif;
 }
 
 .login-esc-layout {
 	width: 100%;
+	height: 100%;
 	min-height: 100svh;
 	background: #f2f2f2;
 	display: grid;
@@ -181,18 +184,13 @@
 	transform: translateY(0) scale(0.98);
 }
 
-@media (max-width: 980px) {
-	.login-esc-layout {
-		grid-template-columns: 1fr;
-		min-height: 100svh;
-	}
-
-	.login-esc-visual {
-		min-height: 240px;
-	}
-
+@media (max-width: 1000px) {
 	.login-esc-content {
 		padding: 40px 20px 32px;
+	}
+
+	.login-esc-marca {
+		font-size: clamp(88px, 10vw, 104px);
 	}
 
 	.login-esc-label,
@@ -205,5 +203,16 @@
 	.login-esc-input,
 	.login-esc-button {
 		height: 46px;
+	}
+}
+
+@media (max-width: 500px) {
+	.login-esc-layout {
+		grid-template-columns: 1fr;
+		min-height: 100svh;
+	}
+
+	.login-esc-visual {
+		min-height: 240px;
 	}
 }
