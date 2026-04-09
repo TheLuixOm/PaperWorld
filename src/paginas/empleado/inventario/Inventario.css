@@ -886,8 +886,8 @@
   }
 
   .inventarioEncabezado {
-    grid-template-columns: auto 24px minmax(0, 1fr);
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) 28px auto auto;
+    gap: 10px;
     padding: 0 10px;
     align-items: center;
     border-bottom: 1px solid #d5dce8;
@@ -917,9 +917,17 @@
     font-size: 22px;
     line-height: 1;
     letter-spacing: 0;
+    min-width: 0;
+    width: 100%;
+    justify-self: stretch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .inventarioBuscador {
+    grid-column: 2;
+    grid-row: 1;
     width: 24px;
     height: 24px;
     min-width: 24px;
@@ -994,6 +1002,28 @@
     box-shadow: none;
     gap: 8px;
     white-space: nowrap;
+    max-width: min(220px, 100%);
+  }
+
+  .inventarioBotonTexto {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .inventarioUsuarioMenu {
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  @media (max-width: 420px) {
+    .inventarioBotonAgregar {
+      padding: 0 10px;
+      gap: 6px;
+      max-width: min(170px, 100%);
+    }
   }
 
   .inventarioBotonIcono {
@@ -1148,7 +1178,7 @@
     stroke-width: 2.2;
     stroke-linecap: round;
     stroke-linejoin: round;
-    transition: transform 0.2s ease;
+    transition: transform 0.28s ease;
   }
 
   .inventarioMovilAlternar[aria-expanded='true'] svg {
@@ -1191,6 +1221,34 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+    transform-origin: top;
+    overflow: hidden;
+    max-height: 600px;
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    transition:
+      max-height 280ms ease,
+      opacity 220ms ease,
+      transform 280ms ease,
+      padding-top 280ms ease,
+      padding-bottom 280ms ease,
+      border-top-width 280ms ease;
+  }
+
+  .inventarioMovilDetalle[data-state='closed'] {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-4px) scaleY(0.98);
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inventarioMovilDetalle {
+      transition: none;
+    }
   }
 
   .inventarioMovilDetalle p {

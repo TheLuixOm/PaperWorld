@@ -245,9 +245,14 @@ function Inventario() {
                             />
                         </label>
 
-                        <button className="inventarioBotonAgregar" type="button" onClick={abrirVistaAgregarProducto}>
+                        <button
+                            className="inventarioBotonAgregar"
+                            type="button"
+                            onClick={abrirVistaAgregarProducto}
+                            aria-label="Añadir nuevo producto"
+                        >
                             <span className="inventarioBotonIcono" aria-hidden="true">+</span>
-                            Añadir nuevo producto
+                            <span className="inventarioBotonTexto">Añadir producto</span>
                         </button>
 
                         <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
@@ -357,22 +362,24 @@ function Inventario() {
                                         </button>
                                     </div>
 
-                                    {estaExpandido && (
-                                        <div className="inventarioMovilDetalle">
-                                            <p>
-                                                <span>Codigo:</span> {producto.id}
-                                            </p>
-                                            <p>
-                                                <span>categoria</span> {producto.categoria}
-                                            </p>
-                                            <p>
-                                                <span>Precio</span> {producto.precio}
-                                            </p>
-                                            <p>
-                                                <span>cantidad</span> {producto.cantidad}
-                                            </p>
-                                        </div>
-                                    )}
+                                    <div
+                                        className="inventarioMovilDetalle"
+                                        data-state={estaExpandido ? 'open' : 'closed'}
+                                        aria-hidden={!estaExpandido}
+                                    >
+                                        <p>
+                                            <span>Codigo:</span> {producto.id}
+                                        </p>
+                                        <p>
+                                            <span>categoria</span> {producto.categoria}
+                                        </p>
+                                        <p>
+                                            <span>Precio</span> {producto.precio}
+                                        </p>
+                                        <p>
+                                            <span>cantidad</span> {producto.cantidad}
+                                        </p>
+                                    </div>
                                 </article>
                             );
                         })}

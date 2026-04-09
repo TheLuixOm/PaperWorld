@@ -117,9 +117,14 @@ function Proveedores() {
           />
         </label>
 
-        <button className="inventarioBotonAgregar" type="button" onClick={() => navigate('/proveedores/agregar')}>
+        <button
+          className="inventarioBotonAgregar"
+          type="button"
+          onClick={() => navigate('/proveedores/agregar')}
+          aria-label="Añadir nuevo proveedor"
+        >
           <span className="inventarioBotonIcono" aria-hidden="true">+</span>
-          Añadir nuevo proveedor
+          <span className="inventarioBotonTexto">Añadir proveedor</span>
         </button>
 
         <UsuarioMenu className="inventarioUsuarioMenu" ariaLabel="Perfil del usuario" />
@@ -221,19 +226,21 @@ function Proveedores() {
                   </button>
                 </div>
 
-                {estaExpandido && (
-                  <div className="inventarioMovilDetalle">
-                    <p>
-                      <span>Codigo:</span> {proveedor.id}
-                    </p>
-                    <p>
-                      <span>Email:</span> {proveedor.email}
-                    </p>
-                    <p>
-                      <span>Contacto:</span> {proveedor.contacto}
-                    </p>
-                  </div>
-                )}
+                <div
+                  className="inventarioMovilDetalle"
+                  data-state={estaExpandido ? 'open' : 'closed'}
+                  aria-hidden={!estaExpandido}
+                >
+                  <p>
+                    <span>Codigo:</span> {proveedor.id}
+                  </p>
+                  <p>
+                    <span>Email:</span> {proveedor.email}
+                  </p>
+                  <p>
+                    <span>Contacto:</span> {proveedor.contacto}
+                  </p>
+                </div>
               </article>
             );
           })}
