@@ -1,13 +1,53 @@
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useLayoutEffect, useRef, useState } from 'react';
 import './Login.css';
 import loginImage from '../../images/login.jpg';
 import Clip_negro from '../../images/Clip_negro.svg';
+import { animarImagenAuthOverlay, type Rect } from '../auth/animarImagenAuth';
+
+type AuthTransitionState = {
+	authTransition?: {
+		fromRect: Rect;
+		imageSrc: string;
+	};
+};
 
 function LoginEsc() {
 	const navigate = useNavigate();
+	const location = useLocation();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [animando, setAnimando] = useState(false);
+	const visualRef = useRef<HTMLDivElement | null>(null);
+	const yaAnimadoRef = useRef(false);
+
+	useLayoutEffect(() => {
+		if (yaAnimadoRef.current) {
+			return;
+		}
+
+		const state = location.state as AuthTransitionState | null;
+		const fromRect = state?.authTransition?.fromRect;
+		const imageSrc = state?.authTransition?.imageSrc;
+		const visual = visualRef.current;
+		if (!fromRect || !imageSrc || !visual) {
+			return;
+		}
+
+		yaAnimadoRef.current = true;
+
+		const toRect = visual.getBoundingClientRect();
+		const prevOpacity = visual.style.opacity;
+		visual.style.opacity = '0';
+
+		animarImagenAuthOverlay({ desde: fromRect, hasta: toRect, imageSrc })
+			.catch(() => {
+				// noop
+			})
+			.finally(() => {
+				visual.style.opacity = prevOpacity;
+			});
+	}, [location.state]);
 
 	const iniciarSesion = (event: React.FormEvent) => {
 		event.preventDefault();
@@ -21,13 +61,32 @@ function LoginEsc() {
 	};
 
 	const irARegistro = () => {
-		navigate('/register');
+		if (animando) {
+			return;
+		}
+
+		const visual = visualRef.current;
+		const fromRect = visual?.getBoundingClientRect();
+		if (!fromRect) {
+			navigate('/register');
+			return;
+		}
+
+		setAnimando(true);
+		navigate('/register', {
+			state: {
+				authTransition: {
+					fromRect,
+					imageSrc: loginImage,
+				},
+			} satisfies AuthTransitionState,
+		});
 	};
 
 	return (
 		<main className="login-esc-page">
 			<section className="login-esc-layout" aria-label="Login escritorio">
-				<div className="login-esc-visual">
+				<div className="login-esc-visual" ref={visualRef}>
 					<img
 						className="login-esc-visual-image"
 						src={loginImage}
@@ -77,7 +136,7 @@ function LoginEsc() {
 							<button type="submit" className="login-esc-button login-esc-button-primary">
 								Log in
 							</button>
-							<button type="button" className="login-esc-button login-esc-button-secondary" onClick={irARegistro}>
+							<button type="button" className="login-esc-button login-esc-button-secondary" onClick={irARegistro} disabled={animando}>
 								Sign In
 							</button>
 						</div>

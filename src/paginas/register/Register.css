@@ -73,7 +73,8 @@
     font-weight: 400;
 }
 
-.register_descripcion a {
+.register_descripcion a,
+.register_descripcion .register_link {
     color: #067bb6;
     font-weight: 500;
     text-decoration: none;
@@ -81,6 +82,17 @@
     line-height: 1.35;
     font-family: 'Inter', sans-serif;
     font-weight: 400;
+}
+
+.register_descripcion .register_link {
+    border: none;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.register_descripcion .register_link:disabled {
+    cursor: default;
 }
 
 .register_card {
@@ -213,6 +225,26 @@
     font-size: 18px;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
+    transition: transform 160ms ease, filter 160ms ease, background-color 160ms ease;
+    will-change: transform;
+}
+
+@media (hover: hover) {
+    .register_button:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.02);
+    }
+}
+
+.register_button:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.register_button:disabled {
+    opacity: 0.7;
+    cursor: default;
+    transform: none;
+    filter: none;
 }
 
 .register_button_primary {
